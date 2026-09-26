@@ -1,240 +1,341 @@
 -- =====================================================================
--- AMEYA '26 — National Technical Conclave | IEI SAME, VVIIT Nambur
--- Database Schema: Separate Event Tables & Visitor Registry
+-- AMEYA '26 // SUPABASE MULTI-TABLE DATABASE SCHEMA
+-- Separate dedicated tables for each technical arena & fest visitor pass
+-- Zero destructive operations, full Row Level Security (RLS) enabled
 -- =====================================================================
 
--- 1. Enable UUID Extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- =====================================================================
--- 2. EVENT 1: HackSprint 24H (reg_hacksprint)
--- Rapid hardware-software prototyping sprint (Teams 2-4)
+-- 1. HACKSPRINT 24H (hackathon)
 -- =====================================================================
 CREATE TABLE IF NOT EXISTS public.reg_hacksprint (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     ticket_id VARCHAR(64) UNIQUE NOT NULL,
-    team_id VARCHAR(64) NOT NULL,
-    team_name VARCHAR(255) NOT NULL,
+    team_id VARCHAR(32) NOT NULL,
+    team_name VARCHAR(128) NOT NULL,
     leader_name VARCHAR(255) NOT NULL,
     leader_email VARCHAR(255) NOT NULL,
     leader_phone VARCHAR(32) NOT NULL,
     college VARCHAR(255) NOT NULL,
     year VARCHAR(64) NOT NULL,
-    members JSONB NOT NULL DEFAULT '[]'::jsonb,
-    domain_track VARCHAR(128) NOT NULL DEFAULT 'Automation & Robotics',
+    members JSONB DEFAULT '[]'::jsonb,
+    domain_track VARCHAR(128) DEFAULT 'Automation & Robotics',
     project_title VARCHAR(255),
     proposal_synopsis TEXT,
     hardware_requirements TEXT,
     payment_status VARCHAR(32) NOT NULL DEFAULT 'confirmed',
     verified_at TIMESTAMPTZ,
-    verified_by VARCHAR(255),
+    verified_by VARCHAR(128),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+ALTER TABLE public.reg_hacksprint ENABLE ROW LEVEL SECURITY;
+
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'reg_hacksprint' AND policyname = 'Allow public insert hacksprint') THEN
+        CREATE POLICY "Allow public insert hacksprint" ON public.reg_hacksprint FOR INSERT TO anon, authenticated WITH CHECK (true);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'reg_hacksprint' AND policyname = 'Allow public read hacksprint') THEN
+        CREATE POLICY "Allow public read hacksprint" ON public.reg_hacksprint FOR SELECT TO anon, authenticated USING (true);
+    END IF;
+END $$;
+
 -- =====================================================================
--- 3. EVENT 2: Tech Manuscript (reg_tech_manuscript)
--- Research paper defense & publication (Teams 1-2)
+-- 2. TECH MANUSCRIPT (paper-presentation)
 -- =====================================================================
 CREATE TABLE IF NOT EXISTS public.reg_tech_manuscript (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     ticket_id VARCHAR(64) UNIQUE NOT NULL,
-    team_id VARCHAR(64) NOT NULL,
-    team_name VARCHAR(255),
+    team_id VARCHAR(32) NOT NULL,
+    team_name VARCHAR(128),
     leader_name VARCHAR(255) NOT NULL,
     leader_email VARCHAR(255) NOT NULL,
     leader_phone VARCHAR(32) NOT NULL,
     college VARCHAR(255) NOT NULL,
     year VARCHAR(64) NOT NULL,
-    members JSONB NOT NULL DEFAULT '[]'::jsonb,
-    paper_title VARCHAR(255) NOT NULL,
-    research_track VARCHAR(128) NOT NULL DEFAULT 'Machine Design & Dynamics',
+    members JSONB DEFAULT '[]'::jsonb,
+    paper_title VARCHAR(255),
+    research_track VARCHAR(128) DEFAULT 'Thermal & Fluid Dynamics',
     abstract_text TEXT,
-    drive_link VARCHAR(512),
+    manuscript_drive_link VARCHAR(512),
     payment_status VARCHAR(32) NOT NULL DEFAULT 'confirmed',
     verified_at TIMESTAMPTZ,
-    verified_by VARCHAR(255),
+    verified_by VARCHAR(128),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+ALTER TABLE public.reg_tech_manuscript ENABLE ROW LEVEL SECURITY;
+
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'reg_tech_manuscript' AND policyname = 'Allow public insert manuscript') THEN
+        CREATE POLICY "Allow public insert manuscript" ON public.reg_tech_manuscript FOR INSERT TO anon, authenticated WITH CHECK (true);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'reg_tech_manuscript' AND policyname = 'Allow public read manuscript') THEN
+        CREATE POLICY "Allow public read manuscript" ON public.reg_tech_manuscript FOR SELECT TO anon, authenticated USING (true);
+    END IF;
+END $$;
+
 -- =====================================================================
--- 4. EVENT 3: CAD Clash (reg_cad_clash)
--- Speed CAD assembly & tolerance modeling (Solo)
+-- 3. CAD CLASH (cad-design)
 -- =====================================================================
 CREATE TABLE IF NOT EXISTS public.reg_cad_clash (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     ticket_id VARCHAR(64) UNIQUE NOT NULL,
-    team_id VARCHAR(64) NOT NULL,
+    team_id VARCHAR(32) NOT NULL,
     leader_name VARCHAR(255) NOT NULL,
     leader_email VARCHAR(255) NOT NULL,
     leader_phone VARCHAR(32) NOT NULL,
     college VARCHAR(255) NOT NULL,
     year VARCHAR(64) NOT NULL,
-    software_preference VARCHAR(128) NOT NULL DEFAULT 'SolidWorks',
-    experience_level VARCHAR(64) NOT NULL DEFAULT 'Intermediate',
-    bringing_own_laptop BOOLEAN NOT NULL DEFAULT TRUE,
+    cad_software VARCHAR(64) DEFAULT 'SolidWorks',
+    cad_experience VARCHAR(64) DEFAULT 'Intermediate',
+    bringing_own_laptop BOOLEAN DEFAULT true,
     payment_status VARCHAR(32) NOT NULL DEFAULT 'confirmed',
     verified_at TIMESTAMPTZ,
-    verified_by VARCHAR(255),
+    verified_by VARCHAR(128),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+ALTER TABLE public.reg_cad_clash ENABLE ROW LEVEL SECURITY;
+
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'reg_cad_clash' AND policyname = 'Allow public insert cad') THEN
+        CREATE POLICY "Allow public insert cad" ON public.reg_cad_clash FOR INSERT TO anon, authenticated WITH CHECK (true);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'reg_cad_clash' AND policyname = 'Allow public read cad') THEN
+        CREATE POLICY "Allow public read cad" ON public.reg_cad_clash FOR SELECT TO anon, authenticated USING (true);
+    END IF;
+END $$;
+
 -- =====================================================================
--- 5. EVENT 4: Robo Rumble (reg_robo_rumble)
--- RC Combat & Obstacle Warfare (Teams 2-4)
+-- 4. ROBO RUMBLE (robo-race)
 -- =====================================================================
 CREATE TABLE IF NOT EXISTS public.reg_robo_rumble (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     ticket_id VARCHAR(64) UNIQUE NOT NULL,
-    team_id VARCHAR(64) NOT NULL,
-    team_name VARCHAR(255) NOT NULL,
+    team_id VARCHAR(32) NOT NULL,
+    team_name VARCHAR(128) NOT NULL,
     leader_name VARCHAR(255) NOT NULL,
     leader_email VARCHAR(255) NOT NULL,
     leader_phone VARCHAR(32) NOT NULL,
     college VARCHAR(255) NOT NULL,
     year VARCHAR(64) NOT NULL,
-    members JSONB NOT NULL DEFAULT '[]'::jsonb,
-    bot_name VARCHAR(255) NOT NULL,
-    weight_category VARCHAR(64) NOT NULL DEFAULT 'Featherweight <15kg',
-    drive_system VARCHAR(64) NOT NULL DEFAULT '4WD',
-    weapon_mechanism VARCHAR(128) NOT NULL DEFAULT 'Spinner',
-    frequency_band VARCHAR(128) NOT NULL DEFAULT '2.4GHz Spread Spectrum',
+    members JSONB DEFAULT '[]'::jsonb,
+    bot_moniker VARCHAR(128),
+    weight_class VARCHAR(64) DEFAULT 'Under 5kg (Standard Class)',
+    drive_system VARCHAR(64) DEFAULT '4WD Skid Steer',
+    weapon_mechanism VARCHAR(128),
+    frequency_band VARCHAR(64) DEFAULT '2.4 GHz FHSS',
     payment_status VARCHAR(32) NOT NULL DEFAULT 'confirmed',
     verified_at TIMESTAMPTZ,
-    verified_by VARCHAR(255),
+    verified_by VARCHAR(128),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+ALTER TABLE public.reg_robo_rumble ENABLE ROW LEVEL SECURITY;
+
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'reg_robo_rumble' AND policyname = 'Allow public insert robo') THEN
+        CREATE POLICY "Allow public insert robo" ON public.reg_robo_rumble FOR INSERT TO anon, authenticated WITH CHECK (true);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'reg_robo_rumble' AND policyname = 'Allow public read robo') THEN
+        CREATE POLICY "Allow public read robo" ON public.reg_robo_rumble FOR SELECT TO anon, authenticated USING (true);
+    END IF;
+END $$;
+
 -- =====================================================================
--- 6. EVENT 5: Circuit Breaker (reg_circuit_breaker)
--- Fault diagnosis, PLC, mechatronics loops (Solo)
+-- 5. CIRCUIT BREAKER (circuit-debug)
 -- =====================================================================
 CREATE TABLE IF NOT EXISTS public.reg_circuit_breaker (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     ticket_id VARCHAR(64) UNIQUE NOT NULL,
-    team_id VARCHAR(64) NOT NULL,
+    team_id VARCHAR(32) NOT NULL,
     leader_name VARCHAR(255) NOT NULL,
     leader_email VARCHAR(255) NOT NULL,
     leader_phone VARCHAR(32) NOT NULL,
     college VARCHAR(255) NOT NULL,
     year VARCHAR(64) NOT NULL,
-    preferred_controller VARCHAR(128) NOT NULL DEFAULT 'Arduino / AVR',
-    lab_experience VARCHAR(128) NOT NULL DEFAULT 'Academic Coursework',
+    controller_pref VARCHAR(64) DEFAULT 'Arduino / ATmega',
+    lab_experience VARCHAR(64) DEFAULT 'Intermediate',
     payment_status VARCHAR(32) NOT NULL DEFAULT 'confirmed',
     verified_at TIMESTAMPTZ,
-    verified_by VARCHAR(255),
+    verified_by VARCHAR(128),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+ALTER TABLE public.reg_circuit_breaker ENABLE ROW LEVEL SECURITY;
+
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'reg_circuit_breaker' AND policyname = 'Allow public insert circuit') THEN
+        CREATE POLICY "Allow public insert circuit" ON public.reg_circuit_breaker FOR INSERT TO anon, authenticated WITH CHECK (true);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'reg_circuit_breaker' AND policyname = 'Allow public read circuit') THEN
+        CREATE POLICY "Allow public read circuit" ON public.reg_circuit_breaker FOR SELECT TO anon, authenticated USING (true);
+    END IF;
+END $$;
+
 -- =====================================================================
--- 7. EVENT 6: Mech Brainiac Quiz (reg_mech_brainiac)
--- Technical kinematics & machine design quiz (Teams of 2)
+-- 6. MECH BRAINIAC (quiz)
 -- =====================================================================
 CREATE TABLE IF NOT EXISTS public.reg_mech_brainiac (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     ticket_id VARCHAR(64) UNIQUE NOT NULL,
-    team_id VARCHAR(64) NOT NULL,
-    team_name VARCHAR(255) NOT NULL,
+    team_id VARCHAR(32) NOT NULL,
+    team_name VARCHAR(128) NOT NULL,
     leader_name VARCHAR(255) NOT NULL,
     leader_email VARCHAR(255) NOT NULL,
     leader_phone VARCHAR(32) NOT NULL,
     college VARCHAR(255) NOT NULL,
     year VARCHAR(64) NOT NULL,
-    members JSONB NOT NULL DEFAULT '[]'::jsonb,
+    members JSONB DEFAULT '[]'::jsonb,
+    sub_discipline VARCHAR(128) DEFAULT 'Core Mechanical & Manufacturing',
     payment_status VARCHAR(32) NOT NULL DEFAULT 'confirmed',
     verified_at TIMESTAMPTZ,
-    verified_by VARCHAR(255),
+    verified_by VARCHAR(128),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+ALTER TABLE public.reg_mech_brainiac ENABLE ROW LEVEL SECURITY;
+
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'reg_mech_brainiac' AND policyname = 'Allow public insert quiz') THEN
+        CREATE POLICY "Allow public insert quiz" ON public.reg_mech_brainiac FOR INSERT TO anon, authenticated WITH CHECK (true);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'reg_mech_brainiac' AND policyname = 'Allow public read quiz') THEN
+        CREATE POLICY "Allow public read quiz" ON public.reg_mech_brainiac FOR SELECT TO anon, authenticated USING (true);
+    END IF;
+END $$;
+
 -- =====================================================================
--- 8. EVENT 7: Gear Hunt Conundrum (reg_gear_hunt)
--- Mechanical scavenger hunt (Teams 3-5)
+-- 7. GEAR HUNT (treasure-hunt)
 -- =====================================================================
 CREATE TABLE IF NOT EXISTS public.reg_gear_hunt (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     ticket_id VARCHAR(64) UNIQUE NOT NULL,
-    team_id VARCHAR(64) NOT NULL,
-    team_name VARCHAR(255) NOT NULL,
+    team_id VARCHAR(32) NOT NULL,
+    team_name VARCHAR(128) NOT NULL,
     leader_name VARCHAR(255) NOT NULL,
     leader_email VARCHAR(255) NOT NULL,
     leader_phone VARCHAR(32) NOT NULL,
     college VARCHAR(255) NOT NULL,
     year VARCHAR(64) NOT NULL,
-    members JSONB NOT NULL DEFAULT '[]'::jsonb,
+    members JSONB DEFAULT '[]'::jsonb,
     emergency_contact VARCHAR(32),
     payment_status VARCHAR(32) NOT NULL DEFAULT 'confirmed',
     verified_at TIMESTAMPTZ,
-    verified_by VARCHAR(255),
+    verified_by VARCHAR(128),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+ALTER TABLE public.reg_gear_hunt ENABLE ROW LEVEL SECURITY;
+
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'reg_gear_hunt' AND policyname = 'Allow public insert gear') THEN
+        CREATE POLICY "Allow public insert gear" ON public.reg_gear_hunt FOR INSERT TO anon, authenticated WITH CHECK (true);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'reg_gear_hunt' AND policyname = 'Allow public read gear') THEN
+        CREATE POLICY "Allow public read gear" ON public.reg_gear_hunt FOR SELECT TO anon, authenticated USING (true);
+    END IF;
+END $$;
+
 -- =====================================================================
--- 9. EVENT 8: Industrial Lens Photography (reg_industrial_lens)
--- Machine photography & manufacturing craft (Solo)
+-- 8. INDUSTRIAL LENS (photography)
 -- =====================================================================
 CREATE TABLE IF NOT EXISTS public.reg_industrial_lens (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     ticket_id VARCHAR(64) UNIQUE NOT NULL,
-    team_id VARCHAR(64) NOT NULL,
+    team_id VARCHAR(32) NOT NULL,
     leader_name VARCHAR(255) NOT NULL,
     leader_email VARCHAR(255) NOT NULL,
     leader_phone VARCHAR(32) NOT NULL,
     college VARCHAR(255) NOT NULL,
     year VARCHAR(64) NOT NULL,
-    device_type VARCHAR(64) NOT NULL DEFAULT 'DSLR / Mirrorless',
+    device_type VARCHAR(64) DEFAULT 'DSLR / Mirrorless',
     camera_model VARCHAR(128),
     portfolio_link VARCHAR(512),
     payment_status VARCHAR(32) NOT NULL DEFAULT 'confirmed',
     verified_at TIMESTAMPTZ,
-    verified_by VARCHAR(255),
+    verified_by VARCHAR(128),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+ALTER TABLE public.reg_industrial_lens ENABLE ROW LEVEL SECURITY;
+
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'reg_industrial_lens' AND policyname = 'Allow public insert photo') THEN
+        CREATE POLICY "Allow public insert photo" ON public.reg_industrial_lens FOR INSERT TO anon, authenticated WITH CHECK (true);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'reg_industrial_lens' AND policyname = 'Allow public read photo') THEN
+        CREATE POLICY "Allow public read photo" ON public.reg_industrial_lens FOR SELECT TO anon, authenticated USING (true);
+    END IF;
+END $$;
+
 -- =====================================================================
--- 10. EVENT 9: Iron Tongue Debate (reg_iron_tongue)
--- Technical debate on robotics, AI, energy (Solo)
+-- 9. IRON TONGUE (debate)
 -- =====================================================================
 CREATE TABLE IF NOT EXISTS public.reg_iron_tongue (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     ticket_id VARCHAR(64) UNIQUE NOT NULL,
-    team_id VARCHAR(64) NOT NULL,
+    team_id VARCHAR(32) NOT NULL,
     leader_name VARCHAR(255) NOT NULL,
     leader_email VARCHAR(255) NOT NULL,
     leader_phone VARCHAR(32) NOT NULL,
     college VARCHAR(255) NOT NULL,
     year VARCHAR(64) NOT NULL,
-    topic_preference VARCHAR(128) NOT NULL DEFAULT 'Autonomous Manufacturing',
-    prior_debate_experience VARCHAR(64) NOT NULL DEFAULT 'First Time',
+    debate_topic_pref VARCHAR(128) DEFAULT 'Autonomous Machines & Ethics',
+    debate_experience VARCHAR(64) DEFAULT 'Collegiate / District Level',
     payment_status VARCHAR(32) NOT NULL DEFAULT 'confirmed',
     verified_at TIMESTAMPTZ,
-    verified_by VARCHAR(255),
+    verified_by VARCHAR(128),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+ALTER TABLE public.reg_iron_tongue ENABLE ROW LEVEL SECURITY;
+
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'reg_iron_tongue' AND policyname = 'Allow public insert debate') THEN
+        CREATE POLICY "Allow public insert debate" ON public.reg_iron_tongue FOR INSERT TO anon, authenticated WITH CHECK (true);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'reg_iron_tongue' AND policyname = 'Allow public read debate') THEN
+        CREATE POLICY "Allow public read debate" ON public.reg_iron_tongue FOR SELECT TO anon, authenticated USING (true);
+    END IF;
+END $$;
+
 -- =====================================================================
--- 11. GENERAL FEST ATTENDEES: Fest Visitors Pass (fest_visitors)
--- Non-competitor visitor passes for attending exhibitions, talks, quad
+-- 10. FEST VISITORS (General Pass / Non-Competitors)
 -- =====================================================================
 CREATE TABLE IF NOT EXISTS public.fest_visitors (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     ticket_id VARCHAR(64) UNIQUE NOT NULL,
-    visitor_id VARCHAR(64) NOT NULL,
+    visitor_id VARCHAR(32) NOT NULL,
     full_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     phone VARCHAR(32) NOT NULL,
-    college VARCHAR(255) NOT NULL,
-    year VARCHAR(64) NOT NULL,
-    attending_days VARCHAR(64) NOT NULL DEFAULT 'Both Days (Oct 04–05)',
-    areas_of_interest JSONB NOT NULL DEFAULT '["Keynote Lectures", "Robotics Arena Spectator", "Project Expo"]'::jsonb,
+    college VARCHAR(255) DEFAULT 'General Delegate / Guest',
+    year VARCHAR(64) DEFAULT 'Visitor Pass',
+    attending_days VARCHAR(64) DEFAULT 'Both Days (Feb 27 & 28)',
+    areas_of_interest JSONB DEFAULT '["Keynote Lectures", "Project Exhibitions"]'::jsonb,
     purpose_of_visit TEXT,
     payment_status VARCHAR(32) NOT NULL DEFAULT 'free',
     verified_at TIMESTAMPTZ,
-    verified_by VARCHAR(255),
+    verified_by VARCHAR(128),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+ALTER TABLE public.fest_visitors ENABLE ROW LEVEL SECURITY;
+
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'fest_visitors' AND policyname = 'Allow public insert visitor') THEN
+        CREATE POLICY "Allow public insert visitor" ON public.fest_visitors FOR INSERT TO anon, authenticated WITH CHECK (true);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'fest_visitors' AND policyname = 'Allow public read visitor') THEN
+        CREATE POLICY "Allow public read visitor" ON public.fest_visitors FOR SELECT TO anon, authenticated USING (true);
+    END IF;
+END $$;
+
 -- =====================================================================
--- 12. TABLE: inquiries (Communications from /contact desk)
+-- 11. INQUIRIES & CONTACT DISPATCH
 -- =====================================================================
 CREATE TABLE IF NOT EXISTS public.inquiries (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -247,8 +348,19 @@ CREATE TABLE IF NOT EXISTS public.inquiries (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+ALTER TABLE public.inquiries ENABLE ROW LEVEL SECURITY;
+
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'inquiries' AND policyname = 'Allow public insert inquiries') THEN
+        CREATE POLICY "Allow public insert inquiries" ON public.inquiries FOR INSERT TO anon, authenticated WITH CHECK (true);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'inquiries' AND policyname = 'Allow public read inquiries') THEN
+        CREATE POLICY "Allow public read inquiries" ON public.inquiries FOR SELECT TO anon, authenticated USING (true);
+    END IF;
+END $$;
+
 -- =====================================================================
--- 13. MASTER UNIFIED VIEW: all_registrations
+-- 12. MASTER UNIFIED VIEW: all_registrations
 -- Aggregates all separate tables for the campus QR gate scanner
 -- =====================================================================
 CREATE OR REPLACE VIEW public.all_registrations AS
@@ -256,50 +368,20 @@ SELECT 'hackathon' AS event_id, 'HackSprint 24H' AS event_name, ticket_id, team_
 UNION ALL
 SELECT 'paper-presentation', 'Tech Manuscript', ticket_id, team_id, team_name, leader_name, leader_email, leader_phone, college, year, members, verified_at, verified_by, created_at, 'reg_tech_manuscript' FROM public.reg_tech_manuscript
 UNION ALL
-SELECT 'cad-design', 'CAD Clash Speed Modeling', ticket_id, team_id, NULL, leader_name, leader_email, leader_phone, college, year, '[]'::jsonb, verified_at, verified_by, created_at, 'reg_cad_clash' FROM public.reg_cad_clash
+SELECT 'cad-clash', 'CAD Clash Speed Modeling', ticket_id, team_id, NULL, leader_name, leader_email, leader_phone, college, year, '[]'::jsonb, verified_at, verified_by, created_at, 'reg_cad_clash' FROM public.reg_cad_clash
 UNION ALL
-SELECT 'robo-race', 'Robo Rumble Combat & Race', ticket_id, team_id, team_name, leader_name, leader_email, leader_phone, college, year, members, verified_at, verified_by, created_at, 'reg_robo_rumble' FROM public.reg_robo_rumble
+SELECT 'robo-rumble', 'Robo Rumble Combat & Race', ticket_id, team_id, team_name, leader_name, leader_email, leader_phone, college, year, members, verified_at, verified_by, created_at, 'reg_robo_rumble' FROM public.reg_robo_rumble
 UNION ALL
-SELECT 'circuit-debug', 'Circuit Breaker Mechatronics', ticket_id, team_id, NULL, leader_name, leader_email, leader_phone, college, year, '[]'::jsonb, verified_at, verified_by, created_at, 'reg_circuit_breaker' FROM public.reg_circuit_breaker
+SELECT 'circuit-breaker', 'Circuit Breaker Mechatronics', ticket_id, team_id, NULL, leader_name, leader_email, leader_phone, college, year, '[]'::jsonb, verified_at, verified_by, created_at, 'reg_circuit_breaker' FROM public.reg_circuit_breaker
 UNION ALL
-SELECT 'quiz', 'Mech Brainiac', ticket_id, team_id, team_name, leader_name, leader_email, leader_phone, college, year, members, verified_at, verified_by, created_at, 'reg_mech_brainiac' FROM public.reg_mech_brainiac
+SELECT 'technical-quiz', 'Mech Brainiac', ticket_id, team_id, team_name, leader_name, leader_email, leader_phone, college, year, members, verified_at, verified_by, created_at, 'reg_mech_brainiac' FROM public.reg_mech_brainiac
 UNION ALL
 SELECT 'treasure-hunt', 'Gear Hunt Conundrum', ticket_id, team_id, team_name, leader_name, leader_email, leader_phone, college, year, members, verified_at, verified_by, created_at, 'reg_gear_hunt' FROM public.reg_gear_hunt
 UNION ALL
 SELECT 'photography', 'Industrial Lens Photography', ticket_id, team_id, NULL, leader_name, leader_email, leader_phone, college, year, '[]'::jsonb, verified_at, verified_by, created_at, 'reg_industrial_lens' FROM public.reg_industrial_lens
 UNION ALL
-SELECT 'debate', 'Iron Tongue Technical Debate', ticket_id, team_id, NULL, leader_name, leader_email, leader_phone, college, year, '[]'::jsonb, verified_at, verified_by, created_at, 'reg_iron_tongue' FROM public.reg_iron_tongue
+SELECT 'technical-debate', 'Iron Tongue Technical Debate', ticket_id, team_id, NULL, leader_name, leader_email, leader_phone, college, year, '[]'::jsonb, verified_at, verified_by, created_at, 'reg_iron_tongue' FROM public.reg_iron_tongue
 UNION ALL
 SELECT 'visitor-pass', 'Fest Visitor Pass', ticket_id, visitor_id, NULL, full_name, email, phone, college, year, '[]'::jsonb, verified_at, verified_by, created_at, 'fest_visitors' FROM public.fest_visitors;
 
--- =====================================================================
--- 14. ROW LEVEL SECURITY (RLS) FOR ALL SEPARATE TABLES
--- =====================================================================
-
-DO $$ 
-DECLARE
-    tbl text;
-    tables text[] := ARRAY[
-        'reg_hacksprint', 'reg_tech_manuscript', 'reg_cad_clash', 
-        'reg_robo_rumble', 'reg_circuit_breaker', 'reg_mech_brainiac', 
-        'reg_gear_hunt', 'reg_industrial_lens', 'reg_iron_tongue', 
-        'fest_visitors', 'inquiries'
-    ];
-BEGIN
-    FOREACH tbl IN ARRAY tables LOOP
-        EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY;', tbl);
-        EXECUTE format('DROP POLICY IF EXISTS "Public insert on %I" ON public.%I;', tbl, tbl);
-        EXECUTE format('DROP POLICY IF EXISTS "Public read on %I" ON public.%I;', tbl, tbl);
-        EXECUTE format('DROP POLICY IF EXISTS "Service role all on %I" ON public.%I;', tbl, tbl);
-
-        -- Public insert (for registration submission)
-        EXECUTE format('CREATE POLICY "Public insert on %I" ON public.%I FOR INSERT TO anon, authenticated WITH CHECK (true);', tbl, tbl);
-        -- Public read (for QR ticket lookup)
-        EXECUTE format('CREATE POLICY "Public read on %I" ON public.%I FOR SELECT TO anon, authenticated USING (true);', tbl, tbl);
-        -- Service role full access
-        EXECUTE format('CREATE POLICY "Service role all on %I" ON public.%I FOR ALL TO service_role USING (true) WITH CHECK (true);', tbl, tbl);
-    END LOOP;
-END $$;
-
--- Verify
 COMMENT ON VIEW public.all_registrations IS 'Unified view combining all event-specific tables and visitor passes';
