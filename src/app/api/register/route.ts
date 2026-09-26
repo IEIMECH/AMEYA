@@ -273,7 +273,7 @@ export async function POST(req: NextRequest) {
       `;
 
       await resend.emails.send({
-        from: "AMEYA '26 <noreply@ameyafest.org>",
+        from: process.env.RESEND_FROM_EMAIL || "AMEYA '26 <onboarding@resend.dev>",
         to: emailRecipients,
         subject: `🎟️ AMEYA '26 Accreditation Dossier — ${event.name}`,
         html: emailHtml,
