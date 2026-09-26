@@ -252,7 +252,7 @@ export default function RegistrationDialog({ event, onClose }: Props) {
     const query = new URLSearchParams({
       id: ticketId,
       event: event?.name || "AMEYA '26 Event",
-      date: event?.date || "October 04-05, 2026",
+      date: event?.day ? `Day 0${event.day} (October 0${event.day + 3}, 2026)` : "October 04–05, 2026",
       venue: event?.venue || "VVIIT Mechanical Engineering Arena",
       name: form.name,
       type: isTeam ? "Team Leader" : "Individual Delegate",

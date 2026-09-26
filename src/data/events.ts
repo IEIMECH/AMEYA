@@ -12,6 +12,7 @@ export interface Event {
   type: EventType;
   teamSize?: string;
   prizes: string;
+  date?: string;
   icon: string;
   color: string;
 }
