@@ -81,35 +81,36 @@ export async function POST(req: NextRequest) {
               insertPayload.team_name = form.teamName || null;
               insertPayload.members = isTeam && Array.isArray(form.members) ? form.members : [];
               insertPayload.paper_title = form.paperTitle || `${form.name} Research Paper`;
-              insertPayload.research_track = form.researchTrack || "Machine Design & Dynamics";
+              insertPayload.research_track = form.researchTrack || "Thermal & Fluid Dynamics";
               insertPayload.abstract_text = form.abstractText || null;
-              insertPayload.drive_link = form.driveLink || null;
+              insertPayload.manuscript_drive_link = form.manuscriptDriveLink || form.driveLink || null;
               break;
 
             case "cad-design":
-              insertPayload.software_preference = form.softwarePreference || "SolidWorks";
-              insertPayload.experience_level = form.experienceLevel || "Intermediate";
+              insertPayload.cad_software = form.cadSoftware || form.softwarePreference || "SolidWorks";
+              insertPayload.cad_experience = form.cadExperience || form.experienceLevel || "Intermediate";
               insertPayload.bringing_own_laptop = Boolean(form.bringingOwnLaptop ?? true);
               break;
 
             case "robo-race":
               insertPayload.team_name = form.teamName || "Bot Combatants";
               insertPayload.members = isTeam && Array.isArray(form.members) ? form.members : [];
-              insertPayload.bot_name = form.botName || "Kinetic Striker";
-              insertPayload.weight_category = form.weightCategory || "Featherweight <15kg";
-              insertPayload.drive_system = form.driveSystem || "4WD";
+              insertPayload.bot_moniker = form.botMoniker || form.botName || "Kinetic Striker";
+              insertPayload.weight_class = form.weightClass || form.weightCategory || "Under 5kg (Standard Class)";
+              insertPayload.drive_system = form.driveSystem || "4WD Skid Steer";
               insertPayload.weapon_mechanism = form.weaponMechanism || "Spinner";
-              insertPayload.frequency_band = form.frequencyBand || "2.4GHz Spread Spectrum";
+              insertPayload.frequency_band = form.frequencyBand || "2.4 GHz FHSS";
               break;
 
             case "circuit-debug":
-              insertPayload.preferred_controller = form.preferredController || "Arduino / AVR";
-              insertPayload.lab_experience = form.labExperience || "Academic Coursework";
+              insertPayload.controller_pref = form.controllerPref || form.preferredController || "Arduino / ATmega";
+              insertPayload.lab_experience = form.labExperience || "Intermediate";
               break;
 
             case "quiz":
               insertPayload.team_name = form.teamName || "Brainiac Duo";
               insertPayload.members = isTeam && Array.isArray(form.members) ? form.members : [];
+              insertPayload.sub_discipline = form.subDiscipline || "Core Mechanical & Manufacturing";
               break;
 
             case "treasure-hunt":
@@ -125,8 +126,8 @@ export async function POST(req: NextRequest) {
               break;
 
             case "debate":
-              insertPayload.topic_preference = form.topicPreference || "Autonomous Manufacturing";
-              insertPayload.prior_debate_experience = form.priorDebateExperience || "First Time";
+              insertPayload.debate_topic_pref = form.debateTopicPref || form.topicPreference || "Autonomous Machines & Ethics";
+              insertPayload.debate_experience = form.debateExperience || form.priorDebateExperience || "Collegiate / District Level";
               break;
 
             default:

@@ -366,22 +366,22 @@ END $$;
 CREATE OR REPLACE VIEW public.all_registrations AS
 SELECT 'hackathon' AS event_id, 'HackSprint 24H' AS event_name, ticket_id, team_id, team_name, leader_name, leader_email, leader_phone, college, year, members, verified_at, verified_by, created_at, 'reg_hacksprint' AS table_source FROM public.reg_hacksprint
 UNION ALL
-SELECT 'paper-presentation', 'Tech Manuscript', ticket_id, team_id, team_name, leader_name, leader_email, leader_phone, college, year, members, verified_at, verified_by, created_at, 'reg_tech_manuscript' FROM public.reg_tech_manuscript
+SELECT 'paper-presentation' AS event_id, 'Tech Manuscript' AS event_name, ticket_id, team_id, team_name, leader_name, leader_email, leader_phone, college, year, members, verified_at, verified_by, created_at, 'reg_tech_manuscript' AS table_source FROM public.reg_tech_manuscript
 UNION ALL
-SELECT 'cad-clash', 'CAD Clash Speed Modeling', ticket_id, team_id, NULL, leader_name, leader_email, leader_phone, college, year, '[]'::jsonb, verified_at, verified_by, created_at, 'reg_cad_clash' FROM public.reg_cad_clash
+SELECT 'cad-design' AS event_id, 'CAD Clash Speed Modeling' AS event_name, ticket_id, team_id, NULL AS team_name, leader_name, leader_email, leader_phone, college, year, '[]'::jsonb AS members, verified_at, verified_by, created_at, 'reg_cad_clash' AS table_source FROM public.reg_cad_clash
 UNION ALL
-SELECT 'robo-rumble', 'Robo Rumble Combat & Race', ticket_id, team_id, team_name, leader_name, leader_email, leader_phone, college, year, members, verified_at, verified_by, created_at, 'reg_robo_rumble' FROM public.reg_robo_rumble
+SELECT 'robo-race' AS event_id, 'Robo Rumble Combat & Race' AS event_name, ticket_id, team_id, team_name, leader_name, leader_email, leader_phone, college, year, members, verified_at, verified_by, created_at, 'reg_robo_rumble' AS table_source FROM public.reg_robo_rumble
 UNION ALL
-SELECT 'circuit-breaker', 'Circuit Breaker Mechatronics', ticket_id, team_id, NULL, leader_name, leader_email, leader_phone, college, year, '[]'::jsonb, verified_at, verified_by, created_at, 'reg_circuit_breaker' FROM public.reg_circuit_breaker
+SELECT 'circuit-debug' AS event_id, 'Circuit Breaker Mechatronics' AS event_name, ticket_id, team_id, NULL AS team_name, leader_name, leader_email, leader_phone, college, year, '[]'::jsonb AS members, verified_at, verified_by, created_at, 'reg_circuit_breaker' AS table_source FROM public.reg_circuit_breaker
 UNION ALL
-SELECT 'technical-quiz', 'Mech Brainiac', ticket_id, team_id, team_name, leader_name, leader_email, leader_phone, college, year, members, verified_at, verified_by, created_at, 'reg_mech_brainiac' FROM public.reg_mech_brainiac
+SELECT 'quiz' AS event_id, 'Mech Brainiac' AS event_name, ticket_id, team_id, team_name, leader_name, leader_email, leader_phone, college, year, members, verified_at, verified_by, created_at, 'reg_mech_brainiac' AS table_source FROM public.reg_mech_brainiac
 UNION ALL
-SELECT 'treasure-hunt', 'Gear Hunt Conundrum', ticket_id, team_id, team_name, leader_name, leader_email, leader_phone, college, year, members, verified_at, verified_by, created_at, 'reg_gear_hunt' FROM public.reg_gear_hunt
+SELECT 'treasure-hunt' AS event_id, 'Gear Hunt Conundrum' AS event_name, ticket_id, team_id, team_name, leader_name, leader_email, leader_phone, college, year, members, verified_at, verified_by, created_at, 'reg_gear_hunt' AS table_source FROM public.reg_gear_hunt
 UNION ALL
-SELECT 'photography', 'Industrial Lens Photography', ticket_id, team_id, NULL, leader_name, leader_email, leader_phone, college, year, '[]'::jsonb, verified_at, verified_by, created_at, 'reg_industrial_lens' FROM public.reg_industrial_lens
+SELECT 'photography' AS event_id, 'Industrial Lens Photography' AS event_name, ticket_id, team_id, NULL AS team_name, leader_name, leader_email, leader_phone, college, year, '[]'::jsonb AS members, verified_at, verified_by, created_at, 'reg_industrial_lens' AS table_source FROM public.reg_industrial_lens
 UNION ALL
-SELECT 'technical-debate', 'Iron Tongue Technical Debate', ticket_id, team_id, NULL, leader_name, leader_email, leader_phone, college, year, '[]'::jsonb, verified_at, verified_by, created_at, 'reg_iron_tongue' FROM public.reg_iron_tongue
+SELECT 'debate' AS event_id, 'Iron Tongue Technical Debate' AS event_name, ticket_id, team_id, NULL AS team_name, leader_name, leader_email, leader_phone, college, year, '[]'::jsonb AS members, verified_at, verified_by, created_at, 'reg_iron_tongue' AS table_source FROM public.reg_iron_tongue
 UNION ALL
-SELECT 'visitor-pass', 'Fest Visitor Pass', ticket_id, visitor_id, NULL, full_name, email, phone, college, year, '[]'::jsonb, verified_at, verified_by, created_at, 'fest_visitors' FROM public.fest_visitors;
+SELECT 'visitor-pass' AS event_id, 'Fest Visitor Pass' AS event_name, ticket_id, visitor_id AS team_id, NULL AS team_name, full_name AS leader_name, email AS leader_email, phone AS leader_phone, college, year, '[]'::jsonb AS members, verified_at, verified_by, created_at, 'fest_visitors' AS table_source FROM public.fest_visitors;
 
 COMMENT ON VIEW public.all_registrations IS 'Unified view combining all event-specific tables and visitor passes';
