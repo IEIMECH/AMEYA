@@ -1,0 +1,406 @@
+/* EventsPreview.module.css - True Event Hierarchy (Section 32-37) */
+.section {
+  position: relative;
+  z-index: 2;
+  padding: 7rem 0 6rem;
+  background: var(--machined-dark, #050505);
+}
+
+.header {
+  margin-bottom: 3.5rem;
+}
+
+.metaLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  color: var(--text-secondary, #96908B);
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.metaDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--crimson-core, #E51D25);
+  box-shadow: 0 0 8px rgba(229, 29, 37, 0.6);
+}
+
+.titleRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.majorTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5.2vw, 4.6rem);
+  font-weight: 800;
+  line-height: 0.96;
+  letter-spacing: -0.02em;
+  color: var(--text-primary, #F2EDE8);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.headerSub {
+  max-width: 480px;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--text-secondary, #96908B);
+  margin: 0;
+}
+
+/* Featured Hero Event 01 (Dominant Spotlight) */
+.heroEventCard {
+  background: var(--machined-surface, #101010);
+  border: 1px solid rgba(229, 29, 37, 0.3);
+  border-radius: 4px;
+  padding: 2.5rem;
+  margin-bottom: 3rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
+}
+
+.heroCardBadge {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.heroNumber {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--crimson-core, #E51D25);
+}
+
+.heroTag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--text-secondary, #96908B);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.3rem 0.75rem;
+  border-radius: 2px;
+}
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.heroTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.8vw, 3.2rem);
+  font-weight: 800;
+  color: var(--text-primary, #F2EDE8);
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.heroSlogan {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--crimson-core, #E51D25);
+  margin: 0 0 1.25rem;
+  letter-spacing: 0.1em;
+}
+
+.heroDesc {
+  color: var(--text-secondary, #96908B);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.heroSpecGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.85rem 1.5rem;
+  margin-bottom: 2.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-primary, #F2EDE8);
+}
+
+.specItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary, #96908B);
+}
+
+.specIcon {
+  color: var(--text-muted, #605B56);
+}
+
+.specItemHighlight {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  color: var(--text-primary, #F2EDE8);
+}
+
+.heroActions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.primaryRegisterBtn {
+  background: var(--crimson-core, #E51D25);
+  border: 1px solid var(--crimson-glow, #ff3b3b);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.85rem 1.75rem;
+  border-radius: 3px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 20px rgba(229, 29, 37, 0.4);
+}
+
+.primaryRegisterBtn:hover {
+  background: #ff2b33;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(229, 29, 37, 0.6);
+}
+
+.ghostLink {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-secondary, #96908B);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.ghostLink:hover {
+  color: var(--text-primary, #F2EDE8);
+}
+
+/* CAD Visual Right */
+.cadWireframeBox {
+  background: var(--machined-dark, #050505);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  padding: 2rem;
+  height: 280px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.wireframeReticle {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 140px;
+  height: 140px;
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+.reticleRing {
+  position: absolute;
+  inset: 0;
+  border: 1px dashed var(--crimson-core, #E51D25);
+  border-radius: 50%;
+}
+
+.reticleLineH {
+  position: absolute;
+  top: 50%;
+  left: -20px;
+  right: -20px;
+  height: 1px;
+  background: rgba(229, 29, 37, 0.4);
+}
+
+.reticleLineV {
+  position: absolute;
+  left: 50%;
+  top: -20px;
+  bottom: -20px;
+  width: 1px;
+  background: rgba(229, 29, 37, 0.4);
+}
+
+.schematicText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted, #605B56);
+  letter-spacing: 0.1em;
+  position: relative;
+  z-index: 2;
+}
+
+.wireframeWatermark {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.03);
+  pointer-events: none;
+}
+
+/* Supporting Events Grid (Section 35) */
+.supportingGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 3.5rem;
+}
+
+.supportingCard {
+  background: var(--machined-surface, #101010);
+  border: 1px solid var(--machined-border, rgba(255, 255, 255, 0.07));
+  border-radius: 3px;
+  padding: 1.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.supportingCard:hover {
+  transform: translateY(-4px);
+  border-color: rgba(229, 29, 37, 0.4);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
+}
+
+.cardHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.cardNumber {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--crimson-core, #E51D25);
+}
+
+.cardCategory {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted, #605B56);
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-primary, #F2EDE8);
+  margin: 0 0 0.65rem;
+  letter-spacing: -0.01em;
+}
+
+.cardDesc {
+  color: var(--text-secondary, #96908B);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  margin-bottom: 1.75rem;
+  flex: 1;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
+.cardPrize {
+  font-weight: 700;
+  color: var(--text-primary, #F2EDE8);
+}
+
+.cardAction {
+  color: var(--crimson-core, #E51D25);
+  font-weight: 700;
+  transition: transform 0.2s ease;
+}
+
+.supportingCard:hover .cardAction {
+  transform: translateX(3px);
+}
+
+/* View All Row */
+.viewAllRow {
+  text-align: center;
+}
+
+.viewAllBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--machined-surface, #101010);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-primary, #F2EDE8);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 1rem 2rem;
+  border-radius: 3px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.viewAllBtn:hover {
+  background: var(--machined-interactive, #151515);
+  border-color: var(--crimson-core, #E51D25);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 992px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .supportingGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .supportingGrid {
+    grid-template-columns: 1fr;
+  }
+}

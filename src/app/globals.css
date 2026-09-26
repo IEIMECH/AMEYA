@@ -1,0 +1,358 @@
+:root {
+  /* ==========================================================================
+     UNIFIED SYSTEM: Machined Crimson, Carbon & Cold Steel
+     ========================================================================== */
+  /* Master Redesign Guide Palette: 4-Level Dark Depth & Warm Editorial Text */
+  --machined-dark: #050505;          /* Level 1: Main background */
+  --machined-elevated: #0B0B0B;      /* Level 2: Elevated sections */
+  --machined-surface: #101010;       /* Level 3: Card / Container */
+  --machined-interactive: #151515;   /* Level 4: Interactive surface */
+  --machined-border: rgba(255, 255, 255, 0.07);
+  --machined-border-hover: rgba(229, 29, 37, 0.4);
+
+  --crimson-core: #E51D25;          /* Master Red Accent */
+  --crimson-glow: #ff3b3b;          /* Reserved strictly for active / focus states */
+  --crimson-muted: #6e1014;
+  --crimson-faint: rgba(229, 29, 37, 0.08);
+
+  --steel-bright: #F2EDE8;
+  --steel-mid: #c7c2bc;
+  --steel-muted: #96908B;
+  --steel-dark: #1e1d1b;
+
+  --text-primary: #F2EDE8;          /* Warm off-white editorial tone */
+  --text-secondary: #96908B;        /* Muted warm grey */
+  --text-muted: #605B56;
+
+  /* Backward Compatibility Bindings mapped to Crimson & Cold Steel */
+  --brass-primary: var(--crimson-core);
+  --brass-warm: var(--crimson-glow);
+  --brass-muted: var(--crimson-muted);
+  --parchment: #ffffff;
+  --parchment-muted: #888888;
+
+  --oil-radial: radial-gradient(circle at 60% 40%, rgba(230, 29, 29, 0.10) 0%, transparent 65%);
+
+  --bg-primary: var(--machined-dark);
+  --bg-secondary: var(--machined-surface);
+  --bg-card: var(--machined-surface);
+  --bg-card-hover: var(--machined-surface-hover);
+
+  --border: var(--machined-border);
+  --border-glow: var(--machined-border-hover);
+  --accent-gold: var(--crimson-core);
+
+  /* Typography */
+  --font-display: var(--font-display), "Syne", "Playfair Display", serif;
+  --font-sans: var(--font-sans), "Plus Jakarta Sans", sans-serif;
+  --font-mono: var(--font-mono), "Space Mono", monospace;
+  --font-serif: var(--font-serif), "Playfair Display", Georgia, serif;
+
+  --font-heading: var(--font-display);
+  --font-body: var(--font-sans);
+
+  /* Radii */
+  --radius-sm: 0.35rem;
+  --radius-md: 0.6rem;
+  --radius-lg: 0.85rem;
+  --radius-xl: 1.25rem;
+
+  --transition: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  background-color: #080808;
+}
+
+body {
+  background-color: #080808;
+  background-image: 
+    radial-gradient(circle at 60% 40%, rgba(230, 29, 29, 0.10) 0%, transparent 65%),
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 40px 40px, 40px 40px;
+  background-attachment: fixed;
+  color: #ffffff;
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Crimson Machine Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #080808;
+}
+::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #e61d1d;
+}
+
+::selection {
+  background: rgba(230, 29, 29, 0.45);
+  color: #ffffff;
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+
+/* Utilities */
+.container {
+  width: 100%;
+  max-width: 1320px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 2.5rem);
+}
+
+/* Monospace Eyebrow / Kicker */
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #ff3b3b;
+  background: rgba(230, 29, 29, 0.08);
+  border: 1px solid rgba(230, 29, 29, 0.3);
+  padding: 0.35rem 0.95rem;
+  border-radius: 4px;
+  margin-bottom: 1.25rem;
+  backdrop-filter: blur(12px);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #ffffff 0%, #ff3b3b 55%, #e61d1d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Carbon & Cold Steel Glass Card */
+.glass-card {
+  position: relative;
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.glass-card:hover {
+  border-color: rgba(230, 29, 29, 0.4);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 30px rgba(230, 29, 29, 0.12);
+}
+
+/* Machined Crimson Primary Button */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: linear-gradient(135deg, #e61d1d 0%, #b51212 100%);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.75rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 59, 59, 0.5);
+  box-shadow: 0 0 20px rgba(230, 29, 29, 0.35);
+  backdrop-filter: blur(18px);
+  transition: all var(--transition);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #ff3b3b 0%, #e61d1d 100%);
+  border-color: #ff3b3b;
+  box-shadow: 0 0 30px rgba(255, 59, 59, 0.6), 0 8px 25px rgba(0, 0, 0, 0.7);
+  transform: translateY(-2px);
+  color: #ffffff;
+}
+
+/* Cold Steel Outline Button */
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(17, 17, 17, 0.85);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.75rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: var(--transition);
+}
+
+.btn-outline:hover {
+  border-color: #e61d1d;
+  color: #ff3b3b;
+  background: rgba(230, 29, 29, 0.08);
+  box-shadow: 0 0 15px rgba(230, 29, 29, 0.2);
+}
+
+/* Technical Corner Crosshairs (+) */
+.hud-crosshair-tl {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  color: rgba(255, 255, 255, 0.25);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+.hud-crosshair-tr {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  color: rgba(255, 255, 255, 0.25);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+.hud-crosshair-bl {
+  position: absolute;
+  bottom: -6px;
+  left: -6px;
+  color: rgba(255, 255, 255, 0.25);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+.hud-crosshair-br {
+  position: absolute;
+  bottom: -6px;
+  right: -6px;
+  color: rgba(255, 255, 255, 0.25);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Ghost Industrial Background Watermark */
+.ghost-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 16vw, 15rem);
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.025);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  z-index: 0;
+}
+
+/* Forms */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #888888;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  padding: 0.75rem 1rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  outline: none;
+  width: 100%;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #e61d1d;
+  box-shadow: 0 0 0 3px rgba(230, 29, 29, 0.2);
+}
+
+/* Danmaku Float Animation */
+@keyframes danmakuFloat {
+  0% {
+    transform: translateX(100vw);
+  }
+  100% {
+    transform: translateX(-150%);
+  }
+}

@@ -1,0 +1,237 @@
+.page {
+  padding-top: calc(var(--nav-height) + 3.5rem);
+  padding-bottom: 6rem;
+  background: transparent;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+  margin-bottom: 1rem;
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.sub {
+  color: #888888;
+  font-size: 0.95rem;
+  max-width: 650px;
+  margin: 0 auto;
+  font-family: var(--font-mono);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.mainCard {
+  position: relative;
+  padding: 3rem;
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+}
+
+.crosshairTL {
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  color: rgba(255, 255, 255, 0.3);
+  font-family: var(--font-mono);
+  font-size: 9px;
+}
+.crosshairTR {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  color: rgba(255, 255, 255, 0.3);
+  font-family: var(--font-mono);
+  font-size: 9px;
+}
+
+.hudCorner {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  color: #ff3b3b;
+  text-transform: uppercase;
+}
+
+.mainCard h2 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  margin-bottom: 1.25rem;
+  color: #ffffff;
+}
+
+.mainCard p {
+  color: #888888;
+  line-height: 1.85;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.mainCard strong {
+  color: #ff3b3b;
+}
+
+.twoCol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.infoCard {
+  position: relative;
+  padding: 2.25rem;
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+}
+
+.infoCard h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.infoCard p {
+  color: #888888;
+  line-height: 1.8;
+  margin-bottom: 0.85rem;
+  font-size: 0.95rem;
+}
+
+.infoCard strong {
+  color: #d8d8d8;
+}
+
+.centeredH2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  color: #ffffff;
+  font-weight: 800;
+  margin-top: 0.4rem;
+}
+
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.pillar {
+  position: relative;
+  padding: 2rem 1.5rem;
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.8rem;
+  transition: transform var(--transition), border-color var(--transition);
+}
+
+.pillar:hover {
+  transform: translateY(-4px);
+  border-color: rgba(230, 29, 29, 0.5);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9), 0 0 20px rgba(230, 29, 29, 0.15);
+}
+
+.pillarIcon {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(230, 29, 29, 0.08);
+  border: 1px solid rgba(230, 29, 29, 0.3);
+  color: #ff3b3b;
+}
+
+.pillar h4 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.pillar p {
+  font-size: 0.82rem;
+  color: #888888;
+  line-height: 1.6;
+}
+
+.statsCard {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 2.5rem 2rem;
+  gap: 2rem;
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.statNum {
+  font-size: 2.6rem;
+  font-weight: 900;
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.statLabel {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #888888;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  text-align: center;
+}
+
+@media (max-width: 1024px) {
+  .pillars {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .statsCard {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .twoCol {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .pillars {
+    grid-template-columns: 1fr;
+  }
+  .statsCard {
+    grid-template-columns: 1fr;
+  }
+}

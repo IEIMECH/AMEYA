@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
+  <rect width="180" height="180" rx="36" fill="#050505" />
+  <!-- Subtle CAD Grid lines -->
+  <path d="M0 45 H180 M0 90 H180 M0 135 H180 M45 0 V180 M90 0 V180 M135 0 V180" stroke="rgba(255,255,255,0.04)" stroke-width="1" />
+  <!-- Deep burgundy glow -->
+  <circle cx="90" cy="90" r="70" fill="rgba(229,29,37,0.12)" />
+  <!-- Red Shield -->
+  <path d="M90 26 L144 48 L144 98 C144 133 90 156 90 156 C90 156 36 133 36 98 L36 48 Z" fill="#E51D25" stroke="#ff3b3b" stroke-width="3" stroke-linejoin="round" />
+  <!-- Internal Mechanical Bearing Core -->
+  <circle cx="90" cy="88" r="20" fill="#0A0A0A" stroke="#F2EDE8" stroke-width="3" />
+  <circle cx="90" cy="88" r="8" fill="#F2EDE8" />
+  <path d="M90 48 V62 M90 114 V128 M50 88 H64 M116 88 H130" stroke="#F2EDE8" stroke-width="2.5" stroke-linecap="round" />
+</svg>

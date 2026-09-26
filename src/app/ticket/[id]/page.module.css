@@ -1,0 +1,32 @@
+.page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #050814; overflow: hidden; position: relative; transition: background 0.5s ease; }
+.page.glitch { animation: glitch 0.3s steps(2) 3; }
+@keyframes glitch { 0% { filter: hue-rotate(0deg) saturate(1); transform: translate(0); } 25% { filter: hue-rotate(90deg) saturate(3); transform: translate(-2px,1px); } 50% { filter: hue-rotate(180deg) saturate(5); transform: translate(2px,-1px); } 75% { filter: hue-rotate(270deg) saturate(3); transform: translate(-1px,2px); } 100% { filter: hue-rotate(360deg) saturate(1); transform: translate(0); } }
+.particles { position: absolute; inset: 0; pointer-events: none; }
+.particle { position: absolute; left: var(--x); top: var(--y); width: 4px; height: 4px; border-radius: 50%; background: var(--accent-cyan); opacity: 0; animation: particlePop 1s var(--delay) ease-out forwards; }
+@keyframes particlePop { 0% { opacity: 0; transform: scale(0) translate(0,0); } 50% { opacity: 1; } 100% { opacity: 0; transform: scale(1) translate(calc(var(--x)*0.5 - 25%), calc(var(--y)*0.5 - 25%)); } }
+.content { position: relative; z-index: 1; padding: 2rem; width: 100%; max-width: 480px; }
+.loadingState { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+.scanner { width: 80px; height: 80px; border: 2px solid var(--accent-cyan); border-radius: var(--radius-md); position: relative; animation: scanPulse 0.8s ease-in-out infinite alternate; }
+.scanner::before { content: ""; position: absolute; top: 50%; left: -8px; right: -8px; height: 2px; background: var(--accent-cyan); box-shadow: 0 0 12px var(--accent-cyan); animation: scanLine 1s linear infinite; }
+@keyframes scanLine { 0% { top: 10%; } 100% { top: 90%; } }
+@keyframes scanPulse { from { box-shadow: 0 0 10px rgba(0,229,255,0.3); } to { box-shadow: 0 0 30px rgba(0,229,255,0.7); } }
+.scanText { color: var(--accent-cyan); font-size: 0.9rem; font-family: var(--font-mono); letter-spacing: 0.08em; }
+.card { background: linear-gradient(135deg, #0d1530 0%, #111a3a 100%); border: 1px solid rgba(124,58,237,0.4); border-radius: 24px; overflow: hidden; position: relative; animation: reveal 0.8s cubic-bezier(0.34,1.56,0.64,1) both; }
+@keyframes reveal { from { opacity: 0; transform: scale(0.85) translateY(30px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.cardGlow { position: absolute; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(124,58,237,0.25) 0%, transparent 70%); top: -100px; right: -100px; pointer-events: none; }
+.cardTop { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.logo { font-family: var(--font-heading); font-weight: 700; font-size: 1rem; background: linear-gradient(135deg, #00e5ff, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.verified { font-size: 0.75rem; font-weight: 700; color: #10b981; background: rgba(16,185,129,0.1); padding: 0.25rem 0.65rem; border-radius: 99px; border: 1px solid rgba(16,185,129,0.3); }
+.hero { padding: 2rem 1.5rem; text-align: center; position: relative; z-index: 1; }
+.confetti { font-size: 3rem; animation: spin 1s ease-out both; }
+@keyframes spin { from { transform: rotate(-45deg) scale(0); } to { transform: rotate(0) scale(1); } }
+.greeting { font-size: 1.75rem; font-weight: 800; margin: 0.75rem 0 0.5rem; line-height: 1.2; color: var(--text-primary); }
+.name { background: linear-gradient(135deg, #00e5ff, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.eventName { color: var(--text-secondary); font-size: 0.95rem; }
+.details { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; border-top: 1px dashed rgba(255,255,255,0.06); }
+.detail { display: flex; justify-content: space-between; align-items: center; }
+.detail span { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+.detail code { font-family: var(--font-mono); font-size: 0.9rem; color: var(--accent-cyan); letter-spacing: 0.08em; }
+.detail strong { font-size: 0.95rem; }
+.teamId { color: var(--accent-violet-light) !important; }
+.footer { padding: 1rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.06); text-align: center; font-size: 0.78rem; color: var(--text-muted); }

@@ -1,0 +1,77 @@
+.page {
+  padding-top: calc(var(--nav-height) + 3.5rem);
+  padding-bottom: 6rem;
+  background: transparent;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+  margin-bottom: 1rem;
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.sub {
+  color: #888888;
+  font-size: 0.95rem;
+  max-width: 650px;
+  margin: 0 auto;
+  font-family: var(--font-mono);
+}
+
+.daySection {
+  margin-bottom: 5rem;
+}
+
+.dayLabel {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 2.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 1.25rem;
+}
+
+.dayBadge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.35rem 1rem;
+  border-radius: 3px;
+  background: rgba(230, 29, 29, 0.08);
+  color: #ff3b3b;
+  border: 1px solid rgba(230, 29, 29, 0.3);
+  white-space: nowrap;
+}
+
+.dayLabel h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2.2vw, 1.5rem);
+  color: #ffffff;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.eventsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 2.5rem;
+  align-items: stretch;
+}
+
+@media (max-width: 640px) {
+  .eventsGrid {
+    grid-template-columns: 1fr;
+  }
+}

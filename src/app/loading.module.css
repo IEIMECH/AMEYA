@@ -1,0 +1,91 @@
+/* Technical Loading State (Item 12) */
+.loadingContainer {
+  min-height: calc(100vh - var(--nav-height));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1.5rem;
+  background: var(--machined-dark, #050505);
+}
+
+.loadingCard {
+  position: relative;
+  background: var(--machined-surface, #101010);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 2.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  width: min(420px, 90vw);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85);
+}
+
+.reticleRing {
+  width: 52px;
+  height: 52px;
+  border: 1px dashed var(--crimson-core, #E51D25);
+  border-radius: 50%;
+  animation: spinReticle 10s linear infinite;
+}
+
+@keyframes spinReticle {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.statusLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  color: var(--text-primary, #F2EDE8);
+}
+
+.statusPulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--crimson-core, #E51D25);
+  box-shadow: 0 0 8px rgba(229, 29, 37, 0.8);
+  animation: pulseDot 1.2s infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.8); }
+}
+
+.progressBar {
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  width: 45%;
+  background: var(--crimson-core, #E51D25);
+  box-shadow: 0 0 8px rgba(229, 29, 37, 0.6);
+  animation: progressMove 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes progressMove {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(250%); }
+}
+
+.metaStatus {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: var(--text-muted, #605B56);
+}

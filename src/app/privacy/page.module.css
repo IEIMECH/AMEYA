@@ -1,0 +1,125 @@
+/* Privacy Policy Editorial Styling */
+.container {
+  min-height: 100vh;
+  padding: calc(var(--nav-height) + 3.5rem) 1.5rem 8rem;
+  background: var(--machined-dark, #050505);
+}
+
+.wrapper {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.metaLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  color: var(--crimson-core, #E51D25);
+  margin-bottom: 1.25rem;
+}
+
+.metaDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--crimson-core, #E51D25);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 5.5vw, 4.4rem);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  color: var(--text-primary, #F2EDE8);
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+}
+
+.lastUpdated {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: var(--text-muted, #605B56);
+  margin-bottom: 3.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.article {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.sectionBlock {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 1.5rem;
+}
+
+.sectionNumber {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--crimson-core, #E51D25);
+  padding-top: 0.25rem;
+}
+
+.sectionContent h2 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary, #F2EDE8);
+  margin: 0 0 1rem;
+}
+
+.sectionContent p {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.75;
+  color: var(--text-secondary, #96908B);
+  margin: 0 0 1rem;
+}
+
+.sectionContent ul {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--text-secondary, #96908B);
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.sectionContent li {
+  margin-bottom: 0.5rem;
+}
+
+.sectionContent code {
+  color: var(--crimson-core, #E51D25);
+  background: rgba(229, 29, 37, 0.08);
+  padding: 0.15rem 0.4rem;
+  border-radius: 2px;
+}
+
+.footerLink {
+  margin-top: 4.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footerLink a {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary, #96908B);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footerLink a:hover {
+  color: var(--crimson-core, #E51D25);
+}

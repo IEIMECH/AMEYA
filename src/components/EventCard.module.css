@@ -1,0 +1,338 @@
+/* CAD Single-Face Event Card Component */
+.cardContainer {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  outline: none;
+}
+
+.cardContainer:focus-visible .cardFrame {
+  border-color: #ff3b3b;
+  box-shadow: 0 0 0 2px rgba(230, 29, 29, 0.4), 0 20px 48px rgba(0, 0, 0, 0.95);
+}
+
+.cardFrame {
+  position: relative;
+  background: #111111;
+  background-image: 
+    radial-gradient(circle at 85% 15%, rgba(230, 29, 29, 0.06) 0%, transparent 60%),
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 20px 20px, 20px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 2px;
+  /* Chamfered bottom-left mechanical cut */
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 100%,
+    20px 100%,
+    0 calc(100% - 20px)
+  );
+  padding: 1.65rem 1.65rem 1.75rem 1.65rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: visible;
+  height: 100%;
+}
+
+/* Hover Elevation: translateY(-3px) */
+.cardContainer:hover .cardFrame {
+  border-color: rgba(230, 29, 29, 0.5);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.9), 0 0 24px rgba(230, 29, 29, 0.15);
+  transform: translateY(-3px);
+}
+
+/* Technical Corner Crosshairs (+) */
+.crosshairTL {
+  position: absolute;
+  top: 4px;
+  left: 6px;
+  color: rgba(255, 255, 255, 0.3);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+.crosshairTR {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  color: rgba(255, 255, 255, 0.3);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+.crosshairBR {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  color: rgba(255, 255, 255, 0.3);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Top Technical Metadata Bar */
+.topHud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.categoryPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.25rem 0.65rem;
+  border-radius: 2px;
+}
+
+.categoryDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #e61d1d;
+  box-shadow: 0 0 6px #ff3b3b;
+}
+
+.categoryText {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #cccccc;
+  font-weight: 700;
+}
+
+.telemetryTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: #888888;
+  letter-spacing: 0.08em;
+}
+
+.pulseIcon {
+  color: #ff3b3b;
+  animation: pulse 1.8s infinite;
+}
+
+/* Card Header */
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.iconBox {
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  background: rgba(230, 29, 29, 0.08);
+  border: 1px solid rgba(230, 29, 29, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.iconText {
+  font-size: 1.35rem;
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+}
+
+.techFreq {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: #888888;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.28rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.tagline {
+  font-size: 0.8rem;
+  color: #e61d1d;
+  font-family: var(--font-mono);
+  margin: 0.2rem 0 0 0;
+  font-weight: 600;
+}
+
+/* Description */
+.description {
+  color: #888888;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  margin-bottom: 1.25rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Technical Specs Grid */
+.specsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+  padding: 0.75rem 0.85rem;
+  margin-bottom: 1.25rem;
+}
+
+.specItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #888888;
+}
+
+.specItemHighlight {
+  grid-column: span 2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 0.4rem;
+  margin-top: 0.2rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.specIcon {
+  color: #888888;
+}
+
+.trophyIcon {
+  color: #ff3b3b;
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.prizeLabel {
+  color: #888888;
+  font-size: 0.7rem;
+}
+
+.prizeText {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* Action Foot */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.specBadge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: #888888;
+  letter-spacing: 0.08em;
+}
+
+.registerBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #e61d1d, #b51212);
+  color: #ffffff;
+  border: 1px solid #ff3b3b;
+  border-radius: 2px;
+  padding: 0.4rem 0.95rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 12px rgba(230, 29, 29, 0.4);
+}
+
+.registerBtn:hover {
+  background: #ff2222;
+  box-shadow: 0 0 20px rgba(255, 59, 59, 0.7);
+}
+
+/* The CAD Architectural Border-Tail in Glowing Crimson */
+.borderTailWrapper {
+  position: absolute;
+  bottom: 0px;
+  left: -20px;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.borderTailLine {
+  height: 2px;
+  width: 28px;
+  background: linear-gradient(to right, rgba(230, 29, 29, 0.95), rgba(230, 29, 29, 0.15));
+}
+
+.borderTailDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e61d1d;
+  box-shadow: 0 0 10px #e61d1d, 0 0 20px rgba(255, 59, 59, 0.5);
+  margin-left: -2px;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+/* Outward Shift by 4px + expanded glow box-shadow: 0 0 14px #e61d1d */
+.cardContainer:hover .borderTailDot {
+  transform: translateX(4px);
+  box-shadow: 0 0 14px #e61d1d, 0 0 25px rgba(255, 59, 59, 0.8);
+  background: #ff3b3b;
+}

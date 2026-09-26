@@ -1,0 +1,5 @@
+.page { padding-top: calc(var(--nav-height) + 4rem); padding-bottom: 6rem; }
+.header { text-align: center; margin-bottom: 3rem; }
+.header h1 { font-size: clamp(2rem,4vw,3.5rem); margin-bottom: 0.75rem; }
+.sub { color: var(--text-secondary); }
+.hallsGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 1.25rem; }

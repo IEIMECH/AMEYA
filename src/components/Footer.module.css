@@ -1,0 +1,186 @@
+/* Footer.module.css - Master Redesign Section 52 Final Frame */
+.footer {
+  position: relative;
+  z-index: 2;
+  background: #050505;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 6.5rem 0 3rem;
+  overflow: hidden;
+}
+
+/* Final Brand Statement */
+.finalBrandFrame {
+  margin-bottom: 5rem;
+  max-width: 880px;
+}
+
+.brandTitle {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--crimson-core, #E51D25);
+  margin-bottom: 1.25rem;
+}
+
+.brandMotto {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5.2vw, 4.8rem);
+  font-weight: 800;
+  line-height: 0.96;
+  letter-spacing: -0.02em;
+  color: var(--text-primary, #F2EDE8);
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.brandDesc {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--text-secondary, #96908B);
+  max-width: 600px;
+  margin: 0;
+}
+
+/* Sitemap Grid (No grid lines in footer) */
+.sitemapGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3rem;
+  padding-bottom: 4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.linkGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.groupHeading {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--text-primary, #F2EDE8);
+  margin: 0 0 1.25rem;
+  text-transform: uppercase;
+}
+
+.linkList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.linkList a {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-secondary, #96908B);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: color 0.2s ease;
+}
+
+.linkList a:hover {
+  color: var(--crimson-core, #E51D25);
+}
+
+.commText {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--text-muted, #605B56);
+  margin: 0 0 1.5rem;
+}
+
+.scrollTopBtn {
+  background: var(--machined-surface, #101010);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-primary, #F2EDE8);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 0.65rem 1rem;
+  border-radius: 2px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.scrollTopBtn:hover {
+  border-color: var(--crimson-core, #E51D25);
+  background: var(--machined-interactive, #151515);
+}
+
+/* Bottom Bar */
+.bottomBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 2rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted, #605B56);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.bottomTag {
+  color: var(--text-secondary, #96908B);
+}
+
+/* Minimal Subpage Footer */
+.minimalFooter {
+  background: #050505;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 1.5rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted, #605B56);
+}
+
+.minimalInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.backHome {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-secondary, #96908B);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.backHome:hover {
+  color: var(--crimson-core, #E51D25);
+}
+
+@media (max-width: 900px) {
+  .sitemapGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .sitemapGrid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}

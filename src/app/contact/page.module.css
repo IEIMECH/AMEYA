@@ -1,0 +1,230 @@
+/* Contact Operations Desk Styling */
+.container {
+  min-height: 100vh;
+  padding: calc(var(--nav-height) + 3.5rem) 1.5rem 8rem;
+  background: var(--machined-dark, #050505);
+}
+
+.wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.metaLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  color: var(--crimson-core, #E51D25);
+  margin-bottom: 1.25rem;
+}
+
+.metaDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--crimson-core, #E51D25);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  color: var(--text-primary, #F2EDE8);
+  margin: 0 0 0.85rem;
+  text-transform: uppercase;
+}
+
+.subtext {
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--text-secondary, #96908B);
+  max-width: 640px;
+  margin-bottom: 3.5rem;
+}
+
+.channelsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3.5rem;
+}
+
+.channelCard {
+  background: var(--machined-surface, #101010);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 1.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.channelCard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(229, 29, 37, 0.45);
+}
+
+.channelTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.channelCode {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  color: var(--crimson-core, #E51D25);
+  font-weight: 700;
+}
+
+.activeDot {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: #38a169;
+  letter-spacing: 0.1em;
+}
+
+.channelTitle {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary, #F2EDE8);
+  margin: 0 0 0.5rem;
+}
+
+.channelDesc {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-secondary, #96908B);
+  line-height: 1.6;
+  margin: 0 0 1.5rem;
+  flex: 1;
+}
+
+.emailLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-primary, #F2EDE8);
+  text-decoration: none;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  transition: color 0.2s ease;
+}
+
+.emailLink:hover {
+  color: var(--crimson-core, #E51D25);
+}
+
+.arrowIcon {
+  margin-left: auto;
+  opacity: 0.6;
+}
+
+.campusCard {
+  background: var(--machined-surface, #101010);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid var(--crimson-core, #E51D25);
+  border-radius: 4px;
+  padding: 2.25rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.campusBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  color: var(--text-secondary, #96908B);
+  margin-bottom: 0.75rem;
+}
+
+.campusTitle {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary, #F2EDE8);
+  margin: 0 0 0.5rem;
+}
+
+.campusAddress {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--text-secondary, #96908B);
+  margin: 0 0 1rem;
+}
+
+.campusMeta {
+  display: flex;
+  gap: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted, #605B56);
+}
+
+.campusActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mapBtn {
+  background: var(--crimson-core, #E51D25);
+  border: 1px solid var(--crimson-glow, #ff3b3b);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 0.75rem 1.4rem;
+  border-radius: 3px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.mapBtn:hover {
+  background: #ff2b33;
+}
+
+.venueBtn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-primary, #F2EDE8);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding: 0.75rem 1.4rem;
+  border-radius: 3px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.venueBtn:hover {
+  border-color: var(--text-primary, #F2EDE8);
+}

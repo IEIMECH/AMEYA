@@ -1,0 +1,231 @@
+/* FestivalStory.module.css - Priority 3 & 6 Refinement */
+.section {
+  position: relative;
+  z-index: 2;
+  padding: 8.5rem 0 7rem;
+  background: var(--machined-elevated, #0B0B0B);
+  overflow: hidden;
+}
+
+/* Treatment A: Editorial Statement */
+.statementWrapper {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.metaLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--text-secondary, #96908B);
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+}
+
+.metaDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--crimson-core, #E51D25);
+  box-shadow: 0 0 6px rgba(229, 29, 37, 0.6);
+}
+
+.editorialHeadline {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 5.5vw, 5rem);
+  font-weight: 800;
+  line-height: 0.96;
+  letter-spacing: -0.025em;
+  color: var(--text-primary, #F2EDE8);
+  margin: 0 0 2.5rem;
+  text-transform: uppercase;
+}
+
+.headlineHighlight {
+  color: var(--crimson-core, #E51D25);
+  display: inline-block;
+}
+
+.storyTextWrapper {
+  max-width: 720px;
+}
+
+.storyLead {
+  font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+  line-height: 1.75;
+  color: var(--text-primary, #F2EDE8);
+  margin-bottom: 1.75rem;
+  font-weight: 400;
+}
+
+.storyLead em {
+  font-style: italic;
+  color: var(--crimson-core, #E51D25);
+}
+
+.storyLead strong {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.expandedStory {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  font-size: 1.02rem;
+  line-height: 1.8;
+  color: var(--text-secondary, #96908B);
+  margin-bottom: 2rem;
+  padding-left: 1.25rem;
+  border-left: 2px solid rgba(229, 29, 37, 0.35);
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.storyActions {
+  display: flex;
+  align-items: center;
+  gap: 2.25rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.toggleBtn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-primary, #F2EDE8);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  padding: 0.6rem 1.2rem;
+  border-radius: 2px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.toggleBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--text-primary, #F2EDE8);
+}
+
+.learnMoreLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary, #96908B);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.learnMoreLink:hover {
+  color: var(--crimson-core, #E51D25);
+}
+
+/* Priority 3: Subtle, Delicate Mechanical Transition Divider */
+.mechanicalDivider {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  margin: 5.5rem 0 5rem;
+  opacity: 0.6;
+}
+
+.gearDiagram {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+}
+
+.rotatingGearSvg {
+  width: 100%;
+  height: 100%;
+  animation: rotateGear 28s linear infinite;
+}
+
+@keyframes rotateGear {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.gearCenterDot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--crimson-core, #E51D25);
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(229, 29, 37, 0.3) 0%, rgba(255, 255, 255, 0.06) 60%, transparent 100%);
+}
+
+/* Priority 6: Pure Editorial Raw Data Statistics (Generous Whitespace, Zero Boxes) */
+.rawStatsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3.5rem;
+  padding: 1rem 0;
+}
+
+.statBlock {
+  display: flex;
+  flex-direction: column;
+}
+
+.statNumber {
+  font-family: var(--font-display);
+  font-size: clamp(3.2rem, 5.5vw, 5rem);
+  font-weight: 800;
+  line-height: 0.95;
+  color: var(--text-primary, #F2EDE8);
+  letter-spacing: -0.03em;
+  margin-bottom: 0.75rem;
+}
+
+.statPlus {
+  color: var(--crimson-core, #E51D25);
+  font-size: 0.75em;
+  margin-left: 2px;
+}
+
+.statLabel {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--text-secondary, #96908B);
+  text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+  .rawStatsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .rawStatsGrid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
