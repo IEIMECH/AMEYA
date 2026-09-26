@@ -180,7 +180,8 @@
 }
 
 .input,
-.select {
+.select,
+.textarea {
   width: 100%;
   background: #141414;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -194,7 +195,8 @@
 }
 
 .input:focus,
-.select:focus {
+.select:focus,
+.textarea:focus {
   border-color: rgba(255, 255, 255, 0.4);
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08);
 }
@@ -636,4 +638,18 @@
   .successActions {
     flex-direction: column;
   }
+}
+
+.textarea {
+  min-height: 85px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.successHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 1.5rem;
 }

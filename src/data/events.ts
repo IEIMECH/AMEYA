@@ -176,4 +176,20 @@ export const events: Event[] = [
     icon: "🏆",
     color: "#e61d1d",
   },
+  // General Access
+  {
+    id: "visitor-pass",
+    name: "Fest Visitor Pass",
+    tagline: "Spectate. Network. Explore.",
+    description:
+      "Attend AMEYA '26 as a general spectator and delegate without competing in arenas. Access all keynote addresses, exhibitions, mechanical project expos, and the 3D campus quadrangle.",
+    day: 1,
+    time: "All Days (Oct 04–05)",
+    venue: "All Open Arenas & Auditoriums",
+    category: "Visitor Pass",
+    type: "solo",
+    prizes: "Certificate of Attendance",
+    icon: "🎟️",
+    color: "#E51D25",
+  },
 ];

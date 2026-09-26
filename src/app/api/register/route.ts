@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import QRCode from "qrcode";
 import { Resend } from "resend";
-import { supabaseAdmin, isDatabaseConfigured } from "@/lib/supabase";
+import { supabaseAdmin, isDatabaseConfigured, getEventTableName } from "@/lib/supabase";
 
 const resend = new Resend(process.env.RESEND_API_KEY || "re_dummy");
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://ameyafest.org";
@@ -15,34 +15,157 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "INPUT ERROR // Missing required registration parameters." }, { status: 400 });
     }
 
+    const eventId = String(event.id || "general");
+    const isVisitor = eventId === "visitor-pass" || eventId === "visitor";
+
     // Generate unique AMEYA '26 docket tokens
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
-    const ticketId = `AMEYA-2026-REG-${randomSuffix}`;
-    const teamId = isTeam
+    const eventPrefix = isVisitor
+      ? "VISIT"
+      : eventId.substring(0, 4).toUpperCase();
+    const ticketId = `AMEYA-2026-${eventPrefix}-${randomSuffix}`;
+    const teamId = isVisitor
+      ? `VIS-${Math.random().toString(36).substring(2, 7).toUpperCase()}`
+      : isTeam
       ? `TEAM-${Math.random().toString(36).substring(2, 7).toUpperCase()}`
       : `SOLO-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
+
+    // Target dedicated table in Supabase
+    const targetTable = getEventTableName(eventId);
 
     // Persist to Supabase if configured
     if (isDatabaseConfigured() && supabaseAdmin) {
       try {
-        const { error: dbError } = await supabaseAdmin.from("registrations").insert({
+        let insertPayload: Record<string, any> = {
           ticket_id: ticketId,
-          event_id: String(event.id || "arena-general"),
-          event_name: event.name,
-          is_team: Boolean(isTeam),
-          team_id: teamId,
-          team_name: isTeam ? form.teamName : null,
-          leader_name: form.name,
-          leader_email: form.email,
-          leader_phone: form.phone || null,
-          college: form.college || "VVIIT Nambur",
-          year: form.year || "1st Year",
-          members: isTeam && Array.isArray(form.members) ? form.members : [],
-          payment_status: "confirmed",
-        });
+          payment_status: isVisitor ? "free" : "confirmed",
+        };
 
+        if (isVisitor) {
+          insertPayload = {
+            ...insertPayload,
+            visitor_id: teamId,
+            full_name: form.name,
+            email: form.email,
+            phone: form.phone || "N/A",
+            college: form.college || "Visitor / Guest",
+            year: form.year || "General Delegate",
+            attending_days: form.attendingDays || "Both Days (Oct 04–05)",
+            areas_of_interest: form.areasOfInterest || ["Keynote Lectures", "Robotics Arena Spectator", "Project Expo"],
+            purpose_of_visit: form.purposeOfVisit || null,
+          };
+        } else {
+          // Standard Event Registration Base
+          insertPayload = {
+            ...insertPayload,
+            team_id: teamId,
+            leader_name: form.name,
+            leader_email: form.email,
+            leader_phone: form.phone || "N/A",
+            college: form.college || "VVIIT Nambur",
+            year: form.year || "1st Year",
+          };
+
+          // Tailored Event-Specific Attributes
+          switch (eventId) {
+            case "hackathon":
+              insertPayload.team_name = form.teamName || "HackSprint Squad";
+              insertPayload.members = isTeam && Array.isArray(form.members) ? form.members : [];
+              insertPayload.domain_track = form.domainTrack || "Automation & Robotics";
+              insertPayload.project_title = form.projectTitle || null;
+              insertPayload.proposal_synopsis = form.proposalSynopsis || null;
+              insertPayload.hardware_requirements = form.hardwareRequirements || null;
+              break;
+
+            case "paper-presentation":
+              insertPayload.team_name = form.teamName || null;
+              insertPayload.members = isTeam && Array.isArray(form.members) ? form.members : [];
+              insertPayload.paper_title = form.paperTitle || `${form.name} Research Paper`;
+              insertPayload.research_track = form.researchTrack || "Machine Design & Dynamics";
+              insertPayload.abstract_text = form.abstractText || null;
+              insertPayload.drive_link = form.driveLink || null;
+              break;
+
+            case "cad-design":
+              insertPayload.software_preference = form.softwarePreference || "SolidWorks";
+              insertPayload.experience_level = form.experienceLevel || "Intermediate";
+              insertPayload.bringing_own_laptop = Boolean(form.bringingOwnLaptop ?? true);
+              break;
+
+            case "robo-race":
+              insertPayload.team_name = form.teamName || "Bot Combatants";
+              insertPayload.members = isTeam && Array.isArray(form.members) ? form.members : [];
+              insertPayload.bot_name = form.botName || "Kinetic Striker";
+              insertPayload.weight_category = form.weightCategory || "Featherweight <15kg";
+              insertPayload.drive_system = form.driveSystem || "4WD";
+              insertPayload.weapon_mechanism = form.weaponMechanism || "Spinner";
+              insertPayload.frequency_band = form.frequencyBand || "2.4GHz Spread Spectrum";
+              break;
+
+            case "circuit-debug":
+              insertPayload.preferred_controller = form.preferredController || "Arduino / AVR";
+              insertPayload.lab_experience = form.labExperience || "Academic Coursework";
+              break;
+
+            case "quiz":
+              insertPayload.team_name = form.teamName || "Brainiac Duo";
+              insertPayload.members = isTeam && Array.isArray(form.members) ? form.members : [];
+              break;
+
+            case "treasure-hunt":
+              insertPayload.team_name = form.teamName || "Gear Hunters";
+              insertPayload.members = isTeam && Array.isArray(form.members) ? form.members : [];
+              insertPayload.emergency_contact = form.emergencyContact || null;
+              break;
+
+            case "photography":
+              insertPayload.device_type = form.deviceType || "DSLR / Mirrorless";
+              insertPayload.camera_model = form.cameraModel || null;
+              insertPayload.portfolio_link = form.portfolioLink || null;
+              break;
+
+            case "debate":
+              insertPayload.topic_preference = form.topicPreference || "Autonomous Manufacturing";
+              insertPayload.prior_debate_experience = form.priorDebateExperience || "First Time";
+              break;
+
+            default:
+              // Fallback
+              insertPayload.event_id = eventId;
+              insertPayload.event_name = event.name;
+              insertPayload.is_team = Boolean(isTeam);
+              insertPayload.team_name = form.teamName || null;
+              insertPayload.members = isTeam && Array.isArray(form.members) ? form.members : [];
+              break;
+          }
+        }
+
+        // Insert into dedicated table
+        const { error: dbError } = await supabaseAdmin.from(targetTable).insert(insertPayload);
         if (dbError) {
-          console.error("Supabase registrations insert error:", dbError);
+          console.error(`Supabase ${targetTable} insert error:`, dbError);
+          // If specific table fails (e.g. not migrated yet), fallback to general registrations table
+          if (targetTable !== "registrations") {
+            try {
+              await supabaseAdmin.from("registrations").insert({
+              ticket_id: ticketId,
+              event_id: eventId,
+              event_name: event.name,
+              is_team: Boolean(isTeam),
+              team_id: teamId,
+              team_name: isTeam ? form.teamName : null,
+              leader_name: form.name,
+              leader_email: form.email,
+              leader_phone: form.phone || null,
+              college: form.college || "VVIIT Nambur",
+              year: form.year || "1st Year",
+              members: isTeam && Array.isArray(form.members) ? form.members : [],
+              payment_status: "confirmed",
+            });
+            } catch (fallbackErr) {
+              console.error('Fallback insert error:', fallbackErr);
+            }
+          }
         }
       } catch (dbErr) {
         console.error("Supabase DB error:", dbErr);
@@ -108,7 +231,7 @@ export async function POST(req: NextRequest) {
       <div style="padding:28px;">
         <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
           <tr>
-            <td style="padding:8px 0;color:#605B56;font-family:monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;">DELEGATE</td>
+            <td style="padding:8px 0;color:#605B56;font-family:monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;">${isVisitor ? "VISITOR" : "DELEGATE"}</td>
             <td style="padding:8px 0;color:#FFFFFF;font-size:14px;font-weight:600;text-align:right;">${form.name}</td>
           </tr>
           ${isTeam ? `<tr>
@@ -120,7 +243,7 @@ export async function POST(req: NextRequest) {
             <td style="padding:8px 0;color:#FFFFFF;font-size:14px;font-weight:600;text-align:right;">${form.college} (${form.year})</td>
           </tr>
           <tr>
-            <td style="padding:8px 0;color:#605B56;font-family:monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;">REGISTRATION ID</td>
+            <td style="padding:8px 0;color:#605B56;font-family:monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;">TICKET TOKEN</td>
             <td style="padding:8px 0;color:#E51D25;font-family:monospace;font-size:15px;font-weight:700;text-align:right;">${ticketId}</td>
           </tr>
         </table>
@@ -156,7 +279,7 @@ export async function POST(req: NextRequest) {
       }).catch((e) => console.error("Resend dispatch error:", e));
     }
 
-    return NextResponse.json({ ticketId, teamId }, { status: 200 });
+    return NextResponse.json({ ticketId, teamId, targetTable }, { status: 200 });
   } catch (err) {
     console.error("Registration route error:", err);
     return NextResponse.json({ error: "Registration transmission failed" }, { status: 500 });

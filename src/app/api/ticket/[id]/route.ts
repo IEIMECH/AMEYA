@@ -1,5 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabaseAdmin } from "@/lib/supabase";
+import { supabaseAdmin, isDatabaseConfigured } from "@/lib/supabase";
+
+const EVENT_TABLES = [
+  "all_registrations",
+  "reg_hacksprint",
+  "reg_tech_manuscript",
+  "reg_cad_clash",
+  "reg_robo_rumble",
+  "reg_circuit_breaker",
+  "reg_mech_brainiac",
+  "reg_gear_hunt",
+  "reg_industrial_lens",
+  "reg_iron_tongue",
+  "fest_visitors",
+  "registrations"
+];
 
 export async function GET(
   req: NextRequest,
@@ -11,34 +26,53 @@ export async function GET(
       return NextResponse.json({ error: "Missing ticket ID" }, { status: 400 });
     }
 
-    if (!supabaseAdmin) {
+    if (!isDatabaseConfigured() || !supabaseAdmin) {
       return NextResponse.json({
         ticket_id: id,
-        event_name: "Ameya 2026 Event",
-        leader_name: "Ameya Attendee",
-        college: "VVITU",
+        event_name: "AMEYA '26 Accreditation",
+        leader_name: "Ameya Delegate",
+        college: "VVIIT Nambur",
         year: "2026",
         is_team: false,
-        team_id: `ID${id.slice(-6)}`,
+        team_id: `ID-${id.slice(-5)}`,
         verified_at: null,
       });
     }
 
-    const { data, error } = await supabaseAdmin
-      .from("registrations")
+    // 1. Try unified view first
+    const { data: viewData, error: viewError } = await supabaseAdmin
+      .from("all_registrations")
       .select("*")
       .eq("ticket_id", id)
       .maybeSingle();
 
-    if (error || !data) {
-      return NextResponse.json({ error: "Ticket not found" }, { status: 404 });
+    if (viewData && !viewError) {
+      return NextResponse.json(viewData);
     }
 
+    // 2. Fallback to scanning individual tables
+    for (const table of EVENT_TABLES) {
+      if (table === "all_registrations") continue;
+      const { data, error } = await supabaseAdmin
+        .from(table)
+        .select("*")
+        .eq("ticket_id", id)
+        .maybeSingle();
 
-    return NextResponse.json(data);
+      if (data && !error) {
+        return NextResponse.json({
+          ...data,
+          table_source: table,
+          leader_name: data.leader_name || data.full_name,
+          leader_email: data.leader_email || data.email,
+        });
+      }
+    }
+
+    return NextResponse.json({ error: "Ticket dossier not found" }, { status: 404 });
   } catch (err) {
     console.error("Ticket fetch error:", err);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json({ error: "Server error retrieving ticket" }, { status: 500 });
   }
 }
 
@@ -48,25 +82,36 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
-    if (!supabaseAdmin) {
+    if (!isDatabaseConfigured() || !supabaseAdmin) {
       return NextResponse.json({ verified: true, verified_at: new Date().toISOString() });
     }
 
     const now = new Date().toISOString();
-    const { data, error } = await supabaseAdmin
-      .from("registrations")
-      .update({ verified_at: now })
-      .eq("ticket_id", id)
-      .select()
-      .single();
+    const verifier = "GATE-01 // AMEYA SECURITY CADRE";
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+    // 1. Check which table holds this ticket
+    for (const table of EVENT_TABLES) {
+      if (table === "all_registrations") continue;
+      const { data, error } = await supabaseAdmin
+        .from(table)
+        .update({ verified_at: now, verified_by: verifier })
+        .eq("ticket_id", id)
+        .select()
+        .maybeSingle();
+
+      if (data && !error) {
+        return NextResponse.json({
+          verified: true,
+          verified_at: now,
+          table_source: table,
+          data
+        });
+      }
     }
 
-    return NextResponse.json({ verified: true, verified_at: now, data });
+    return NextResponse.json({ error: "Ticket not found for verification stamp" }, { status: 404 });
   } catch (err) {
-    console.error("Verification error:", err);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    console.error("Verification update error:", err);
+    return NextResponse.json({ error: "Server error verifying gate ticket" }, { status: 500 });
   }
 }
