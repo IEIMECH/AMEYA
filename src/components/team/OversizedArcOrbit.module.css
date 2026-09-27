@@ -1,0 +1,393 @@
+/* Oversized Arc Orbit Styles */
+.stage {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  padding-top: calc(var(--nav-height) + 1.5rem);
+  padding-bottom: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: #080808;
+}
+
+/* Background Atmosphere */
+.ambientHalo {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(1200px, 95vw);
+  height: 650px;
+  background: radial-gradient(ellipse at center, rgba(230, 29, 29, 0.12) 0%, rgba(230, 29, 29, 0.02) 50%, transparent 75%);
+  filter: blur(70px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.gridMatrix {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1.2px, transparent 0);
+  background-size: 40px 40px;
+  pointer-events: none;
+  opacity: 0.65;
+  z-index: 0;
+}
+
+/* Center Static Composition */
+.centerStageHeader {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 0.5rem;
+  padding: 0 1.5rem;
+  position: relative;
+  z-index: 5;
+}
+
+.cadreTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #e61d1d;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.4rem;
+}
+
+.centerTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.2vw, 3.2rem);
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0.2rem 0 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.centerSub {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: #999999;
+  max-width: 650px;
+  margin: 0 auto 1.25rem;
+  line-height: 1.5;
+}
+
+/* Orbit Controls Row */
+.orbitControlsRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.orbitStateBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(20, 20, 24, 0.85);
+  backdrop-filter: blur(12px);
+  color: #b0b0b0;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.orbitStateBtn:hover {
+  background: rgba(230, 29, 29, 0.2);
+  border-color: #e61d1d;
+  color: #ffffff;
+}
+
+.hintText {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  color: #666666;
+  letter-spacing: 0.1em;
+}
+
+/* Oversized Arc Viewport Window */
+.arcWindow {
+  position: relative;
+  width: 100vw;
+  height: min(720px, 78vh);
+  overflow: hidden; /* Natural viewport clipping */
+  z-index: 10;
+  margin-top: 1rem;
+}
+
+/* Board-Tail Motion Trail */
+.motionTrailGhost {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 155px;
+  height: 215px;
+  border-radius: 16px;
+  background: rgba(230, 29, 29, 0.12);
+  border: 1px dashed rgba(230, 29, 29, 0.35);
+  filter: blur(8px);
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  will-change: transform, opacity;
+}
+
+/* Pure Visual Portrait Card */
+.portraitCard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 155px;
+  min-height: 215px;
+  border-radius: 16px;
+  background: #111113;
+  border: 1.5px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.75);
+  cursor: pointer;
+  overflow: hidden;
+  user-select: none;
+  transition: 
+    transform 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+    width 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+    min-height 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.28s ease,
+    border-color 0.28s ease,
+    box-shadow 0.35s ease,
+    background 0.28s ease;
+  will-change: transform, opacity, width, min-height;
+}
+
+/* Image Surface (Pure Photo During Movement) */
+.imageSurface {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4.1;
+  overflow: hidden;
+  background: #18181b;
+}
+
+.portraitPhoto {
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.fallbackMonogram {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, #2a2a2a, #111111);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.bottomVignette {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(14, 14, 16, 0.85) 0%, rgba(14, 14, 16, 0.2) 35%, transparent 60%);
+  pointer-events: none;
+}
+
+.vignetteExpanded {
+  background: linear-gradient(to top, rgba(12, 12, 14, 0.98) 12%, rgba(12, 12, 14, 0.4) 45%, transparent 75%);
+}
+
+/* Hovered Card State (The Transformation) */
+.cardActive {
+  width: 295px !important;
+  min-height: 400px !important;
+  border-color: #e61d1d !important;
+  background: rgba(12, 12, 14, 0.98) !important;
+  box-shadow: 
+    0 25px 65px rgba(0, 0, 0, 0.96),
+    0 0 35px rgba(230, 29, 29, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+  z-index: 120 !important;
+}
+
+.cardActive .portraitPhoto {
+  transform: scale(1.05);
+}
+
+/* Profile Details Revealed ONLY on interaction */
+.profileDetailsReveal {
+  padding: 0.85rem 1.1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  animation: revealSlideUp 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes revealSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.detailsHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.detailCallsign {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #e61d1d;
+  letter-spacing: 0.08em;
+}
+
+.detailName {
+  font-family: var(--font-display);
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.detailRole {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #ff4d4d;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.detailDept {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  color: #999999;
+  margin: 2px 0 0;
+  line-height: 1.35;
+}
+
+.detailBio {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: #cccccc;
+  line-height: 1.45;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 7px;
+}
+
+.detailActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.emailAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #b8b8b8;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.emailAction:hover {
+  background: rgba(230, 29, 29, 0.2);
+  border-color: #e61d1d;
+  color: #ffffff;
+}
+
+.dossierAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  background: #e61d1d;
+  border: 1px solid #ff4d4d;
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dossierAction:hover {
+  background: #ff2a2a;
+  box-shadow: 0 0 15px rgba(230, 29, 29, 0.6);
+}
+
+/* Dimmed background cards when a card is hovered */
+.cardDimmed {
+  filter: blur(2px) grayscale(30%);
+  pointer-events: auto;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1024px) {
+  .portraitCard {
+    width: 130px;
+    min-height: 180px;
+  }
+
+  .cardActive {
+    width: 270px !important;
+    min-height: 370px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .stage {
+    padding-top: calc(var(--nav-height) + 1rem);
+  }
+
+  .arcWindow {
+    height: 600px;
+  }
+
+  .portraitCard {
+    width: 110px;
+    min-height: 150px;
+    border-radius: 12px;
+  }
+
+  .cardActive {
+    width: 250px !important;
+    min-height: 350px !important;
+  }
+
+  .hintText {
+    display: none;
+  }
+}
