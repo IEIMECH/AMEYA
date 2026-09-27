@@ -1,0 +1,588 @@
+/* Circular Orbit Styles */
+.orbitSection {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  padding-top: calc(var(--nav-height) + 1.5rem);
+  padding-bottom: 5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: #080808;
+}
+
+/* Background Atmosphere */
+.haloGlow {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(1100px, 95vw);
+  height: 650px;
+  background: radial-gradient(ellipse at center, rgba(230, 29, 29, 0.14) 0%, rgba(230, 29, 29, 0.03) 50%, transparent 75%);
+  filter: blur(65px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.gridCanvas {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.06) 1.2px, transparent 0);
+  background-size: 40px 40px;
+  pointer-events: none;
+  opacity: 0.65;
+  z-index: 0;
+}
+
+/* Header */
+.sectionHeader {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 1rem;
+  padding: 0 1.5rem;
+  position: relative;
+  z-index: 5;
+}
+
+.mainHeading {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0.6rem 0 0.8rem;
+  letter-spacing: -0.02em;
+}
+
+.subHeading {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: #999999;
+  max-width: 650px;
+  margin: 0 auto 1.5rem;
+  line-height: 1.6;
+}
+
+/* Division Spotlight Filter Strip */
+.filterStrip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.filterPill {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 5px 13px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #888888;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.filterPill:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.activeFilter {
+  background: #e61d1d !important;
+  border-color: #ff4d4d !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 15px rgba(230, 29, 29, 0.5);
+}
+
+/* Orbit Viewport */
+.orbitViewport {
+  position: relative;
+  width: 100%;
+  height: min(720px, 75vh);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  z-index: 10;
+  margin-top: 1rem;
+}
+
+/* SVG Orbital Track */
+.orbitSvgTrack {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.orbitSvgPath {
+  animation: orbitTrackPulse 6s ease-in-out infinite;
+}
+
+@keyframes orbitTrackPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Centerpiece (Negative Space) */
+.centerNegativeSpace {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  z-index: 5;
+  text-align: center;
+}
+
+.centerReticleRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px dashed rgba(230, 29, 29, 0.25);
+  animation: spinSlow 50s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.reticleCrossH {
+  position: absolute;
+  top: 50%;
+  left: -12px;
+  right: -12px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(230, 29, 29, 0.3), transparent);
+}
+
+.reticleCrossV {
+  position: absolute;
+  left: 50%;
+  top: -12px;
+  bottom: -12px;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(230, 29, 29, 0.3), transparent);
+}
+
+.reticleCore {
+  position: absolute;
+  inset: 25px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.centerHud {
+  position: relative;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.centerTag {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: #e61d1d;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+}
+
+.centerTitle {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.05em;
+}
+
+.centerSub {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: #777777;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.playbackBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(20, 20, 22, 0.85);
+  backdrop-filter: blur(12px);
+  color: #b0b0b0;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.playbackBtn:hover {
+  background: rgba(230, 29, 29, 0.2);
+  border-color: #e61d1d;
+  color: #ffffff;
+}
+
+/* Board-Tail Motion Trail */
+.motionTrail {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 105px;
+  height: 140px;
+  border-radius: 12px;
+  background: rgba(230, 29, 29, 0.12);
+  border: 1px dashed rgba(230, 29, 29, 0.35);
+  filter: blur(6px);
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  will-change: transform, opacity;
+}
+
+/* Primary Orbital Member Card */
+.memberOrbitalCard {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 105px;
+  min-height: 140px;
+  border-radius: 12px;
+  background: rgba(14, 14, 16, 0.88);
+  border: 1.5px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+  overflow: hidden;
+  transition: 
+    transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+    width 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+    min-height 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.3s ease,
+    background 0.25s ease;
+  user-select: none;
+  will-change: transform, opacity, width, min-height;
+}
+
+/* Card Tech Crosshairs */
+.cornerTL,
+.cornerTR,
+.cornerBR {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  line-height: 1;
+  color: rgba(230, 29, 29, 0.65);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.cornerTL { top: 3px; left: 4px; }
+.cornerTR { top: 3px; right: 4px; }
+.cornerBR { bottom: 3px; right: 4px; }
+
+/* Portrait Container */
+.portraitBox {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 3.4;
+  overflow: hidden;
+}
+
+.cardImage {
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.avatarFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, #2a2a2a, #111111);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.torsoFade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(14, 14, 16, 0.98) 12%, rgba(14, 14, 16, 0.4) 45%, transparent 80%);
+}
+
+.cardTopPill {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  right: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 3;
+}
+
+.rollBadge {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.yearBadge {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  color: #e61d1d;
+  font-weight: 700;
+  background: rgba(230, 29, 29, 0.15);
+  border: 1px solid rgba(230, 29, 29, 0.3);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+/* Card Body */
+.cardBody {
+  padding: 0.55rem 0.65rem 0.65rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.identityGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.cardName {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
+}
+
+.cardRole {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 700;
+  color: #e61d1d;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.02em;
+}
+
+.cardDept {
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  color: #888888;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: none;
+}
+
+/* Hovered Card State */
+.cardHovered {
+  width: 290px !important;
+  min-height: 380px !important;
+  border-color: #e61d1d !important;
+  background: rgba(12, 12, 14, 0.97) !important;
+  box-shadow: 
+    0 25px 65px rgba(0, 0, 0, 0.95),
+    0 0 35px rgba(230, 29, 29, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+  z-index: 120 !important;
+}
+
+.cardHovered .cardImage {
+  transform: scale(1.05);
+}
+
+.cardHovered .cardBody {
+  padding: 0.85rem 1rem 1rem;
+}
+
+.cardHovered .cardName {
+  font-size: 1.15rem;
+  white-space: normal;
+  margin-bottom: 2px;
+}
+
+.cardHovered .cardRole {
+  font-size: 0.8rem;
+  white-space: normal;
+  margin-bottom: 3px;
+}
+
+.cardHovered .cardDept {
+  display: block;
+  font-size: 0.68rem;
+  color: #a0a0a0;
+  white-space: normal;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+/* Expanded Detail Section inside Hovered Card */
+.expandedContent {
+  animation: expandFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 8px;
+  margin-top: 2px;
+}
+
+@keyframes expandFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cardBio {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: #cccccc;
+  line-height: 1.45;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cardActionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.emailPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #b8b8b8;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.emailPill:hover {
+  background: rgba(230, 29, 29, 0.2);
+  border-color: #e61d1d;
+  color: #ffffff;
+}
+
+.dossierBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  background: #e61d1d;
+  border: 1px solid #ff4d4d;
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dossierBtn:hover {
+  background: #ff2a2a;
+  box-shadow: 0 0 15px rgba(230, 29, 29, 0.6);
+}
+
+/* Dimmed state when another card is hovered */
+.cardDimmed {
+  filter: blur(1.5px) grayscale(35%);
+  pointer-events: auto;
+}
+
+/* Mobile & Tablet Optimizations */
+@media (max-width: 640px) {
+  .orbitSection {
+    padding-top: calc(var(--nav-height) + 1rem);
+  }
+
+  .orbitViewport {
+    height: 600px;
+  }
+
+  .memberOrbitalCard {
+    width: 78px;
+    min-height: 105px;
+  }
+
+  .cardHovered {
+    width: 250px !important;
+    min-height: 340px !important;
+  }
+
+  .centerNegativeSpace {
+    width: 170px;
+    height: 170px;
+  }
+
+  .centerTitle {
+    font-size: 1.15rem;
+  }
+}
