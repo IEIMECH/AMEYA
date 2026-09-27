@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { teamMembers, teamDivisions, TeamMember } from "@/data/team";
-import MemberInfoDrawer from "./MemberInfoDrawer";
 import styles from "./ExploreUniverse.module.css";
 import { Move, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 
@@ -19,41 +18,34 @@ export default function ExploreUniverse({
   targetDivisionId,
 }: ExploreUniverseProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [pan, setPan] = useState({ x: -400, y: -100 });
-  const [zoom, setZoom] = useState(1);
+  const panRef = useRef({ x: 0, y: 0 });
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  
+  const zoomRef = useRef(0.85);
+  const [zoom, setZoom] = useState(0.85);
+
   const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0, panX: 0, panY: 0 });
-  const [hasMoved, setHasMoved] = useState(false);
-  const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+  const dragStartRef = useRef({ x: 0, y: 0, panX: 0, panY: 0 });
+  const hasMovedRef = useRef(false);
 
-  // Universe dimensions
+  // Board dimensions
   const UNIVERSE_WIDTH = 2600;
-  const UNIVERSE_HEIGHT = 1900;
+  const UNIVERSE_HEIGHT = 2000;
 
-  // Center on Executive Directorate on initial mount
-  useEffect(() => {
+  // Pan to arbitrary board coordinates with optional zoom
+  const panToCoords = useCallback((targetX: number, targetY: number, newZoom = zoomRef.current) => {
     if (!containerRef.current) return;
-    const vpW = containerRef.current.clientWidth;
-    const vpH = containerRef.current.clientHeight;
-    setPan({
-      x: -(1350 - vpW / 2),
-      y: -(460 - vpH / 2),
-    });
-  }, []);
+    const vpW = containerRef.current.clientWidth || window.innerWidth;
+    const vpH = containerRef.current.clientHeight || window.innerHeight;
 
-  // Smooth pan to cluster coordinates
-  const panToCluster = useCallback((coords: { x: number; y: number }) => {
-    if (!containerRef.current) return;
-    const vpW = containerRef.current.clientWidth;
-    const vpH = containerRef.current.clientHeight;
+    // Desired screen center position for target (with transformOrigin: 0 0)
+    const destX = vpW / 2 - targetX * newZoom;
+    const destY = vpH / 2 - targetY * newZoom;
 
-    const targetX = -(coords.x - vpW / 2);
-    const targetY = -(coords.y - vpH / 2);
-
-    const startX = pan.x;
-    const startY = pan.y;
+    const startX = panRef.current.x;
+    const startY = panRef.current.y;
     const startTime = performance.now();
-    const duration = 400;
+    const duration = 420;
 
     const animate = (currentTime: number) => {
       const elapsed = currentTime - startTime;
@@ -61,10 +53,11 @@ export default function ExploreUniverse({
       // easeOutCubic
       const ease = 1 - Math.pow(1 - progress, 3);
 
-      setPan({
-        x: startX + (targetX - startX) * ease,
-        y: startY + (targetY - startY) * ease,
-      });
+      const curX = startX + (destX - startX) * ease;
+      const curY = startY + (destY - startY) * ease;
+
+      panRef.current = { x: curX, y: curY };
+      setPan({ x: curX, y: curY });
 
       if (progress < 1) {
         requestAnimationFrame(animate);
@@ -72,16 +65,42 @@ export default function ExploreUniverse({
     };
 
     requestAnimationFrame(animate);
-  }, [pan.x, pan.y]);
+  }, []);
 
-  // Respond to targetDivisionId change from CommitteeBar
+  // Initial mount: Center on the full council constellation overview
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const vpW = containerRef.current.clientWidth || window.innerWidth;
+    const vpH = containerRef.current.clientHeight || window.innerHeight;
+
+    const initialZoom = vpW < 768 ? 0.52 : vpW < 1200 ? 0.72 : 0.85;
+    zoomRef.current = initialZoom;
+    setZoom(initialZoom);
+
+    // Council constellation center is (1400, 1050)
+    const initX = vpW / 2 - 1400 * initialZoom;
+    const initY = vpH / 2 - 1050 * initialZoom;
+
+    panRef.current = { x: initX, y: initY };
+    setPan({ x: initX, y: initY });
+  }, []);
+
+  // Respond to targetDivisionId change without creating infinite loops
+  const prevDivRef = useRef<string | null>(null);
   useEffect(() => {
     if (!targetDivisionId) return;
+    if (prevDivRef.current === null) {
+      prevDivRef.current = targetDivisionId;
+      return;
+    }
+    if (prevDivRef.current === targetDivisionId) return;
+    prevDivRef.current = targetDivisionId;
+
     const div = teamDivisions.find((d) => d.id === targetDivisionId);
     if (div && div.centerCoords) {
-      panToCluster(div.centerCoords);
+      panToCoords(div.centerCoords.x, div.centerCoords.y, Math.max(zoomRef.current, 0.95));
     }
-  }, [targetDivisionId, panToCluster]);
+  }, [targetDivisionId, panToCoords]);
 
   // Non-passive wheel listener for smooth zoom in/out with scroll wheel
   useEffect(() => {
@@ -90,12 +109,25 @@ export default function ExploreUniverse({
 
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
-      // Smooth exponential zoom step
-      const zoomFactor = e.deltaY < 0 ? 1.09 : 0.91;
-      setZoom((prevZoom) => {
-        const next = prevZoom * zoomFactor;
-        return Math.min(Math.max(next, 0.45), 2.2);
-      });
+      const rect = container.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+      const prevZ = zoomRef.current;
+      const newZ = Math.min(Math.max(prevZ * zoomFactor, 0.4), 2.2);
+
+      if (newZ === prevZ) return;
+
+      // Keep coordinate under mouse cursor stable
+      const curPan = panRef.current;
+      const newPanX = mouseX - (mouseX - curPan.x) * (newZ / prevZ);
+      const newPanY = mouseY - (mouseY - curPan.y) * (newZ / prevZ);
+
+      panRef.current = { x: newPanX, y: newPanY };
+      zoomRef.current = newZ;
+      setPan({ x: newPanX, y: newPanY });
+      setZoom(newZ);
     };
 
     container.addEventListener("wheel", handleWheel, { passive: false });
@@ -105,28 +137,28 @@ export default function ExploreUniverse({
   // Mouse Drag Handlers
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
-    setHasMoved(false);
-    setDragStart({
+    hasMovedRef.current = false;
+    dragStartRef.current = {
       x: e.clientX,
       y: e.clientY,
-      panX: pan.x,
-      panY: pan.y,
-    });
+      panX: panRef.current.x,
+      panY: panRef.current.y,
+    };
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDragging) return;
-    const dx = e.clientX - dragStart.x;
-    const dy = e.clientY - dragStart.y;
+    const dx = e.clientX - dragStartRef.current.x;
+    const dy = e.clientY - dragStartRef.current.y;
 
-    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
-      setHasMoved(true);
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+      hasMovedRef.current = true;
     }
 
-    setPan({
-      x: dragStart.panX + dx,
-      y: dragStart.panY + dy,
-    });
+    const newX = dragStartRef.current.panX + dx;
+    const newY = dragStartRef.current.panY + dy;
+    panRef.current = { x: newX, y: newY };
+    setPan({ x: newX, y: newY });
   };
 
   const handleMouseUp = () => {
@@ -140,15 +172,14 @@ export default function ExploreUniverse({
     if (e.touches.length === 1) {
       const t = e.touches[0];
       setIsDragging(true);
-      setHasMoved(false);
+      hasMovedRef.current = false;
       touchState.current = {
         x: t.clientX,
         y: t.clientY,
-        panX: pan.x,
-        panY: pan.y,
+        panX: panRef.current.x,
+        panY: panRef.current.y,
       };
     } else if (e.touches.length === 2) {
-      // Pinch zoom start
       const dx = e.touches[0].clientX - e.touches[1].clientX;
       const dy = e.touches[0].clientY - e.touches[1].clientY;
       touchState.current.dist = Math.hypot(dx, dy);
@@ -160,17 +191,19 @@ export default function ExploreUniverse({
       const t = e.touches[0];
       const dx = t.clientX - touchState.current.x;
       const dy = t.clientY - touchState.current.y;
-      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) setHasMoved(true);
-      setPan({
-        x: touchState.current.panX + dx,
-        y: touchState.current.panY + dy,
-      });
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) hasMovedRef.current = true;
+      const newX = touchState.current.panX + dx;
+      const newY = touchState.current.panY + dy;
+      panRef.current = { x: newX, y: newY };
+      setPan({ x: newX, y: newY });
     } else if (e.touches.length === 2 && touchState.current.dist) {
       const dx = e.touches[0].clientX - e.touches[1].clientX;
       const dy = e.touches[0].clientY - e.touches[1].clientY;
       const newDist = Math.hypot(dx, dy);
       const scale = newDist / touchState.current.dist;
-      setZoom((z) => Math.min(Math.max(z * scale, 0.45), 2.2));
+      const newZ = Math.min(Math.max(zoomRef.current * scale, 0.4), 2.2);
+      zoomRef.current = newZ;
+      setZoom(newZ);
       touchState.current.dist = newDist;
     }
   };
@@ -181,19 +214,26 @@ export default function ExploreUniverse({
   };
 
   const handleTokenClick = (m: TeamMember) => {
-    if (hasMoved) return; // Prevent clicking when panning
+    if (hasMovedRef.current) return;
     if (onSelectMember) {
       onSelectMember(m);
-    } else {
-      setSelectedMember(m);
     }
   };
 
-  const zoomIn = () => setZoom((z) => Math.min(z * 1.2, 2.2));
-  const zoomOut = () => setZoom((z) => Math.max(z / 1.2, 0.45));
+  const zoomIn = () => {
+    const newZ = Math.min(zoomRef.current * 1.25, 2.2);
+    zoomRef.current = newZ;
+    setZoom(newZ);
+  };
+
+  const zoomOut = () => {
+    const newZ = Math.max(zoomRef.current / 1.25, 0.4);
+    zoomRef.current = newZ;
+    setZoom(newZ);
+  };
+
   const recenter = () => {
-    setZoom(1);
-    panToCluster({ x: 1350, y: 460 });
+    panToCoords(1400, 1050, 0.85);
   };
 
   return (
@@ -207,7 +247,7 @@ export default function ExploreUniverse({
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      aria-label="Interactive 2.5D Explore Universe board. Drag to pan, scroll mouse wheel to zoom."
+      aria-label="Interactive Explore Board. Drag to pan, scroll to zoom."
     >
       {/* Top Floating HUD: Controls & Instructions */}
       <div className={styles.topHud}>
@@ -245,7 +285,7 @@ export default function ExploreUniverse({
             onClick={recenter} 
             className={styles.recenterBtn} 
             aria-label="Recenter Board"
-            title="Recenter Board"
+            title="Recenter Constellation"
           >
             <RotateCcw size={12} />
             <span>RESET</span>
@@ -260,13 +300,13 @@ export default function ExploreUniverse({
           width: `${UNIVERSE_WIDTH}px`,
           height: `${UNIVERSE_HEIGHT}px`,
           transform: `translate3d(${pan.x}px, ${pan.y}px, 0px) scale(${zoom})`,
-          transformOrigin: "center center",
+          transformOrigin: "0 0",
         }}
       >
-        {/* Architectural Subtle Grid */}
+        {/* Subtle Architectural Grid */}
         <div className={styles.gridOverlay} aria-hidden="true" />
 
-        {/* Floating Division Group Labels on the Board Floor */}
+        {/* Floating Division Group Labels on Board Floor */}
         {teamDivisions.map((div) => (
           <div
             key={div.id}
@@ -308,7 +348,7 @@ export default function ExploreUniverse({
                     src={m.image}
                     alt={m.name}
                     fill
-                    sizes="100px"
+                    sizes="120px"
                     className={styles.photoImg}
                     priority={false}
                   />
@@ -329,14 +369,6 @@ export default function ExploreUniverse({
           );
         })}
       </div>
-
-      {/* Internal Slide-out Drawer fallback when not controlled externally */}
-      {!onSelectMember && (
-        <MemberInfoDrawer
-          member={selectedMember}
-          onClose={() => setSelectedMember(null)}
-        />
-      )}
     </div>
   );
 }
