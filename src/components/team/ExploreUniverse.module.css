@@ -1,4 +1,4 @@
-/* ExploreUniverse SITCON Machined 2.5D Style */
+/* ExploreUniverse SITCON Board Style */
 .container {
   position: relative;
   width: 100vw;
@@ -6,7 +6,7 @@
   overflow: hidden;
   cursor: grab;
   user-select: none;
-  background: #080808;
+  background: #070708;
 }
 
 .container:active {
@@ -18,33 +18,10 @@
   width: 100%;
 }
 
-/* Gradient Nav Masks */
-.navMaskTop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 8.5rem;
-  background: linear-gradient(to bottom, #080808ee, #08080899 50%, transparent);
-  z-index: 20;
-  pointer-events: none;
-}
-
-.navMaskBottom {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100vw;
-  height: 8.5rem;
-  background: linear-gradient(to top, #080808ee, #08080899 50%, transparent);
-  z-index: 20;
-  pointer-events: none;
-}
-
-/* Top HUD Banner */
+/* Top Floating HUD: Controls & Instructions */
 .topHud {
-  position: fixed;
-  top: calc(var(--nav-height) + 1.25rem);
+  position: absolute;
+  top: 1.25rem;
   left: 1.5rem;
   right: 1.5rem;
   z-index: 30;
@@ -54,413 +31,263 @@
   pointer-events: none;
 }
 
-.hudCoordinates {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: #dddddd;
-  background: rgba(17, 17, 17, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0.4rem 0.85rem;
-  border-radius: 3px;
-  backdrop-filter: blur(8px);
-}
-
-.hudBeacon {
-  color: #e61d1d;
-  animation: beaconPulse 1.5s infinite;
-}
-
-@keyframes beaconPulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.3; transform: scale(0.85); }
-}
-
-.hudInstruction {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  color: #888888;
-  background: rgba(17, 17, 17, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 0.4rem 0.85rem;
-  border-radius: 3px;
-  backdrop-filter: blur(8px);
-}
-
-@media (max-width: 768px) {
-  .hudInstruction {
-    display: none;
-  }
-}
-
-.recenterBtn {
+.hudBadge {
   pointer-events: auto;
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 7px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: rgba(18, 18, 20, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #b0b0b0;
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.zoomControls {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  border-radius: 9999px;
+  background: rgba(18, 18, 20, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.zoomBtn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.zoomBtn:hover {
+  background: #e61d1d;
+  color: #ffffff;
+}
+
+.zoomBtn:active {
+  transform: scale(0.92);
+}
+
+.zoomLabel {
   font-family: var(--font-mono);
   font-size: 0.72rem;
+  font-weight: 600;
+  color: #e5e5e5;
+  padding: 0 7px;
+  min-width: 44px;
+  text-align: center;
+}
+
+.recenterBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: #d1d1d1;
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
   font-weight: 700;
-  color: #ffffff;
-  background: rgba(230, 29, 29, 0.15);
-  border: 1px solid rgba(230, 29, 29, 0.4);
-  padding: 0.4rem 0.85rem;
-  border-radius: 3px;
+  letter-spacing: 0.06em;
   cursor: pointer;
-  backdrop-filter: blur(8px);
-  transition: all 0.2s ease;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .recenterBtn:hover {
-  background: #e61d1d;
-  box-shadow: 0 0 14px rgba(230, 29, 29, 0.4);
-  transform: translateY(-1px);
-}
-
-/* Pannable Universe */
-.universe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 2800px;
-  height: 2000px;
-  transform-origin: 0 0;
-  will-change: transform;
-  background: 
-    radial-gradient(circle at 1400px 460px, rgba(230, 29, 29, 0.08), transparent 500px),
-    radial-gradient(circle at 780px 840px, rgba(230, 29, 29, 0.05), transparent 450px),
-    radial-gradient(circle at 2020px 840px, rgba(230, 29, 29, 0.05), transparent 450px),
-    radial-gradient(circle at 820px 1440px, rgba(230, 29, 29, 0.05), transparent 450px),
-    radial-gradient(circle at 1980px 1440px, rgba(230, 29, 29, 0.05), transparent 450px),
-    radial-gradient(circle at 1400px 1560px, rgba(230, 29, 29, 0.05), transparent 450px),
-    #080808;
-}
-
-/* Grid & Radar Overlays */
-.gridOverlay {
-  position: absolute;
-  inset: 0;
-  background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 60px 60px;
-  pointer-events: none;
-}
-
-.radarRing1 {
-  position: absolute;
-  left: 1400px;
-  top: 1000px;
-  width: 900px;
-  height: 900px;
-  margin-left: -450px;
-  margin-top: -450px;
-  border: 1px dashed rgba(230, 29, 29, 0.12);
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.radarRing2 {
-  position: absolute;
-  left: 1400px;
-  top: 1000px;
-  width: 1700px;
-  height: 1700px;
-  margin-left: -850px;
-  margin-top: -850px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.axisH {
-  position: absolute;
-  top: 1000px;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(230, 29, 29, 0.15), transparent);
-  pointer-events: none;
-}
-
-.axisV {
-  position: absolute;
-  left: 1400px;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: linear-gradient(180deg, transparent, rgba(230, 29, 29, 0.15), transparent);
-  pointer-events: none;
-}
-
-/* Division Zones */
-.divisionZone {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  pointer-events: none;
-  width: 380px;
-}
-
-.zonePill {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  color: #e61d1d;
-  background: rgba(230, 29, 29, 0.1);
-  border: 1px solid rgba(230, 29, 29, 0.3);
-  padding: 0.2rem 0.6rem;
-  border-radius: 2px;
-  margin-bottom: 0.35rem;
-}
-
-.zoneTitle {
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: #ffffff;
-  margin: 0 0 0.25rem;
-  letter-spacing: -0.01em;
-}
-
-.zoneDesc {
-  font-size: 0.78rem;
-  color: #777777;
-  line-height: 1.4;
-  margin: 0;
-  font-family: var(--font-mono);
-}
-
-/* Member Token */
-.memberToken {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.65rem;
-  cursor: pointer;
-  z-index: 10;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  outline: none;
-}
-
-.memberToken:hover {
-  transform: translate(-50%, calc(-50% - 6px));
-}
-
-/* Avatar Disc with 2.5D Parallax */
-.avatarDisc {
-  position: relative;
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.avatarLayerBack {
-  position: absolute;
-  inset: -6px;
-  border: 1px dashed rgba(230, 29, 29, 0.45);
-  border-radius: 50%;
-  transition: transform 0.1s ease-out;
-  will-change: transform;
-}
-
-.avatarLayerCore {
-  position: relative;
-  width: 82px;
-  height: 82px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #2a2a2a, #111111);
-  border: 2px solid rgba(255, 255, 255, 0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
-  transition: transform 0.1s ease-out, border-color 0.2s ease, box-shadow 0.2s ease;
-  will-change: transform;
-}
-
-.memberToken:hover .avatarLayerCore {
-  border-color: #e61d1d;
-  box-shadow: 0 0 25px rgba(230, 29, 29, 0.5);
-}
-
-.avatarLayerFront {
-  position: absolute;
-  inset: 4px;
-  border: 1px solid rgba(230, 29, 29, 0.3);
-  border-radius: 50%;
-  pointer-events: none;
-  transition: transform 0.1s ease-out;
-}
-
-.tokenInitials {
-  font-family: var(--font-display);
-  font-size: 1.55rem;
-  font-weight: 800;
-  color: #ffffff;
-  letter-spacing: 0.05em;
-  text-shadow: 0 0 10px rgba(230, 29, 29, 0.4);
-}
-
-/* Nameplate Tooltip */
-.tokenNameplate {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.15rem;
-  background: rgba(14, 14, 14, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0.4rem 0.75rem;
-  border-radius: 3px;
-  white-space: nowrap;
-  backdrop-filter: blur(8px);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
-}
-
-.memberToken:hover .tokenNameplate {
-  border-color: rgba(230, 29, 29, 0.5);
-  box-shadow: 0 0 16px rgba(230, 29, 29, 0.25);
-}
-
-.tokenCallsign {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  color: #e61d1d;
-  letter-spacing: 0.12em;
-  font-weight: 700;
-}
-
-.tokenName {
-  font-family: var(--font-display);
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-.tokenRole {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: #888888;
-}
-
-/* Floating HUD Anchor Dock */
-.anchorDock {
-  position: fixed;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 40;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: rgba(14, 14, 14, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.85), 0 0 12px rgba(230, 29, 29, 0.12);
-  padding: 0.4rem;
-  border-radius: 999px;
-  backdrop-filter: blur(12px);
-  max-width: 95vw;
-  overflow-x: auto;
-}
-
-.modeSwitchBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: #ffffff;
-  background: #1a1a1a;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 0.45rem 0.95rem;
-  border-radius: 999px;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.modeSwitchBtn:hover {
-  background: #252525;
+  background: rgba(255, 255, 255, 0.15);
   border-color: #ffffff;
   color: #ffffff;
 }
 
-.divisionLinks {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
+/* Infinite Canvas Board */
+.universeBoard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+  transition: transform 0.06s ease-out;
 }
 
-.anchorBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: transparent;
-  border: none;
-  color: #aaaaaa;
+/* Subtle Architectural Matrix Grid */
+.gridOverlay {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.07) 1.2px, transparent 0);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+/* Floating Division Badges on Board */
+.divisionAnchor {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  text-align: center;
+  opacity: 0.55;
+  transition: opacity 0.3s;
+}
+
+.divisionCode {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  padding: 0.45rem 0.75rem;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #e61d1d;
+  letter-spacing: 0.15em;
+  display: block;
+  margin-bottom: 2px;
 }
 
-.anchorBtn:hover {
+.divisionTitle {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.anchorIndicator {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #555555;
-  transition: all 0.2s ease;
-}
-
-.activeAnchor {
-  color: #ffffff;
-  background: rgba(230, 29, 29, 0.15);
-}
-
-.activeAnchor .anchorIndicator {
-  background: #e61d1d;
-  box-shadow: 0 0 8px #ff3b3b;
-}
-
-.anchorText {
+  margin: 0;
+  letter-spacing: -0.01em;
   text-transform: uppercase;
 }
 
-@media (max-width: 640px) {
-  .anchorDock {
-    bottom: 1.25rem;
-    gap: 0.35rem;
-    padding: 0.35rem;
+/* Circular Member Avatar Discs matching SITCON reference */
+.memberAvatarDisc {
+  position: absolute;
+  width: 86px;
+  height: 86px;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition: 
+    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    z-index 0.1s ease;
+  user-select: none;
+  z-index: 10;
+}
+
+.photoCore {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2.5px solid rgba(255, 255, 255, 0.25);
+  background: #18181b;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7);
+  transition: border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.photoImg {
+  object-fit: cover;
+  border-radius: 50%;
+  transition: transform 0.35s ease;
+}
+
+.photoFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, #2a2a2a, #141414);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+/* Hover Pop-Up effect */
+.memberAvatarDisc:hover {
+  transform: translate(-50%, -50%) scale(1.22) translateY(-6px);
+  z-index: 60;
+}
+
+.memberAvatarDisc:hover .photoCore {
+  border-color: #ffffff;
+  box-shadow: 
+    0 18px 40px rgba(0, 0, 0, 0.95),
+    0 0 25px rgba(230, 29, 29, 0.75);
+}
+
+.memberAvatarDisc:hover .photoImg {
+  transform: scale(1.08);
+}
+
+/* Floating Tooltip */
+.avatarTooltip {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(14, 14, 16, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.85);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  z-index: 70;
+}
+
+.memberAvatarDisc:hover .avatarTooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.tooltipName {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.tooltipRole {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #e61d1d;
+}
+
+.tooltipId {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: #888888;
+}
+
+@media (max-width: 768px) {
+  .memberAvatarDisc {
+    width: 68px;
+    height: 68px;
   }
 
-  .anchorBtn {
-    padding: 0.4rem 0.55rem;
+  .hudBadge {
     font-size: 0.65rem;
+    padding: 5px 10px;
   }
 }

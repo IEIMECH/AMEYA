@@ -1,70 +1,55 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import Link from "next/link";
 import Image from "next/image";
-import { teamMembers, teamDivisions, TeamMember, TeamDivision } from "@/data/team";
+import { teamMembers, teamDivisions, TeamMember } from "@/data/team";
 import MemberInfoDrawer from "./MemberInfoDrawer";
 import styles from "./ExploreUniverse.module.css";
-import { List, Crosshair, Move, Radio, Sparkles } from "lucide-react";
+import { Move, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 
-export default function ExploreUniverse({ isEmbedded = false }: { isEmbedded?: boolean }) {
+interface ExploreUniverseProps {
+  isEmbedded?: boolean;
+  onSelectMember?: (m: TeamMember) => void;
+  targetDivisionId?: string;
+}
+
+export default function ExploreUniverse({
+  isEmbedded = false,
+  onSelectMember,
+  targetDivisionId,
+}: ExploreUniverseProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [pan, setPan] = useState({ x: -600, y: -150 });
+  const [pan, setPan] = useState({ x: -400, y: -100 });
+  const [zoom, setZoom] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0, panX: 0, panY: 0 });
   const [hasMoved, setHasMoved] = useState(false);
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
-  const [activeDivisionIndex, setActiveDivisionIndex] = useState(0);
 
-  // Parallax offsets for tokens
-  const [hoveredTokenId, setHoveredTokenId] = useState<string | null>(null);
-  const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
-
-  // Universe boundaries
-  const UNIVERSE_WIDTH = 2800;
-  const UNIVERSE_HEIGHT = 2000;
-
-  // Clamp pan so universe remains visible
-  const clampPan = useCallback((x: number, y: number) => {
-    if (!containerRef.current) return { x, y };
-    const vpW = containerRef.current.clientWidth;
-    const vpH = containerRef.current.clientHeight;
-
-    const minX = Math.min(0, -(UNIVERSE_WIDTH - vpW));
-    const maxX = 0;
-    const minY = Math.min(0, -(UNIVERSE_HEIGHT - vpH));
-    const maxY = 0;
-
-    return {
-      x: Math.max(minX, Math.min(maxX, x)),
-      y: Math.max(minY, Math.min(maxY, y)),
-    };
-  }, []);
+  // Universe dimensions
+  const UNIVERSE_WIDTH = 2600;
+  const UNIVERSE_HEIGHT = 1900;
 
   // Center on Executive Directorate on initial mount
   useEffect(() => {
     if (!containerRef.current) return;
     const vpW = containerRef.current.clientWidth;
     const vpH = containerRef.current.clientHeight;
-    const initialX = -(1400 - vpW / 2);
-    const initialY = -(460 - vpH / 2);
-    setPan(clampPan(initialX, initialY));
-  }, [clampPan]);
+    setPan({
+      x: -(1350 - vpW / 2),
+      y: -(460 - vpH / 2),
+    });
+  }, []);
 
   // Smooth pan to cluster coordinates
-  const panToCluster = (coords: { x: number; y: number }, divisionIdx: number) => {
+  const panToCluster = useCallback((coords: { x: number; y: number }) => {
     if (!containerRef.current) return;
     const vpW = containerRef.current.clientWidth;
     const vpH = containerRef.current.clientHeight;
 
     const targetX = -(coords.x - vpW / 2);
     const targetY = -(coords.y - vpH / 2);
-    const clamped = clampPan(targetX, targetY);
 
-    setActiveDivisionIndex(divisionIdx);
-
-    // Smooth animation loop
     const startX = pan.x;
     const startY = pan.y;
     const startTime = performance.now();
@@ -77,8 +62,8 @@ export default function ExploreUniverse({ isEmbedded = false }: { isEmbedded?: b
       const ease = 1 - Math.pow(1 - progress, 3);
 
       setPan({
-        x: startX + (clamped.x - startX) * ease,
-        y: startY + (clamped.y - startY) * ease,
+        x: startX + (targetX - startX) * ease,
+        y: startY + (targetY - startY) * ease,
       });
 
       if (progress < 1) {
@@ -87,11 +72,38 @@ export default function ExploreUniverse({ isEmbedded = false }: { isEmbedded?: b
     };
 
     requestAnimationFrame(animate);
-  };
+  }, [pan.x, pan.y]);
+
+  // Respond to targetDivisionId change from CommitteeBar
+  useEffect(() => {
+    if (!targetDivisionId) return;
+    const div = teamDivisions.find((d) => d.id === targetDivisionId);
+    if (div && div.centerCoords) {
+      panToCluster(div.centerCoords);
+    }
+  }, [targetDivisionId, panToCluster]);
+
+  // Non-passive wheel listener for smooth zoom in/out with scroll wheel
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      // Smooth exponential zoom step
+      const zoomFactor = e.deltaY < 0 ? 1.09 : 0.91;
+      setZoom((prevZoom) => {
+        const next = prevZoom * zoomFactor;
+        return Math.min(Math.max(next, 0.45), 2.2);
+      });
+    };
+
+    container.addEventListener("wheel", handleWheel, { passive: false });
+    return () => container.removeEventListener("wheel", handleWheel);
+  }, []);
 
   // Mouse Drag Handlers
   const handleMouseDown = (e: React.MouseEvent) => {
-    // If clicking an interactive button or member token directly, don't hijack unless dragged
     setIsDragging(true);
     setHasMoved(false);
     setDragStart({
@@ -111,7 +123,10 @@ export default function ExploreUniverse({ isEmbedded = false }: { isEmbedded?: b
       setHasMoved(true);
     }
 
-    setPan(clampPan(dragStart.panX + dx, dragStart.panY + dy));
+    setPan({
+      x: dragStart.panX + dx,
+      y: dragStart.panY + dy,
+    });
   };
 
   const handleMouseUp = () => {
@@ -119,62 +134,72 @@ export default function ExploreUniverse({ isEmbedded = false }: { isEmbedded?: b
   };
 
   // Touch Handlers for Mobile
+  const touchState = useRef<{ x: number; y: number; panX: number; panY: number; dist?: number }>({ x: 0, y: 0, panX: 0, panY: 0 });
+
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (e.touches.length !== 1) return;
-    const touch = e.touches[0];
-    setIsDragging(true);
-    setHasMoved(false);
-    setDragStart({
-      x: touch.clientX,
-      y: touch.clientY,
-      panX: pan.x,
-      panY: pan.y,
-    });
+    if (e.touches.length === 1) {
+      const t = e.touches[0];
+      setIsDragging(true);
+      setHasMoved(false);
+      touchState.current = {
+        x: t.clientX,
+        y: t.clientY,
+        panX: pan.x,
+        panY: pan.y,
+      };
+    } else if (e.touches.length === 2) {
+      // Pinch zoom start
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      touchState.current.dist = Math.hypot(dx, dy);
+    }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging || e.touches.length !== 1) return;
-    const touch = e.touches[0];
-    const dx = touch.clientX - dragStart.x;
-    const dy = touch.clientY - dragStart.y;
-
-    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
-      setHasMoved(true);
+    if (e.touches.length === 1 && isDragging) {
+      const t = e.touches[0];
+      const dx = t.clientX - touchState.current.x;
+      const dy = t.clientY - touchState.current.y;
+      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) setHasMoved(true);
+      setPan({
+        x: touchState.current.panX + dx,
+        y: touchState.current.panY + dy,
+      });
+    } else if (e.touches.length === 2 && touchState.current.dist) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const newDist = Math.hypot(dx, dy);
+      const scale = newDist / touchState.current.dist;
+      setZoom((z) => Math.min(Math.max(z * scale, 0.45), 2.2));
+      touchState.current.dist = newDist;
     }
-
-    setPan(clampPan(dragStart.panX + dx, dragStart.panY + dy));
   };
 
   const handleTouchEnd = () => {
     setIsDragging(false);
-  };
-
-  // 2.5D Parallax calculation on member token hover
-  const handleTokenMouseMove = (e: React.MouseEvent<HTMLDivElement>, memberId: string) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    const normX = (e.clientX - centerX) / (rect.width / 2);
-    const normY = (e.clientY - centerY) / (rect.height / 2);
-
-    setHoveredTokenId(memberId);
-    setParallaxOffset({ x: normX, y: normY });
-  };
-
-  const handleTokenMouseLeave = () => {
-    setHoveredTokenId(null);
-    setParallaxOffset({ x: 0, y: 0 });
+    touchState.current.dist = undefined;
   };
 
   const handleTokenClick = (m: TeamMember) => {
-    if (hasMoved) return; // Prevent click trigger when dragging universe
-    setSelectedMember(m);
+    if (hasMoved) return; // Prevent clicking when panning
+    if (onSelectMember) {
+      onSelectMember(m);
+    } else {
+      setSelectedMember(m);
+    }
+  };
+
+  const zoomIn = () => setZoom((z) => Math.min(z * 1.2, 2.2));
+  const zoomOut = () => setZoom((z) => Math.max(z / 1.2, 0.45));
+  const recenter = () => {
+    setZoom(1);
+    panToCluster({ x: 1350, y: 460 });
   };
 
   return (
-    <div 
-      className={`${styles.container} ${isEmbedded ? styles.embedded : ""}`} 
+    <div
       ref={containerRef}
+      className={`${styles.container} ${isEmbedded ? styles.embedded : ""}`}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
@@ -182,179 +207,136 @@ export default function ExploreUniverse({ isEmbedded = false }: { isEmbedded?: b
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      aria-label="Interactive 2.5D Explore Universe board. Drag to pan, scroll mouse wheel to zoom."
     >
-      {/* Top & Bottom Ambient Nav Masks */}
-      <div className={styles.navMaskTop} aria-hidden="true" />
-      <div className={styles.navMaskBottom} aria-hidden="true" />
-
-      {/* Top HUD Telemetry Banner */}
+      {/* Top Floating HUD: Controls & Instructions */}
       <div className={styles.topHud}>
-        <div className={styles.hudCoordinates}>
-          <Radio size={12} className={styles.hudBeacon} />
-          <span>EXPLORE CADRE // SECTOR PAN: [{Math.round(-pan.x)}, {Math.round(-pan.y)}]</span>
-        </div>
-
-        <div className={styles.hudInstruction}>
+        <div className={styles.hudBadge}>
           <Move size={12} />
-          <span>DRAG UNIVERSE // CLICK AGENT FOR SPEC</span>
+          <span>DRAG TO PAN &bull; SCROLL TO ZOOM</span>
         </div>
 
-        <button 
-          type="button" 
-          onClick={() => panToCluster({ x: 1400, y: 460 }, 0)} 
-          className={styles.recenterBtn}
-          aria-label="Recenter Universe"
-        >
-          <Crosshair size={13} />
-          <span>RECENTER</span>
-        </button>
+        {/* Zoom Controls */}
+        <div className={styles.zoomControls}>
+          <button 
+            type="button" 
+            onClick={zoomOut} 
+            className={styles.zoomBtn} 
+            aria-label="Zoom Out"
+            title="Zoom Out (or scroll wheel)"
+          >
+            <ZoomOut size={13} />
+          </button>
+
+          <span className={styles.zoomLabel}>{Math.round(zoom * 100)}%</span>
+
+          <button 
+            type="button" 
+            onClick={zoomIn} 
+            className={styles.zoomBtn} 
+            aria-label="Zoom In"
+            title="Zoom In (or scroll wheel)"
+          >
+            <ZoomIn size={13} />
+          </button>
+
+          <button 
+            type="button" 
+            onClick={recenter} 
+            className={styles.recenterBtn} 
+            aria-label="Recenter Board"
+            title="Recenter Board"
+          >
+            <RotateCcw size={12} />
+            <span>RESET</span>
+          </button>
+        </div>
       </div>
 
-      {/* Pannable Universe Canvas */}
-      <div 
-        id="explore-universe" 
-        className={styles.universe}
+      {/* Infinite Draggable & Zoomable Canvas Board */}
+      <div
+        className={styles.universeBoard}
         style={{
-          transform: `translate3d(${pan.x}px, ${pan.y}px, 0px)`,
+          width: `${UNIVERSE_WIDTH}px`,
+          height: `${UNIVERSE_HEIGHT}px`,
+          transform: `translate3d(${pan.x}px, ${pan.y}px, 0px) scale(${zoom})`,
+          transformOrigin: "center center",
         }}
       >
-        {/* Architectural Background Grid & Radar Markers */}
+        {/* Architectural Subtle Grid */}
         <div className={styles.gridOverlay} aria-hidden="true" />
-        <div className={styles.radarRing1} aria-hidden="true" />
-        <div className={styles.radarRing2} aria-hidden="true" />
-        <div className={styles.axisH} aria-hidden="true" />
-        <div className={styles.axisV} aria-hidden="true" />
 
-        {/* Division Zone Cluster Badges */}
+        {/* Floating Division Group Labels on the Board Floor */}
         {teamDivisions.map((div) => (
-          <div 
-            key={div.id} 
-            className={styles.divisionZone}
+          <div
+            key={div.id}
+            className={styles.divisionAnchor}
             style={{
               left: `${div.centerCoords.x}px`,
               top: `${div.centerCoords.y - 120}px`,
             }}
           >
-            <div className={styles.zonePill}>{div.code}</div>
-            <h3 className={styles.zoneTitle}>{div.name}</h3>
-            <p className={styles.zoneDesc}>{div.description}</p>
+            <span className={styles.divisionCode}>{div.code}</span>
+            <h3 className={styles.divisionTitle}>{div.name}</h3>
           </div>
         ))}
 
-        {/* Floating Interactive Member Tokens */}
+        {/* Circular Member Photo Tokens matching SITCON reference */}
         {teamMembers.map((m) => {
-          const isHovered = hoveredTokenId === m.id;
-          const px = isHovered ? parallaxOffset.x : 0;
-          const py = isHovered ? parallaxOffset.y : 0;
-
           return (
             <div
               key={m.id}
-              className={styles.memberToken}
+              className={styles.memberAvatarDisc}
               style={{
                 left: `${m.exploreCoords.x}px`,
                 top: `${m.exploreCoords.y}px`,
               }}
-              onMouseMove={(e) => handleTokenMouseMove(e, m.id)}
-              onMouseLeave={handleTokenMouseLeave}
               onClick={() => handleTokenClick(m)}
               role="button"
               tabIndex={0}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
-                  setSelectedMember(m);
+                  handleTokenClick(m);
                 }
               }}
-              aria-label={`${m.name} - ${m.role} - Click to inspect dossier`}
+              aria-label={`Inspect ${m.name}, ${m.role}`}
             >
-              {/* Token Avatar Disc with 2.5D Parallax */}
-              <div className={styles.avatarDisc}>
-                {/* Back Layer: Reticle Ring */}
-                <div 
-                  className={styles.avatarLayerBack}
-                  style={{
-                    transform: `translate(${px * -5}px, ${py * -5}px) scale(1.1)`,
-                  }}
-                />
-
-                {/* Core Layer: Carbon Plate with Initials or Photo */}
-                <div 
-                  className={styles.avatarLayerCore}
-                  style={{
-                    transform: `translate(${px * 6}px, ${py * 6}px)`,
-                  }}
-                >
-                  {m.image ? (
-                    <Image
-                      src={m.image}
-                      alt={m.name}
-                      fill
-                      sizes="96px"
-                      style={{ objectFit: "cover" }}
-                    />
-                  ) : (
-                    <span className={styles.tokenInitials}>{m.avatar}</span>
-                  )}
-                </div>
-
-                {/* Front Layer: Glowing Reticle Hairline */}
-                <div 
-                  className={styles.avatarLayerFront}
-                  style={{
-                    transform: `translate(${px * 3}px, ${py * 3}px)`,
-                  }}
-                />
+              <div className={styles.photoCore}>
+                {m.image ? (
+                  <Image
+                    src={m.image}
+                    alt={m.name}
+                    fill
+                    sizes="100px"
+                    className={styles.photoImg}
+                    priority={false}
+                  />
+                ) : (
+                  <div className={styles.photoFallback}>
+                    <span>{m.avatar}</span>
+                  </div>
+                )}
               </div>
 
-              {/* Tactical Nameplate Tooltip */}
-              <div className={styles.tokenNameplate}>
-                <div className={styles.tokenCallsign}>[{m.callsign}]</div>
-                <div className={styles.tokenName}>{m.name}</div>
-                <div className={styles.tokenRole}>{m.role}</div>
+              {/* Hover Pop-Up Tooltip Info */}
+              <div className={styles.avatarTooltip} aria-hidden="true">
+                <span className={styles.tooltipName}>{m.name}</span>
+                <span className={styles.tooltipRole}>{m.role}</span>
+                <span className={styles.tooltipId}>{m.callsign} &bull; 4th Year</span>
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* Floating HUD Anchor Dock */}
-      <div className={styles.anchorDock}>
-        {/* Mode Switch Button */}
-        <Link 
-          href="/team" 
-          className={styles.modeSwitchBtn}
-          aria-label="Switch to List Mode"
-        >
-          <List size={16} />
-          <span>LIST MODE</span>
-        </Link>
-
-        {/* Division Jump Fast-Links */}
-        <div className={styles.divisionLinks}>
-          {teamDivisions.map((div) => {
-            const isActive = activeDivisionIndex === div.index;
-            return (
-              <button
-                key={div.id}
-                type="button"
-                className={`${styles.anchorBtn} ${isActive ? styles.activeAnchor : ""}`}
-                onClick={() => panToCluster(div.centerCoords, div.index)}
-                aria-label={`Jump to ${div.name}`}
-              >
-                <span className={styles.anchorIndicator} />
-                <span className={styles.anchorText}>{div.name.split(" ")[0]}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Slide-out Member Info Drawer */}
-      <MemberInfoDrawer 
-        member={selectedMember} 
-        onClose={() => setSelectedMember(null)} 
-      />
+      {/* Internal Slide-out Drawer fallback when not controlled externally */}
+      {!onSelectMember && (
+        <MemberInfoDrawer
+          member={selectedMember}
+          onClose={() => setSelectedMember(null)}
+        />
+      )}
     </div>
   );
 }

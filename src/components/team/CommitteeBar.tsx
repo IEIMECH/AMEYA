@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { TeamDivision } from "@/data/team";
 import styles from "./CommitteeBar.module.css";
+import { List } from "lucide-react";
 
 interface CommitteeBarProps {
   divisions: TeamDivision[];
@@ -62,7 +63,6 @@ export default function CommitteeBar({
 
     const target = viewMode === "explore" ? "explore" : activeDivisionId;
     if (target) {
-      // Delay slightly for initial DOM layout calculation
       const timer = setTimeout(() => {
         updateIndicatorToKey(target);
       }, 40);
@@ -126,7 +126,7 @@ export default function CommitteeBar({
           aria-hidden="true"
         />
 
-        {/* Explore Mode Pill Button */}
+        {/* Mode Toggle Button matching SITCON reference */}
         <button
           ref={(el) => setBtnRef("explore", el)}
           type="button"
@@ -134,29 +134,38 @@ export default function CommitteeBar({
           onClick={onToggleMode}
           onMouseEnter={() => handleMouseEnter("explore")}
           aria-pressed={viewMode === "explore"}
-          title={viewMode === "explore" ? "Switch to List View" : "Switch to 2.5D Explore Universe"}
+          title={viewMode === "explore" ? "Switch back to List Mode" : "Switch to Interactive Explore Mode"}
         >
-          {/* 3x3 Dot Grid Matrix Icon matching SITCON reference */}
-          <svg
-            className={styles.dotGridIcon}
-            width="14"
-            height="14"
-            viewBox="0 0 16 16"
-            fill="currentColor"
-            aria-hidden="true"
-          >
-            <circle cx="3.5" cy="3.5" r="1.5" />
-            <circle cx="8" cy="3.5" r="1.5" />
-            <circle cx="12.5" cy="3.5" r="1.5" />
-            <circle cx="3.5" cy="8" r="1.5" />
-            <circle cx="8" cy="8" r="1.5" />
-            <circle cx="12.5" cy="8" r="1.5" />
-            <circle cx="3.5" cy="12.5" r="1.5" />
-            <circle cx="8" cy="12.5" r="1.5" />
-            <circle cx="12.5" cy="12.5" r="1.5" />
-          </svg>
-          <span className={styles.exploreLabel}>Explore Mode</span>
-          {viewMode === "explore" && <span className={styles.activeDot} />}
+          {viewMode === "explore" ? (
+            <>
+              {/* List Mode Icon matching SITCON screenshot 2 */}
+              <List size={14} className={styles.dotGridIcon} />
+              <span className={styles.exploreLabel}>List Mode</span>
+            </>
+          ) : (
+            <>
+              {/* 3x3 Dot Grid Matrix Icon matching SITCON screenshot 1 */}
+              <svg
+                className={styles.dotGridIcon}
+                width="14"
+                height="14"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <circle cx="3.5" cy="3.5" r="1.5" />
+                <circle cx="8" cy="3.5" r="1.5" />
+                <circle cx="12.5" cy="3.5" r="1.5" />
+                <circle cx="3.5" cy="8" r="1.5" />
+                <circle cx="8" cy="8" r="1.5" />
+                <circle cx="12.5" cy="8" r="1.5" />
+                <circle cx="3.5" cy="12.5" r="1.5" />
+                <circle cx="8" cy="12.5" r="1.5" />
+                <circle cx="12.5" cy="12.5" r="1.5" />
+              </svg>
+              <span className={styles.exploreLabel}>Explore Mode</span>
+            </>
+          )}
         </button>
 
         {/* Subtle Glass Divider */}
@@ -176,6 +185,7 @@ export default function CommitteeBar({
                 onClick={() => onSelectDivision(div.id)}
                 onMouseEnter={() => handleMouseEnter(div.id)}
                 aria-current={isActive ? "true" : undefined}
+                title={viewMode === "explore" ? `Pan board to ${div.name}` : `Scroll to ${div.name}`}
               >
                 <span>{div.name.replace(" Council", "").replace(" Team", "")}</span>
               </button>

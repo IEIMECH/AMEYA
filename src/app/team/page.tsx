@@ -144,20 +144,13 @@ export default function TeamPage() {
 
   const handleSelectDivision = (divId: string) => {
     setActiveDivisionId(divId);
-    if (viewMode === "explore") {
-      setViewMode("list");
-      setTimeout(() => {
-        const el = document.getElementById(divId);
-        if (el) {
-          el.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      }, 70);
-    } else {
+    if (viewMode === "list") {
       const el = document.getElementById(divId);
       if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     }
+    // If in explore mode, targetDivisionId prop automatically pans the board to this division
   };
 
   const handleToggleMode = () => {
@@ -169,41 +162,12 @@ export default function TeamPage() {
       {/* Ghost Industrial Watermark */}
       <div className="ghost-watermark">COUNCIL</div>
 
-      {/* Interactive Mode Switcher Strip */}
-      <div className={styles.modeSwitcherContainer}>
-        <div className={styles.modeSwitcher}>
-          <button
-            type="button"
-            className={`${styles.modeBtn} ${viewMode === "list" ? styles.activeModeBtn : ""}`}
-            onClick={() => setViewMode("list")}
-            aria-pressed={viewMode === "list"}
-          >
-            <List size={14} />
-            <span>LIST MODE</span>
-          </button>
 
-          <button
-            type="button"
-            className={`${styles.modeBtn} ${viewMode === "explore" ? styles.activeModeBtn : ""}`}
-            onClick={() => setViewMode("explore")}
-            aria-pressed={viewMode === "explore"}
-          >
-            <Compass size={14} />
-            <span>EXPLORE UNIVERSE</span>
-            <span className={styles.modeTag}>2.5D</span>
-          </button>
-        </div>
-
-        <Link href="/team/explore" className={styles.fullscreenLink} title="Launch Dedicated Fullscreen Universe">
-          <Sparkles size={12} />
-          <span>DEDICATED EXPLORE VIEW &rarr;</span>
-        </Link>
-      </div>
 
       {viewMode === "explore" ? (
         /* Embedded Interactive Explore Universe */
         <div className={styles.exploreWrapper}>
-          <ExploreUniverse isEmbedded />
+          <ExploreUniverse isEmbedded onSelectMember={(m) => setSelectedMember(m)} targetDivisionId={activeDivisionId} />
         </div>
       ) : (
         /* List Mode: Structured Division Categories */
