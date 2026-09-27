@@ -1,11 +1,11 @@
-/* Oversized Arc Orbit Styles */
+/* Oversized Arc Orbit Styles — Dense, Physical & Centered Focus */
 .stage {
   position: relative;
   width: 100%;
   min-height: 100vh;
   overflow: hidden;
-  padding-top: calc(var(--nav-height) + 1.5rem);
-  padding-bottom: 4rem;
+  padding-top: calc(var(--nav-height) + 1.25rem);
+  padding-bottom: 3rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -22,7 +22,7 @@
   width: min(1200px, 95vw);
   height: 650px;
   background: radial-gradient(ellipse at center, rgba(230, 29, 29, 0.12) 0%, rgba(230, 29, 29, 0.02) 50%, transparent 75%);
-  filter: blur(70px);
+  filter: blur(75px);
   pointer-events: none;
   z-index: 0;
 }
@@ -33,18 +33,18 @@
   background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1.2px, transparent 0);
   background-size: 40px 40px;
   pointer-events: none;
-  opacity: 0.65;
+  opacity: 0.60;
   z-index: 0;
 }
 
-/* Center Static Composition */
+/* Section 3: Protected Header Safe Zone */
 .centerStageHeader {
   text-align: center;
   max-width: 900px;
-  margin: 0 auto 0.5rem;
+  margin: 0 auto 0.75rem;
   padding: 0 1.5rem;
   position: relative;
-  z-index: 5;
+  z-index: 20;
 }
 
 .cadreTag {
@@ -61,19 +61,19 @@
 
 .centerTitle {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4.2vw, 3.2rem);
+  font-size: clamp(2rem, 4vw, 3.1rem);
   font-weight: 800;
   color: #ffffff;
-  margin: 0.2rem 0 0.5rem;
+  margin: 0.2rem 0 0.4rem;
   letter-spacing: -0.02em;
 }
 
 .centerSub {
   font-family: var(--font-body);
-  font-size: 0.92rem;
+  font-size: 0.90rem;
   color: #999999;
   max-width: 650px;
-  margin: 0 auto 1.25rem;
+  margin: 0 auto 1.1rem;
   line-height: 1.5;
 }
 
@@ -110,6 +110,21 @@
   color: #ffffff;
 }
 
+.dragHintPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  border: 1px solid rgba(230, 29, 29, 0.35);
+  background: rgba(230, 29, 29, 0.08);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #ff5e5e;
+  letter-spacing: 0.08em;
+}
+
 .hintText {
   font-family: var(--font-mono);
   font-size: 0.64rem;
@@ -121,65 +136,70 @@
 .arcWindow {
   position: relative;
   width: 100vw;
-  height: min(720px, 78vh);
+  height: min(650px, 72vh);
   overflow: hidden; /* Natural viewport clipping */
   z-index: 10;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
+  cursor: grab;
+  user-select: none;
+  touch-action: none; /* Smooth pointer capture */
 }
 
-/* Board-Tail Motion Trail */
+.arcWindow.isDragging {
+  cursor: grabbing;
+}
+
+/* Kinetic Board-Tail Motion Trail */
 .motionTrailGhost {
   position: absolute;
   top: 0;
   left: 0;
-  width: 155px;
-  height: 215px;
-  border-radius: 16px;
-  background: rgba(230, 29, 29, 0.12);
-  border: 1px dashed rgba(230, 29, 29, 0.35);
-  filter: blur(8px);
+  width: 165px;
+  height: 230px;
+  border-radius: 18px;
+  background: rgba(230, 29, 29, 0.15);
+  border: 1px dashed rgba(230, 29, 29, 0.4);
+  filter: blur(10px);
   pointer-events: none;
   transition: opacity 0.3s ease;
   will-change: transform, opacity;
 }
 
-/* Pure Visual Portrait Card */
+/* Pure Visual Portrait Card (Dense Spacing, 165px x 230px) */
 .portraitCard {
   position: absolute;
   top: 0;
   left: 0;
-  width: 155px;
-  min-height: 215px;
-  border-radius: 16px;
+  width: 165px;
+  height: 230px;
+  border-radius: 18px;
   background: #111113;
   border: 1.5px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.75);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.80);
   cursor: pointer;
   overflow: hidden;
   user-select: none;
   transition: 
-    transform 0.38s cubic-bezier(0.16, 1, 0.3, 1),
-    width 0.38s cubic-bezier(0.16, 1, 0.3, 1),
-    min-height 0.38s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.28s ease,
-    border-color 0.28s ease,
-    box-shadow 0.35s ease,
-    background 0.28s ease;
-  will-change: transform, opacity, width, min-height;
+    transform 0.62s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.45s ease,
+    border-color 0.4s ease,
+    box-shadow 0.45s ease,
+    filter 0.45s ease;
+  will-change: transform, opacity, filter;
 }
 
 /* Image Surface (Pure Photo During Movement) */
 .imageSurface {
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 4.1;
+  height: 100%;
   overflow: hidden;
   background: #18181b;
 }
 
 .portraitPhoto {
   object-fit: cover;
-  transition: transform 0.4s ease;
+  transition: transform 0.5s ease;
 }
 
 .fallbackMonogram {
@@ -191,48 +211,63 @@
   background: radial-gradient(circle, #2a2a2a, #111111);
   color: #fff;
   font-family: var(--font-display);
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 800;
 }
 
 .bottomVignette {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(14, 14, 16, 0.85) 0%, rgba(14, 14, 16, 0.2) 35%, transparent 60%);
+  background: linear-gradient(to top, rgba(10, 10, 12, 0.75) 0%, rgba(10, 10, 12, 0.1) 40%, transparent 65%);
+  pointer-events: none;
+  transition: background 0.4s ease;
+}
+
+/* Section 8: Background Cards During Hover (35-55% Opacity, Blur, Slight Desaturation) */
+.cardDimmed {
+  filter: blur(2.5px) grayscale(0.25) contrast(0.9);
   pointer-events: none;
 }
 
-.vignetteExpanded {
-  background: linear-gradient(to top, rgba(12, 12, 14, 0.98) 12%, rgba(12, 12, 14, 0.4) 45%, transparent 75%);
+/* Stage 1 Hover State: Preparing to Center */
+.cardHovered {
+  border-color: rgba(230, 29, 29, 0.65) !important;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.92), 0 0 25px rgba(230, 29, 29, 0.45) !important;
 }
 
-/* Hovered Card State (The Transformation) */
-.cardActive {
-  width: 295px !important;
-  min-height: 400px !important;
+/* Section 4, 5, 6: Focused Card State (Hero at Center, 1.50x Scale) */
+.cardFocused {
   border-color: #e61d1d !important;
-  background: rgba(12, 12, 14, 0.98) !important;
   box-shadow: 
-    0 25px 65px rgba(0, 0, 0, 0.96),
-    0 0 35px rgba(230, 29, 29, 0.65),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
-  z-index: 120 !important;
+    0 30px 75px rgba(0, 0, 0, 0.98),
+    0 0 45px rgba(230, 29, 29, 0.75),
+    inset 0 1px 0 rgba(255, 255, 255, 0.20) !important;
+  cursor: default;
 }
 
-.cardActive .portraitPhoto {
+.cardFocused .bottomVignette {
+  background: linear-gradient(to top, rgba(8, 8, 10, 0.96) 0%, rgba(8, 8, 10, 0.65) 45%, transparent 75%);
+}
+
+.cardFocused .portraitPhoto {
   transform: scale(1.05);
 }
 
-/* Profile Details Revealed ONLY on interaction */
-.profileDetailsReveal {
-  padding: 0.85rem 1.1rem 1.1rem;
+/* Section 7: Focused Hero Metadata Overlay (Subtle pill, doesn't expand card) */
+.focusedHeroOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.85rem 0.95rem;
   display: flex;
   flex-direction: column;
-  gap: 9px;
-  animation: revealSlideUp 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+  gap: 7px;
+  animation: heroOverlayFade 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  z-index: 10;
 }
 
-@keyframes revealSlideUp {
+@keyframes heroOverlayFade {
   from {
     opacity: 0;
     transform: translateY(8px);
@@ -243,151 +278,73 @@
   }
 }
 
-.detailsHeader {
+.heroInfoBlock {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.detailCallsign {
+.heroCallsign {
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: 0.58rem;
   font-weight: 700;
-  color: #e61d1d;
-  letter-spacing: 0.08em;
+  color: #ff5e5e;
+  letter-spacing: 0.1em;
 }
 
-.detailName {
+.heroName {
   font-family: var(--font-display);
-  font-size: 1.18rem;
+  font-size: 1.05rem;
   font-weight: 800;
   color: #ffffff;
   margin: 0;
-  letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 
-.detailRole {
+.heroRole {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.70rem;
   font-weight: 700;
-  color: #ff4d4d;
+  color: #e61d1d;
   margin: 0;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
 }
 
-.detailDept {
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
-  color: #999999;
-  margin: 2px 0 0;
-  line-height: 1.35;
-}
-
-.detailBio {
-  font-family: var(--font-body);
-  font-size: 0.72rem;
-  color: #cccccc;
-  line-height: 1.45;
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 7px;
-}
-
-.detailActions {
-  display: flex;
+.openDossierBtn {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  justify-content: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 9999px;
+  background: rgba(230, 29, 29, 0.22);
+  border: 1px solid rgba(230, 29, 29, 0.55);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.2s ease;
   margin-top: 2px;
 }
 
-.emailAction {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 10px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #b8b8b8;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.emailAction:hover {
-  background: rgba(230, 29, 29, 0.2);
-  border-color: #e61d1d;
-  color: #ffffff;
-}
-
-.dossierAction {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 5px 12px;
-  border-radius: 6px;
+.openDossierBtn:hover {
   background: #e61d1d;
-  border: 1px solid #ff4d4d;
-  color: #ffffff;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.dossierAction:hover {
-  background: #ff2a2a;
   box-shadow: 0 0 15px rgba(230, 29, 29, 0.6);
 }
 
-/* Dimmed background cards when a card is hovered */
-.cardDimmed {
-  filter: blur(2px) grayscale(30%);
-  pointer-events: auto;
-}
-
 /* Responsive Breakpoints */
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
   .portraitCard {
-    width: 130px;
-    min-height: 180px;
+    width: 145px;
+    height: 205px;
   }
-
-  .cardActive {
-    width: 270px !important;
-    min-height: 370px !important;
+  .cardFocused {
+    /* Slightly less scaling on mobile for perfect fit */
+    transform: scale(1.35) !important;
   }
-}
-
-@media (max-width: 640px) {
-  .stage {
-    padding-top: calc(var(--nav-height) + 1rem);
-  }
-
   .arcWindow {
-    height: 600px;
-  }
-
-  .portraitCard {
-    width: 110px;
-    min-height: 150px;
-    border-radius: 12px;
-  }
-
-  .cardActive {
-    width: 250px !important;
-    min-height: 350px !important;
-  }
-
-  .hintText {
-    display: none;
+    height: 560px;
   }
 }

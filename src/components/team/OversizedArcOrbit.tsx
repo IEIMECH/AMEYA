@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import Image from "next/image";
 import { teamMembers, TeamMember } from "@/data/team";
 import MemberInfoDrawer from "./MemberInfoDrawer";
@@ -8,74 +8,104 @@ import styles from "./OversizedArcOrbit.module.css";
 import { 
   Pause, 
   Play, 
-  Mail, 
   Sparkles, 
   ChevronRight, 
-  X
+  MoveHorizontal,
+  Info
 } from "lucide-react";
+
+// Total orbital slots: 24 slots separated by exactly 15 degrees (360 / 24)
+// Creates dense, physical, continuous wheel with 5-7 portraits visible at once
+const TOTAL_SLOTS = 24;
+const SLOT_SEPARATION_RAD = (2 * Math.PI) / TOTAL_SLOTS; // 15 degrees in radians
+
+// Base automatic clockwise rotation speed (~45s for 360 loop)
+// In our coordinate system, positive speed = CLOCKWISE rotation across top arc
+const BASE_SPEED = 0.0022;
 
 export default function OversizedArcOrbit() {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Orbital angle & velocity
+  // Orbit angle & physics velocity
   const rotationRef = useRef<number>(0);
   const [rotation, setRotation] = useState<number>(0);
+  const [dragOffsetY, setDragOffsetY] = useState<number>(0);
+  const dragOffsetYRef = useRef<number>(0);
   const [speedFactor, setSpeedFactor] = useState<number>(1);
 
-  // Constant base speed: clockwise rotation, ~40s per 360 loop
-  const BASE_SPEED = 0.0026;
   const currentSpeedRef = useRef<number>(BASE_SPEED);
   const targetSpeedRef = useRef<number>(BASE_SPEED);
-
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
-  const [activeMemberId, setActiveMemberId] = useState<string | null>(null);
-  const [selectedDrawerMember, setSelectedDrawerMember] = useState<TeamMember | null>(null);
-  
-  // Staged profile reveal: details only appear after stabilization (~400ms)
-  const [isStabilized, setIsStabilized] = useState<boolean>(false);
-  const stabilizationTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Interaction State: Hover vs Drag
+  const [hoveredSlotId, setHoveredSlotId] = useState<string | null>(null);
+  const [focusedSlotId, setFocusedSlotId] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const isDraggingRef = useRef<boolean>(false);
+  const isPointerDown = useRef<boolean>(false);
+  const hasExceededDragThreshold = useRef<boolean>(false);
+
+  // Drag coordinates & tracking
+  const pointerStartX = useRef<number>(0);
+  const pointerStartY = useRef<number>(0);
+  const lastPointerX = useRef<number>(0);
+  const lastPointerY = useRef<number>(0);
+  const lastPointerTime = useRef<number>(0);
+  const dragVelocityX = useRef<number>(0);
+
+  // Inertia physics
+  const isInertiaActiveRef = useRef<boolean>(false);
+  const inertiaVelocityRef = useRef<number>(0);
+  const springBackYRef = useRef<boolean>(false);
+
+  // Timers for staged focus and resume
+  const focusTimerRef = useRef<NodeJS.Timeout | null>(null);
   const resumeTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Responsive Oversized Orbit Geometry
+  // Slide-out Full Dossier Drawer
+  const [selectedDrawerMember, setSelectedDrawerMember] = useState<TeamMember | null>(null);
+
+  // Responsive Orbit Dimensions (Tighter radius for dense continuous wheel)
   const [geometry, setGeometry] = useState({
     vpW: 1440,
-    vpH: 850,
-    rx: 1420,
-    ry: 1080,
-    yApex: 210,
+    vpH: 640,
+    rx: 1050,  // Diameter ~2100px (desktop)
+    ry: 820,
+    yApex: 140, // Protected safe zone: apex sits safely below header
   });
 
+  // Handle responsive resize
   useEffect(() => {
     const handleResize = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
       
       if (w < 640) {
-        // Mobile: sized for 2-4 visible portraits at a time
+        // Mobile
         setGeometry({
           vpW: w,
-          vpH: h,
-          rx: Math.max(w * 0.88, 380),
-          ry: Math.max(h * 0.82, 540),
-          yApex: 180,
+          vpH: Math.max(h * 0.70, 520),
+          rx: Math.max(w * 0.92, 420),
+          ry: 580,
+          yApex: 110,
         });
       } else if (w < 1024) {
-        // Tablet: sized for 4-6 visible portraits
+        // Tablet
         setGeometry({
           vpW: w,
-          vpH: h,
-          rx: Math.max(w * 0.95, 780),
-          ry: Math.max(h * 0.95, 780),
-          yApex: 200,
+          vpH: 600,
+          rx: Math.max(w * 0.96, 750),
+          ry: 700,
+          yApex: 125,
         });
       } else {
-        // Desktop: massive oversized orbit (diameter ~2800px) showing 5-8 portraits
+        // Desktop: orbit diameter ~2100px with 15 deg separation -> ~110px gap between cards
         setGeometry({
           vpW: w,
-          vpH: h,
-          rx: Math.max(w * 0.98, 1420),
-          ry: Math.max(h * 1.18, 1080),
-          yApex: 215,
+          vpH: 640,
+          rx: Math.max(w * 0.92, 1050),
+          ry: 820,
+          yApex: 140,
         });
       }
     };
@@ -85,7 +115,7 @@ export default function OversizedArcOrbit() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Reduced motion preference
+  // Respect prefers-reduced-motion
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (mediaQuery.matches) {
@@ -95,20 +125,47 @@ export default function OversizedArcOrbit() {
     }
   }, []);
 
-  // Main Continuous Orbit Loop with Smooth Deceleration / Acceleration
+  // Main Animation Frame Loop: Handles Automatic Orbit + Inertia Damping + Spring-Back
   useEffect(() => {
     let animId: number;
 
     const tick = () => {
-      // Smoothly ease current speed to target speed (duration ~600-900ms)
-      const diff = targetSpeedRef.current - currentSpeedRef.current;
-      currentSpeedRef.current += diff * 0.055;
+      // 1. Direct Dragging: User controls wheel, auto rotation pauses
+      if (isDraggingRef.current) {
+        // Dragging handles position directly in onPointerMove
+      } 
+      // 2. Inertia after Drag Release: Natural friction decay (0.94)
+      else if (isInertiaActiveRef.current) {
+        rotationRef.current += inertiaVelocityRef.current;
+        inertiaVelocityRef.current *= 0.94; // Physical friction
 
-      // Update rotation angle
-      rotationRef.current += currentSpeedRef.current;
-      setRotation(rotationRef.current);
+        // Once velocity slows down near target speed, transition back to auto rotation
+        if (Math.abs(inertiaVelocityRef.current) < Math.abs(BASE_SPEED) * 1.05) {
+          isInertiaActiveRef.current = false;
+          currentSpeedRef.current = BASE_SPEED;
+          targetSpeedRef.current = isPlaying ? BASE_SPEED : 0;
+        }
+        setRotation(rotationRef.current);
+      } 
+      // 3. Normal Orbit & Hover Deceleration / Acceleration
+      else {
+        const diff = targetSpeedRef.current - currentSpeedRef.current;
+        currentSpeedRef.current += diff * 0.06; // Smooth ease (600-900ms)
+        rotationRef.current += currentSpeedRef.current;
+        setRotation(rotationRef.current);
+      }
 
-      // Speed factor: 1 at full rotation, smoothly decays to 0 on stop
+      // Vertical offset spring-back after dragging Y
+      if (springBackYRef.current) {
+        dragOffsetYRef.current *= 0.88;
+        if (Math.abs(dragOffsetYRef.current) < 0.4) {
+          dragOffsetYRef.current = 0;
+          springBackYRef.current = false;
+        }
+        setDragOffsetY(dragOffsetYRef.current);
+      }
+
+      // Dynamic trail factor (0 when stopped, 1 at full speed)
       const ratio = Math.min(Math.abs(currentSpeedRef.current / BASE_SPEED), 1);
       setSpeedFactor(ratio);
 
@@ -117,42 +174,148 @@ export default function OversizedArcOrbit() {
 
     animId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(animId);
-  }, []);
+  }, [isPlaying]);
 
-  // Focus Member on Hover / Tap
-  const handleFocusMember = (id: string) => {
+  // Pointer Down: Initiate potential drag
+  const handlePointerDown = (e: React.PointerEvent) => {
+    if (e.button !== 0) return; // Left click or primary touch only
+
+    isPointerDown.current = true;
+    hasExceededDragThreshold.current = false;
+    pointerStartX.current = e.clientX;
+    pointerStartY.current = e.clientY;
+    lastPointerX.current = e.clientX;
+    lastPointerY.current = e.clientY;
+    lastPointerTime.current = performance.now();
+    dragVelocityX.current = 0;
+    isInertiaActiveRef.current = false;
+
+    // Capture pointer events on the container
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch {
+      // Ignore if not supported
+    }
+  };
+
+  // Pointer Move: Dragging horizontally (rotation) & vertically (tilt/shift)
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isPointerDown.current) return;
+
+    const totalDx = e.clientX - pointerStartX.current;
+    const totalDy = e.clientY - pointerStartY.current;
+    const distance = Math.hypot(totalDx, totalDy);
+
+    // Threshold check (8px): Prevents micro-jitter when trying to click
+    if (!hasExceededDragThreshold.current && distance > 8) {
+      hasExceededDragThreshold.current = true;
+      isDraggingRef.current = true;
+      setIsDragging(true);
+
+      // Section 15: Drag overrides hover - dismiss any focused card immediately
+      if (focusTimerRef.current) clearTimeout(focusTimerRef.current);
+      setHoveredSlotId(null);
+      setFocusedSlotId(null);
+    }
+
+    if (hasExceededDragThreshold.current) {
+      const now = performance.now();
+      const dt = Math.max(now - lastPointerTime.current, 1);
+      const dx = e.clientX - lastPointerX.current;
+      const dy = e.clientY - lastPointerY.current;
+
+      lastPointerX.current = e.clientX;
+      lastPointerY.current = e.clientY;
+      lastPointerTime.current = now;
+
+      // Section 11: Dragging horizontally directly rotates the wheel
+      // Drag Right (dx > 0) -> CLOCKWISE rotation
+      // Drag Left (dx < 0)  -> COUNTER-CLOCKWISE rotation
+      // Sensitivity: ~0.20 deg / px = 0.0035 rad / px
+      const dAngle = dx * 0.0035;
+      rotationRef.current += dAngle;
+      setRotation(rotationRef.current);
+
+      // Track release velocity for inertia
+      dragVelocityX.current = (dx / dt) * 0.0025;
+
+      // Section 12: Dragging vertically (Y-axis tilt / depth response)
+      // Clamped to subtle range [-60px, +60px]
+      dragOffsetYRef.current = Math.max(-60, Math.min(60, dragOffsetYRef.current + dy * 0.40));
+      setDragOffsetY(dragOffsetYRef.current);
+    }
+  };
+
+  // Pointer Up / Cancel: Apply inertia and release drag
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (!isPointerDown.current) return;
+    isPointerDown.current = false;
+
+    try {
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+    } catch {
+      // Ignore
+    }
+
+    if (hasExceededDragThreshold.current) {
+      // Release Drag -> Activate Inertia
+      isDraggingRef.current = false;
+      setIsDragging(false);
+
+      const releaseVelocity = Math.max(-0.035, Math.min(0.035, dragVelocityX.current));
+      if (Math.abs(releaseVelocity) > 0.003) {
+        isInertiaActiveRef.current = true;
+        inertiaVelocityRef.current = releaseVelocity;
+      } else {
+        // If slow release, seamlessly resume automatic clockwise rotation
+        targetSpeedRef.current = isPlaying ? BASE_SPEED : 0;
+      }
+
+      // Spring-back vertical displacement smoothly to 0
+      springBackYRef.current = true;
+    }
+  };
+
+  // Hover Interaction: Two-stage physical transition
+  // Stage 1: Orbit decelerates (600-900ms)
+  // Stage 2: Card smoothly moves to center focus point & scales to 1.50x
+  const handleHoverSlot = (slotId: string) => {
+    // Section 15: If dragging, disable hover completely
+    if (isDraggingRef.current || hasExceededDragThreshold.current) return;
+
     if (resumeTimerRef.current) {
       clearTimeout(resumeTimerRef.current);
       resumeTimerRef.current = null;
     }
-    if (stabilizationTimerRef.current) {
-      clearTimeout(stabilizationTimerRef.current);
-      stabilizationTimerRef.current = null;
+    if (focusTimerRef.current) {
+      clearTimeout(focusTimerRef.current);
+      focusTimerRef.current = null;
     }
 
-    setActiveMemberId(id);
-    setIsStabilized(false);
-    targetSpeedRef.current = 0; // Smooth deceleration to full stop
+    setHoveredSlotId(slotId);
+    targetSpeedRef.current = 0; // Decelerate orbit to full stop
 
-    // Reveal profile metadata only after motion stabilizes (~400ms)
-    stabilizationTimerRef.current = setTimeout(() => {
-      setIsStabilized(true);
-    }, 400);
+    // Stage 2: Focus card smoothly travels to center and scales up
+    focusTimerRef.current = setTimeout(() => {
+      setFocusedSlotId(slotId);
+    }, 200);
   };
 
-  // Leave Hover State / Tap Away
-  const handleBlurMember = () => {
-    if (stabilizationTimerRef.current) {
-      clearTimeout(stabilizationTimerRef.current);
-      stabilizationTimerRef.current = null;
+  // Leave Hover State: Card returns to orbit, orbit smoothly resumes clockwise
+  const handleLeaveSlot = () => {
+    if (isDraggingRef.current) return;
+
+    if (focusTimerRef.current) {
+      clearTimeout(focusTimerRef.current);
+      focusTimerRef.current = null;
     }
 
-    setIsStabilized(false);
-    setActiveMemberId(null);
+    setHoveredSlotId(null);
+    setFocusedSlotId(null);
 
     if (!isPlaying) return;
 
-    // Smooth delay (200-300ms) before resuming rotation from current angle
+    // 250ms pause before smoothly accelerating back to clockwise rotation
     resumeTimerRef.current = setTimeout(() => {
       targetSpeedRef.current = BASE_SPEED;
     }, 250);
@@ -166,75 +329,76 @@ export default function OversizedArcOrbit() {
     } else {
       targetSpeedRef.current = BASE_SPEED;
       setIsPlaying(true);
-      setActiveMemberId(null);
-      setIsStabilized(false);
+      setHoveredSlotId(null);
+      setFocusedSlotId(null);
     }
   };
 
   // Center Coordinates of the Giant Invisible Orbit
   const centerX = geometry.vpW / 2;
-  const centerY = geometry.yApex + geometry.ry;
+  const centerY = geometry.yApex + geometry.ry + dragOffsetY;
 
-  const totalMembers = teamMembers.length;
+  // Dedicated Visual Focus Point: Center of the designated Team content area
+  // Sits safely in visual center (50% X, 52% Y of arcWindow), completely below header safe zone
+  const focusPointX = geometry.vpW / 2;
+  const focusPointY = geometry.vpH * 0.52;
 
-  // Calculate Member Positions along the Oversized Arc
-  const cardData = useMemo(() => {
-    return teamMembers.map((m, index) => {
-      // 20-degree equal angular separation (360 / 18)
+  // Calculate Member Positions for 24 dense slots
+  const slotsData = useMemo(() => {
+    return Array.from({ length: TOTAL_SLOTS }, (_, index) => {
+      const slotId = `slot-${index}`;
+      const m = teamMembers[index % teamMembers.length];
+
+      // 15-degree equal angular separation (360 / 24)
       // Top apex is -PI/2 (12 o'clock). Clockwise rotation moves cards Left -> Right across top.
-      const baseAngle = -Math.PI / 2 + (2 * Math.PI * index) / totalMembers;
+      const baseAngle = -Math.PI / 2 + index * SLOT_SEPARATION_RAD;
       const angle = baseAngle + rotation;
 
       // Position on the oversized ellipse
-      const x = centerX + geometry.rx * Math.cos(angle);
-      const y = centerY + geometry.ry * Math.sin(angle);
+      const orbitX = centerX + geometry.rx * Math.cos(angle);
+      const orbitY = centerY + geometry.ry * Math.sin(angle);
 
       // Distance from top apex (-PI/2) in radians
       let diffFromApex = ((angle + Math.PI / 2) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
       if (diffFromApex > Math.PI) diffFromApex = 2 * Math.PI - diffFromApex;
 
-      // Perspective Scale & Depth: Apex cards are larger, edge cards smaller
+      // Perspective Depth along the visible arc
       const cosApex = Math.cos(diffFromApex); // 1.0 at apex, drops towards edges
-      const perspectiveScale = 0.80 + 0.36 * Math.max(0, cosApex); // [0.80 to 1.16]
-      const perspectiveOpacity = 0.55 + 0.45 * Math.max(0, cosApex); // [0.55 to 1.00]
+      const perspectiveScale = 0.85 + 0.25 * Math.max(0, cosApex); // [0.85 to 1.10]
+      const perspectiveOpacity = 0.65 + 0.35 * Math.max(0, cosApex); // [0.65 to 1.00]
       const zIndex = Math.round(Math.max(0, cosApex) * 40) + 10;
 
-      // Motion Trail Ghost Coordinates (lagging behind rotation along arc)
-      const trail1Angle = angle - 0.038 * speedFactor;
-      const trail1X = centerX + geometry.rx * Math.cos(trail1Angle);
-      const trail1Y = centerY + geometry.ry * Math.sin(trail1Angle);
+      // Motion Trail Ghost Coordinates (lagging along arc during movement)
+      const trailAngle = angle - 0.040 * speedFactor;
+      const trailX = centerX + geometry.rx * Math.cos(trailAngle);
+      const trailY = centerY + geometry.ry * Math.sin(trailAngle);
 
-      const trail2Angle = angle - 0.076 * speedFactor;
-      const trail2X = centerX + geometry.rx * Math.cos(trail2Angle);
-      const trail2Y = centerY + geometry.ry * Math.sin(trail2Angle);
-
-      // Overscan buffer: only render cards within window + 200px buffer
-      const isVisibleInWindow = x >= -220 && x <= geometry.vpW + 220 && y <= geometry.vpH + 220;
+      // Overscan buffer: only render slots within window + 220px buffer
+      const isVisibleInWindow = orbitX >= -220 && orbitX <= geometry.vpW + 220 && orbitY <= geometry.vpH + 220;
 
       return {
+        slotId,
         m,
-        x,
-        y,
+        orbitX,
+        orbitY,
         perspectiveScale,
         perspectiveOpacity,
         zIndex,
-        trail1X,
-        trail1Y,
-        trail2X,
-        trail2Y,
+        trailX,
+        trailY,
         isVisibleInWindow,
       };
     });
-  }, [rotation, totalMembers, centerX, centerY, geometry.rx, geometry.ry, geometry.vpW, geometry.vpH, speedFactor]);
+  }, [rotation, centerX, centerY, geometry.rx, geometry.ry, geometry.vpW, geometry.vpH, speedFactor, dragOffsetY]);
 
   return (
-    <section className={styles.stage} aria-label="Team Members Oversized Arc Orbit">
-      {/* Subtle Atmosphere & Background Halo */}
+    <section className={styles.stage} aria-label="Team Members Interactive Orbit">
+      {/* Subtle Atmosphere & Background Lighting */}
       <div className={styles.ambientHalo} aria-hidden="true" />
       <div className={styles.gridMatrix} aria-hidden="true" />
 
-      {/* Center Static Title & Subordinate Chapter Composition */}
-      <div className={styles.centerStageHeader}>
+      {/* Protected Header Safe Zone: Sits strictly above the orbit */}
+      <header className={styles.centerStageHeader}>
         <div className={styles.cadreTag}>
           <Sparkles size={12} color="#e61d1d" />
           <span>IEI STUDENT CHAPTER // COUNCIL CADRE</span>
@@ -246,7 +410,7 @@ export default function OversizedArcOrbit() {
           Department of Mechanical Engineering &bull; 18 Council Officers &bull; 4th Year
         </p>
 
-        {/* Orbit State HUD & Controls */}
+        {/* Orbit State HUD & Direct Manipulation Controls */}
         <div className={styles.orbitControlsRow}>
           <button
             type="button"
@@ -258,7 +422,7 @@ export default function OversizedArcOrbit() {
             {isPlaying ? (
               <>
                 <Pause size={12} />
-                <span>ORBIT ROTATING</span>
+                <span>CLOCKWISE ORBIT</span>
               </>
             ) : (
               <>
@@ -267,82 +431,105 @@ export default function OversizedArcOrbit() {
               </>
             )}
           </button>
-          <span className={styles.hintText}>HOVER TO FOCUS // PURE PORTRAITS IN MOTION</span>
-        </div>
-      </div>
+          
+          <div className={styles.dragHintPill}>
+            <MoveHorizontal size={13} color="#e61d1d" />
+            <span>CLICK &amp; DRAG TO SPIN WHEEL</span>
+          </div>
 
-      {/* Oversized Arc Viewport Window */}
+          <span className={styles.hintText}>HOVER PORTRAIT TO FOCUS</span>
+        </div>
+      </header>
+
+      {/* Oversized Arc Viewport Window with Direct Pointer Dragging */}
       <div 
         ref={containerRef}
-        className={styles.arcWindow}
+        className={`${styles.arcWindow} ${isDragging ? styles.isDragging : ""}`}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
         onClick={(e) => {
           // Tap background on touch screen to deselect
           if ((e.target as HTMLElement).classList.contains(styles.arcWindow)) {
-            handleBlurMember();
+            handleLeaveSlot();
           }
         }}
       >
-        {cardData.map(({ m, x, y, perspectiveScale, perspectiveOpacity, zIndex, trail1X, trail1Y, trail2X, trail2Y, isVisibleInWindow }) => {
+        {slotsData.map(({ slotId, m, orbitX, orbitY, perspectiveScale, perspectiveOpacity, zIndex, trailX, trailY, isVisibleInWindow }) => {
           if (!isVisibleInWindow) return null;
 
-          const isHovered = activeMemberId === m.id;
-          const isOtherHovered = activeMemberId !== null && !isHovered;
+          const isHovered = hoveredSlotId === slotId;
+          const isFocused = focusedSlotId === slotId;
+          const isAnyFocused = focusedSlotId !== null || hoveredSlotId !== null;
+          const isOtherDimmed = isAnyFocused && !isHovered;
 
-          // Scale and opacity adjustments
-          let cardScale = perspectiveScale;
-          let cardOpacity = perspectiveOpacity;
-          let cardZ = zIndex;
+          // Target Coordinates & Scale
+          // Section 4 & 5: When focused, the card smoothly moves to the central focus point
+          let targetX = orbitX;
+          let targetY = orbitY;
+          let targetScale = perspectiveScale;
+          let targetOpacity = perspectiveOpacity;
+          let targetZ = zIndex;
 
-          if (isHovered) {
-            cardScale = 1.24;
-            cardOpacity = 1;
-            cardZ = 120;
-          } else if (isOtherHovered) {
-            cardScale = perspectiveScale * 0.88;
-            cardOpacity = 0.28;
+          if (isFocused) {
+            targetX = focusPointX;
+            targetY = focusPointY;
+            targetScale = 1.50; // Section 6: 1.45 - 1.6x hero scale
+            targetOpacity = 1;
+            targetZ = 200;      // Stays topmost
+          } else if (isHovered) {
+            // Stage 1 transition: Start moving towards center
+            targetX = orbitX + (focusPointX - orbitX) * 0.45;
+            targetY = orbitY + (focusPointY - orbitY) * 0.45;
+            targetScale = 1.25;
+            targetOpacity = 1;
+            targetZ = 190;
+          } else if (isOtherDimmed) {
+            // Section 8: Background cards freeze, drop to 35-55% opacity, subtle blur
+            targetOpacity = 0.42;
+            targetScale = perspectiveScale * 0.92;
           }
 
           return (
-            <div key={m.id}>
-              {/* Ethereal Motion Trail (active during movement, dissolves smoothly on freeze) */}
-              {speedFactor > 0.08 && !isHovered && !isOtherHovered && (
-                <>
-                  <div
-                    className={styles.motionTrailGhost}
-                    style={{
-                      transform: `translate3d(calc(${trail2X}px - 50%), calc(${trail2Y}px - 50%), 0px) scale(${perspectiveScale * 0.90})`,
-                      opacity: 0.12 * speedFactor,
-                      zIndex: zIndex - 2,
-                    }}
-                    aria-hidden="true"
-                  />
-                  <div
-                    className={styles.motionTrailGhost}
-                    style={{
-                      transform: `translate3d(calc(${trail1X}px - 50%), calc(${trail1Y}px - 50%), 0px) scale(${perspectiveScale * 0.95})`,
-                      opacity: 0.25 * speedFactor,
-                      zIndex: zIndex - 1,
-                    }}
-                    aria-hidden="true"
-                  />
-                </>
+            <div key={slotId}>
+              {/* Kinetic Motion Trail (Active during continuous movement, dissolves on stop) */}
+              {speedFactor > 0.12 && !isAnyFocused && !isDragging && (
+                <div
+                  className={styles.motionTrailGhost}
+                  style={{
+                    transform: `translate3d(calc(${trailX}px - 50%), calc(${trailY}px - 50%), 0px) scale(${perspectiveScale * 0.95})`,
+                    opacity: 0.22 * speedFactor,
+                    zIndex: zIndex - 1,
+                  }}
+                  aria-hidden="true"
+                />
               )}
 
-              {/* Pure Visual Portrait Card during Motion -> Profile Details on Interaction */}
+              {/* Pure Portrait Card: The Image is the Hero */}
               <div
-                className={`${styles.portraitCard} ${isHovered ? styles.cardActive : ""} ${isOtherHovered ? styles.cardDimmed : ""}`}
+                className={`
+                  ${styles.portraitCard} 
+                  ${isFocused ? styles.cardFocused : ""} 
+                  ${isHovered ? styles.cardHovered : ""} 
+                  ${isOtherDimmed ? styles.cardDimmed : ""}
+                `}
                 style={{
-                  transform: `translate3d(calc(${x}px - 50%), calc(${y}px - 50%), 0px) scale(${cardScale})`,
-                  opacity: cardOpacity,
-                  zIndex: cardZ,
+                  transform: `translate3d(calc(${targetX}px - 50%), calc(${targetY}px - 50%), 0px) scale(${targetScale})`,
+                  opacity: targetOpacity,
+                  zIndex: targetZ,
                 }}
-                onMouseEnter={() => handleFocusMember(m.id)}
-                onMouseLeave={handleBlurMember}
-                onClick={() => {
-                  if (isHovered) {
+                onMouseEnter={() => handleHoverSlot(slotId)}
+                onMouseLeave={handleLeaveSlot}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // If user just dragged, don't open dossier
+                  if (hasExceededDragThreshold.current) return;
+
+                  if (isFocused) {
                     setSelectedDrawerMember(m);
                   } else {
-                    handleFocusMember(m.id);
+                    handleHoverSlot(slotId);
                   }
                 }}
                 role="button"
@@ -353,7 +540,7 @@ export default function OversizedArcOrbit() {
                     setSelectedDrawerMember(m);
                   }
                 }}
-                aria-label={`Team member portrait: ${m.name}, ${m.role}. Focus to reveal full profile.`}
+                aria-label={`Team member portrait: ${m.name}, ${m.role}. Click to open dossier.`}
               >
                 {/* Visual Portrait Image (Pure Photo, No Text While Moving) */}
                 <div className={styles.imageSurface}>
@@ -362,7 +549,7 @@ export default function OversizedArcOrbit() {
                       src={m.image}
                       alt={m.name}
                       fill
-                      sizes="360px"
+                      sizes="320px"
                       className={styles.portraitPhoto}
                       priority={false}
                     />
@@ -372,50 +559,34 @@ export default function OversizedArcOrbit() {
                     </div>
                   )}
 
-                  {/* Gradient bottom shadow */}
-                  <div className={`${styles.bottomVignette} ${isHovered ? styles.vignetteExpanded : ""}`} />
-                </div>
+                  {/* Sleek Bottom Vignette */}
+                  <div className={styles.bottomVignette} />
 
-                {/* Profile Information: Revealed ONLY on interaction / hover */}
-                {isHovered && isStabilized && (
-                  <div className={styles.profileDetailsReveal}>
-                    <div className={styles.detailsHeader}>
-                      <span className={styles.detailCallsign}>{m.callsign} &bull; {m.year}</span>
-                      <h3 className={styles.detailName}>{m.name}</h3>
-                      <p className={styles.detailRole}>{m.role}</p>
-                      <p className={styles.detailDept}>{m.department}</p>
-                    </div>
-
-                    {m.bio && <p className={styles.detailBio}>{m.bio}</p>}
-
-                    <div className={styles.detailActions}>
-                      {m.socials.email && (
-                        <a
-                          href={`mailto:${m.socials.email}`}
-                          className={styles.emailAction}
-                          onClick={(e) => e.stopPropagation()}
-                          title={`Email ${m.name}`}
-                        >
-                          <Mail size={12} />
-                          <span>{m.socials.email.split("@")[0]}</span>
-                        </a>
-                      )}
+                  {/* Section 7: Focused State Hero Details (Subtle pill, doesn't expand card) */}
+                  {isFocused && (
+                    <div className={styles.focusedHeroOverlay}>
+                      <div className={styles.heroInfoBlock}>
+                        <span className={styles.heroCallsign}>{m.callsign} &bull; {m.year}</span>
+                        <h3 className={styles.heroName}>{m.name}</h3>
+                        <p className={styles.heroRole}>{m.role}</p>
+                      </div>
 
                       <button
                         type="button"
-                        className={styles.dossierAction}
+                        className={styles.openDossierBtn}
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedDrawerMember(m);
                         }}
-                        title="Open Full Technical Dossier"
+                        title={`Open full technical dossier for ${m.name}`}
                       >
-                        <span>DOSSIER</span>
+                        <Info size={12} />
+                        <span>VIEW DOSSIER</span>
                         <ChevronRight size={13} />
                       </button>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
           );
