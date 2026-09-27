@@ -1,4 +1,4 @@
-/* Oversized Arc Orbit Styles — Dense, Physical & Centered Focus */
+/* Oversized Arc Orbit Styles — Self-Explanatory, Proximity Intent, Clean Pure Portraits */
 .stage {
   position: relative;
   width: 100%;
@@ -37,11 +37,11 @@
   z-index: 0;
 }
 
-/* Section 3: Protected Header Safe Zone */
+/* Protected Header Safe Zone: Sits strictly above the orbit with ZERO instructional UI */
 .centerStageHeader {
   text-align: center;
   max-width: 900px;
-  margin: 0 auto 0.75rem;
+  margin: 0 auto 0.5rem;
   padding: 0 1.5rem;
   position: relative;
   z-index: 20;
@@ -56,12 +56,12 @@
   font-weight: 700;
   color: #e61d1d;
   letter-spacing: 0.15em;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.35rem;
 }
 
 .centerTitle {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 3.1rem);
+  font-size: clamp(2.1rem, 4.2vw, 3.2rem);
   font-weight: 800;
   color: #ffffff;
   margin: 0.2rem 0 0.4rem;
@@ -70,76 +70,21 @@
 
 .centerSub {
   font-family: var(--font-body);
-  font-size: 0.90rem;
+  font-size: 0.92rem;
   color: #999999;
   max-width: 650px;
-  margin: 0 auto 1.1rem;
+  margin: 0 auto;
   line-height: 1.5;
-}
-
-/* Orbit Controls Row */
-.orbitControlsRow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.orbitStateBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 14px;
-  border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(20, 20, 24, 0.85);
-  backdrop-filter: blur(12px);
-  color: #b0b0b0;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.orbitStateBtn:hover {
-  background: rgba(230, 29, 29, 0.2);
-  border-color: #e61d1d;
-  color: #ffffff;
-}
-
-.dragHintPill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  border-radius: 9999px;
-  border: 1px solid rgba(230, 29, 29, 0.35);
-  background: rgba(230, 29, 29, 0.08);
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: #ff5e5e;
-  letter-spacing: 0.08em;
-}
-
-.hintText {
-  font-family: var(--font-mono);
-  font-size: 0.64rem;
-  color: #666666;
-  letter-spacing: 0.1em;
 }
 
 /* Oversized Arc Viewport Window */
 .arcWindow {
   position: relative;
   width: 100vw;
-  height: min(650px, 72vh);
+  height: min(660px, 74vh);
   overflow: hidden; /* Natural viewport clipping */
   z-index: 10;
-  margin-top: 0.5rem;
+  margin-top: 1.25rem;
   cursor: grab;
   user-select: none;
   touch-action: none; /* Smooth pointer capture */
@@ -149,7 +94,7 @@
   cursor: grabbing;
 }
 
-/* Kinetic Board-Tail Motion Trail */
+/* Kinetic Motion Trail */
 .motionTrailGhost {
   position: absolute;
   top: 0;
@@ -165,11 +110,32 @@
   will-change: transform, opacity;
 }
 
-/* Pure Visual Portrait Card (Dense Spacing, 165px x 230px) */
-.portraitCard {
+/* Invisible Proximity Wrapper (60-100px beyond visible card) */
+.proximityWrapper {
   position: absolute;
   top: 0;
   left: 0;
+  width: 165px;
+  height: 230px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+/* Invisible Hit Area extending 80px outside the visible card */
+.proximityWrapper::before {
+  content: "";
+  position: absolute;
+  inset: -80px;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+/* Pure Visual Portrait Card (Dense Spacing, 165px x 230px) */
+.portraitCard {
+  position: relative;
   width: 165px;
   height: 230px;
   border-radius: 18px;
@@ -180,12 +146,13 @@
   overflow: hidden;
   user-select: none;
   transition: 
-    transform 0.62s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
     opacity 0.45s ease,
     border-color 0.4s ease,
     box-shadow 0.45s ease,
     filter 0.45s ease;
   will-change: transform, opacity, filter;
+  z-index: 2;
 }
 
 /* Image Surface (Pure Photo During Movement) */
@@ -223,19 +190,22 @@
   transition: background 0.4s ease;
 }
 
-/* Section 8: Background Cards During Hover (35-55% Opacity, Blur, Slight Desaturation) */
+/* Surrounding Portraits: 35-55% Opacity, Blur, Subtle Contrast */
 .cardDimmed {
   filter: blur(2.5px) grayscale(0.25) contrast(0.9);
   pointer-events: none;
 }
 
-/* Stage 1 Hover State: Preparing to Center */
-.cardHovered {
-  border-color: rgba(230, 29, 29, 0.65) !important;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.92), 0 0 25px rgba(230, 29, 29, 0.45) !important;
+/* Proximity Intent Detected: Subtly Scale to ~1.05 and Brighten */
+.cardCandidate {
+  border-color: rgba(230, 29, 29, 0.70) !important;
+  box-shadow: 
+    0 20px 45px rgba(0, 0, 0, 0.90),
+    0 0 22px rgba(230, 29, 29, 0.45) !important;
+  filter: brightness(1.15) !important;
 }
 
-/* Section 4, 5, 6: Focused Card State (Hero at Center, 1.50x Scale) */
+/* Focused Hero at Center (1.4 - 1.6x Scale, High Elevation) */
 .cardFocused {
   border-color: #e61d1d !important;
   box-shadow: 
@@ -253,7 +223,7 @@
   transform: scale(1.05);
 }
 
-/* Section 7: Focused Hero Metadata Overlay (Subtle pill, doesn't expand card) */
+/* Minimal Information Revealed Subtly ONLY in Focused State */
 .focusedHeroOverlay {
   position: absolute;
   bottom: 0;
@@ -336,12 +306,15 @@
 
 /* Responsive Breakpoints */
 @media (max-width: 768px) {
+  .proximityWrapper {
+    width: 145px;
+    height: 205px;
+  }
   .portraitCard {
     width: 145px;
     height: 205px;
   }
   .cardFocused {
-    /* Slightly less scaling on mobile for perfect fit */
     transform: scale(1.35) !important;
   }
   .arcWindow {
