@@ -5,20 +5,20 @@ import Image from "next/image";
 import { teamMembers, TeamMember } from "@/data/team";
 import MemberInfoDrawer from "./MemberInfoDrawer";
 import styles from "./OversizedArcOrbit.module.css";
-import { Sparkles, ChevronRight, Info } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 // Total orbital slots: 24 slots separated by exactly 15 degrees (360 / 24)
-// Creates a dense, physical, continuous wheel with 5-7 portraits visible at once
+// Dense, physical continuous wheel with 5-7 portraits visible at once
 const TOTAL_SLOTS = 24;
 const SLOT_SEPARATION_RAD = (2 * Math.PI) / TOTAL_SLOTS;
 
 // Base automatic clockwise rotation speed (~45s for 360 loop)
-// In our coordinate system, positive speed = CLOCKWISE rotation across top arc
+// In Cartesian screen coordinates, positive speed = CLOCKWISE rotation across top arc
 const BASE_SPEED = 0.0022;
 
 // Proximity detection radius: covers card (165x230) + 75-100px invisible zone
 const PROXIMITY_RADIUS = 210;
-const PROXIMITY_LEAVE_RADIUS = 260; // Hysteresis to prevent edge jitter
+const PROXIMITY_LEAVE_RADIUS = 270; // Generous exit boundary around focus point
 
 export default function OversizedArcOrbit() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -65,13 +65,16 @@ export default function OversizedArcOrbit() {
   // Slide-out Full Dossier Drawer
   const [selectedDrawerMember, setSelectedDrawerMember] = useState<TeamMember | null>(null);
 
-  // Responsive Orbit Dimensions (Tighter radius for dense continuous wheel)
+  // Responsive Orbit Dimensions — LOWERED ORBIT:
+  // Visible arc sits noticeably lower in the viewport (yApex ~380px on desktop)
+  // Leaves a pristine clean breathing area above the wheel for the focused card to rise into
   const [geometry, setGeometry] = useState({
     vpW: 1440,
-    vpH: 640,
-    rx: 1050,  // Diameter ~2100px (desktop)
-    ry: 820,
-    yApex: 140, // Protected safe zone: apex sits safely below header
+    vpH: 700,
+    rx: 1100,  // Diameter ~2200px
+    ry: 860,
+    yApex: 380, // Lowered orbit apex
+    focusPointY: 220, // Focus position in the clean breathing space
   });
 
   // Handle responsive resize
@@ -84,28 +87,31 @@ export default function OversizedArcOrbit() {
         // Mobile
         setGeometry({
           vpW: w,
-          vpH: Math.max(h * 0.70, 520),
-          rx: Math.max(w * 0.92, 420),
-          ry: 580,
-          yApex: 110,
+          vpH: Math.max(h * 0.75, 580),
+          rx: Math.max(w * 0.95, 480),
+          ry: 600,
+          yApex: 310,
+          focusPointY: 175,
         });
       } else if (w < 1024) {
         // Tablet
         setGeometry({
           vpW: w,
-          vpH: 600,
-          rx: Math.max(w * 0.96, 750),
-          ry: 700,
-          yApex: 125,
+          vpH: 640,
+          rx: Math.max(w * 0.96, 820),
+          ry: 740,
+          yApex: 340,
+          focusPointY: 195,
         });
       } else {
-        // Desktop: orbit diameter ~2100px with 15 deg separation -> ~110px gap between cards
+        // Desktop: Lowered orbit with apex at 380px, focus point elevated at 220px
         setGeometry({
           vpW: w,
-          vpH: 640,
-          rx: Math.max(w * 0.92, 1050),
-          ry: 820,
-          yApex: 140,
+          vpH: Math.max(h * 0.78, 680),
+          rx: Math.max(w * 0.92, 1100),
+          ry: 860,
+          yApex: 380,
+          focusPointY: 220,
         });
       }
     };
@@ -124,7 +130,7 @@ export default function OversizedArcOrbit() {
     }
   }, []);
 
-  // Main Animation Frame Loop: Automatic Orbit + Deceleration/Acceleration + Inertia Damping
+  // Main Animation Frame Loop: Automatic Orbit + Smooth Deceleration + Inertia Physics
   useEffect(() => {
     let animId: number;
 
@@ -176,13 +182,14 @@ export default function OversizedArcOrbit() {
   }, []);
 
   // Orbit Center & Focus Point Coordinates
+  // The center is positioned low so the top apex sits low at yApex
   const centerX = geometry.vpW / 2;
   const centerY = geometry.yApex + geometry.ry + dragOffsetY;
 
-  // Dedicated Visual Focus Point: Center of the designated Team content area
-  // Sits safely in visual center (50% X, 52% Y of arcWindow), completely below header safe zone
+  // Dedicated Visual Focus Point: Positioned in the clean breathing space
+  // Safely below the header and elevated above the lower orbit
   const focusPointX = geometry.vpW / 2;
-  const focusPointY = geometry.vpH * 0.52;
+  const focusPointY = geometry.focusPointY;
 
   // Calculate Member Positions for 24 dense slots
   const slotsData = useMemo(() => {
@@ -195,7 +202,7 @@ export default function OversizedArcOrbit() {
       const baseAngle = -Math.PI / 2 + index * SLOT_SEPARATION_RAD;
       const angle = baseAngle + rotation;
 
-      // Position on the oversized ellipse
+      // Position on the lowered oversized ellipse
       const orbitX = centerX + geometry.rx * Math.cos(angle);
       const orbitY = centerY + geometry.ry * Math.sin(angle);
 
@@ -214,9 +221,9 @@ export default function OversizedArcOrbit() {
       const trailX = centerX + geometry.rx * Math.cos(trailAngle);
       const trailY = centerY + geometry.ry * Math.sin(trailAngle);
 
-      // Overscan buffer: render slots within window + 240px buffer
-      // Ensures extreme edge cards have active proximity zones even when 90% off-screen
-      const isVisibleInWindow = orbitX >= -240 && orbitX <= geometry.vpW + 240 && orbitY <= geometry.vpH + 240;
+      // Overscan buffer: render slots within window + 260px buffer
+      // Ensures extreme edge cards have full active proximity zones even when 90% off-screen
+      const isVisibleInWindow = orbitX >= -260 && orbitX <= geometry.vpW + 260 && orbitY <= geometry.vpH + 260;
 
       return {
         slotId,
@@ -274,16 +281,12 @@ export default function OversizedArcOrbit() {
 
     // If currently focused, check if mouse is still within the focused card's proximity zone
     if (focusedSlotIdRef.current) {
-      const activeSlot = slotsData.find(s => s.slotId === focusedSlotIdRef.current);
-      if (activeSlot) {
-        // Distance to the center focus point
-        const distToFocus = Math.hypot(mouseX - focusPointX, mouseY - focusPointY);
-        // Generous exit boundary: 260px radius around center
-        if (distToFocus > PROXIMITY_LEAVE_RADIUS) {
-          handleClearFocus();
-        }
-        return;
+      const distToFocus = Math.hypot(mouseX - focusPointX, mouseY - focusPointY);
+      // Exit boundary around the elevated focus point
+      if (distToFocus > PROXIMITY_LEAVE_RADIUS) {
+        handleClearFocus();
       }
+      return;
     }
 
     // Find the nearest card among all cards (including partially off-screen edge cards)
@@ -307,7 +310,7 @@ export default function OversizedArcOrbit() {
         // Cancel previous timer
         if (intentTimerRef.current) clearTimeout(intentTimerRef.current);
 
-        // Proximity Intent Detection: pointer near portrait for 120ms -> Focus Hero
+        // Proximity Intent Detection: pointer near portrait for 120ms -> Focus & Rise
         intentTimerRef.current = setTimeout(() => {
           setFocusedSlotId(nearestSlotId);
           targetSpeedRef.current = 0; // Smooth deceleration over 600-900ms
@@ -325,7 +328,7 @@ export default function OversizedArcOrbit() {
     }
   }, [slotsData, focusPointX, focusPointY, handleClearFocus]);
 
-  // Pointer Down: Initiate potential direct manipulation drag
+  // Pointer Down: Initiate direct manipulation drag
   const handlePointerDown = (e: React.PointerEvent) => {
     if (e.button !== 0) return; // Primary click or touch only
 
@@ -390,7 +393,7 @@ export default function OversizedArcOrbit() {
     }
   };
 
-  // Pointer Up: Release drag, apply inertia, or handle click
+  // Pointer Up: Release drag, apply inertia, or handle card click
   const handlePointerUp = (e: React.PointerEvent) => {
     if (!isPointerDown.current) return;
     isPointerDown.current = false;
@@ -426,7 +429,7 @@ export default function OversizedArcOrbit() {
       <div className={styles.ambientHalo} aria-hidden="true" />
       <div className={styles.gridMatrix} aria-hidden="true" />
 
-      {/* Protected Header Safe Zone: Sits strictly above the orbit with ZERO instructional UI */}
+      {/* Protected Header Safe Zone: Sits strictly above with ZERO instructional UI */}
       <header className={styles.centerStageHeader}>
         <div className={styles.cadreTag}>
           <Sparkles size={12} color="#e61d1d" />
@@ -440,7 +443,7 @@ export default function OversizedArcOrbit() {
         </p>
       </header>
 
-      {/* Oversized Arc Viewport Window with Proximity Hit Testing & Direct Drag */}
+      {/* Oversized Arc Viewport Window with Lowered Orbit & Upward Rising Focus */}
       <div 
         ref={containerRef}
         className={`${styles.arcWindow} ${isDragging ? styles.isDragging : ""}`}
@@ -463,6 +466,7 @@ export default function OversizedArcOrbit() {
           const isOtherDimmed = isAnyFocused && !isFocused;
 
           // Target Coordinates & Scale
+          // When focused: card visibly rises UPWARD out of the lower orbit into the focus position!
           let targetX = orbitX;
           let targetY = orbitY;
           let targetScale = perspectiveScale;
@@ -470,14 +474,14 @@ export default function OversizedArcOrbit() {
           let targetZ = zIndex;
 
           if (isFocused) {
-            // Focused portrait moves smoothly to the central focus point, scaled 1.4 - 1.6x
+            // Section 2, 3, 4: Card rises upward into central breathing space and scales to 1.68x
             targetX = focusPointX;
             targetY = focusPointY;
-            targetScale = 1.50;
+            targetScale = 1.68; // 1.6 - 1.8x scale
             targetOpacity = 1;
-            targetZ = 200; // Stays topmost
+            targetZ = 200;      // Stays topmost
           } else if (isCandidate) {
-            // Proximity Intent Detected: Subtly scale from 1.0 to 1.05 and brighten
+            // Proximity Intent: subtly scale to 1.05 and brighten
             targetScale = perspectiveScale * 1.05;
             targetOpacity = 1;
             targetZ = 150;
@@ -513,6 +517,7 @@ export default function OversizedArcOrbit() {
                   e.stopPropagation();
                   if (hasExceededDragThreshold.current) return;
 
+                  // Section 9: Entire card is clickable to open full dossier!
                   if (isFocused) {
                     setSelectedDrawerMember(m);
                   } else {
@@ -550,7 +555,7 @@ export default function OversizedArcOrbit() {
                         src={m.image}
                         alt={m.name}
                         fill
-                        sizes="320px"
+                        sizes="380px"
                         className={styles.portraitPhoto}
                         priority={false}
                       />
@@ -563,28 +568,14 @@ export default function OversizedArcOrbit() {
                     {/* Subtle Bottom Vignette */}
                     <div className={styles.bottomVignette} />
 
-                    {/* Minimal Information Revealed Subtly ONLY in Focused State */}
+                    {/* Section 9: Focused Card Typography (Warm white name, AMEYA red role, muted gray meta) */}
                     {isFocused && (
                       <div className={styles.focusedHeroOverlay}>
                         <div className={styles.heroInfoBlock}>
-                          <span className={styles.heroCallsign}>{m.callsign} &bull; {m.year}</span>
                           <h3 className={styles.heroName}>{m.name}</h3>
                           <p className={styles.heroRole}>{m.role}</p>
+                          <span className={styles.heroCallsign}>{m.callsign} &bull; {m.year}</span>
                         </div>
-
-                        <button
-                          type="button"
-                          className={styles.openDossierBtn}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedDrawerMember(m);
-                          }}
-                          title={`Open full technical dossier for ${m.name}`}
-                        >
-                          <Info size={12} />
-                          <span>VIEW DOSSIER</span>
-                          <ChevronRight size={13} />
-                        </button>
                       </div>
                     )}
                   </div>
@@ -595,7 +586,7 @@ export default function OversizedArcOrbit() {
         })}
       </div>
 
-      {/* Slide-out Full Dossier Drawer */}
+      {/* Slide-out Full Dossier Drawer (Triggered by clicking anywhere on the focused card) */}
       <MemberInfoDrawer
         member={selectedDrawerMember}
         onClose={() => setSelectedDrawerMember(null)}
