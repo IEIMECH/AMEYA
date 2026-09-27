@@ -4,7 +4,7 @@ import { Resend } from "resend";
 import { supabaseAdmin, isDatabaseConfigured, getEventTableName } from "@/lib/supabase";
 
 const resend = new Resend(process.env.RESEND_API_KEY || "re_dummy");
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://ameyafest.org";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://ameyafest.vercel.app";
 
 export async function POST(req: NextRequest) {
   try {

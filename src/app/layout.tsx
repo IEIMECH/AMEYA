@@ -41,7 +41,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ameyafest.org"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://ameyafest.vercel.app"),
   title: {
     default: "Home — AMEYA '26 | IEI SAME",
     template: "%s",
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "AMEYA '26 — National Technical Conclave | IEI SAME",
     description: "Where Engineers Dare to Dream. October 04–05, 2026 at VVIIT Nambur, Guntur.",
-    url: "https://ameyafest.org",
+    url: process.env.NEXT_PUBLIC_BASE_URL || "https://ameyafest.vercel.app",
     siteName: "AMEYA '26",
     locale: "en_US",
     type: "website",
