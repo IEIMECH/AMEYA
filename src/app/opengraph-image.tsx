@@ -1,6 +1,5 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
 export const alt = "AMEYA '26 — National Level Technical Conclave | IEI SAME";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -36,7 +35,7 @@ export default async function Image() {
         />
 
         {/* Top Header Tag */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", zIndex: 2 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <div
               style={{
@@ -72,7 +71,7 @@ export default async function Image() {
         </div>
 
         {/* Central Monumental Brand Statement */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px", zIndex: 2 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           <div
             style={{
               fontSize: "36px",
@@ -80,21 +79,25 @@ export default async function Image() {
               letterSpacing: "0.1em",
               color: "#E51D25",
               fontFamily: "monospace",
+              display: "flex",
             }}
           >
             AMEYA &apos;26
           </div>
           <div
             style={{
-              fontSize: "64px",
+              fontSize: "60px",
               fontWeight: 900,
-              lineHeight: 1.05,
+              lineHeight: 1.1,
               letterSpacing: "-0.02em",
               color: "#F2EDE8",
               textTransform: "uppercase",
+              display: "flex",
+              flexDirection: "column",
             }}
           >
-            WHERE ENGINEERS<br />DARE TO DREAM.
+            <span>WHERE ENGINEERS</span>
+            <span>DARE TO DREAM.</span>
           </div>
           <div
             style={{
@@ -103,9 +106,10 @@ export default async function Image() {
               maxWidth: "680px",
               lineHeight: 1.5,
               marginTop: "12px",
+              display: "flex",
             }}
           >
-            National Level Technical Conclave &bull; Autonomous Combat Robotics &bull; 24H Hardware Prototyping &bull; ₹50,000+ Prize Pool.
+            National Level Technical Conclave · Autonomous Combat Robotics · 24H Prototyping
           </div>
         </div>
 
@@ -117,7 +121,6 @@ export default async function Image() {
             alignItems: "center",
             paddingTop: "24px",
             borderTop: "1px solid rgba(255, 255, 255, 0.1)",
-            zIndex: 2,
             fontFamily: "monospace",
             fontSize: "13px",
             letterSpacing: "0.12em",
