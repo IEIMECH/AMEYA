@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { teamMembers, teamDivisions, TeamMember } from "@/data/team";
 import MemberInfoDrawer from "@/components/team/MemberInfoDrawer";
 import ExploreUniverse from "@/components/team/ExploreUniverse";
+import CommitteeBar from "@/components/team/CommitteeBar";
 import styles from "./page.module.css";
 import { ShieldAlert, ShieldCheck, Compass, List, Sparkles, ChevronRight, User } from "lucide-react";
 
@@ -115,6 +116,53 @@ function MemberCard({ m, onSelect }: { m: TeamMember; onSelect: (m: TeamMember) 
 export default function TeamPage() {
   const [viewMode, setViewMode] = useState<"list" | "explore">("list");
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+  const [activeDivisionId, setActiveDivisionId] = useState<string>("executive");
+
+  // Track active committee section as user scrolls
+  useEffect(() => {
+    if (viewMode !== "list") return;
+
+    const handleScroll = () => {
+      const scrollPos = window.scrollY + 200;
+      for (const div of teamDivisions) {
+        const el = document.getElementById(div.id);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPos >= top && scrollPos < top + height) {
+            setActiveDivisionId(div.id);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [viewMode]);
+
+  const handleSelectDivision = (divId: string) => {
+    setActiveDivisionId(divId);
+    if (viewMode === "explore") {
+      setViewMode("list");
+      setTimeout(() => {
+        const el = document.getElementById(divId);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 70);
+    } else {
+      const el = document.getElementById(divId);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  };
+
+  const handleToggleMode = () => {
+    setViewMode((prev) => (prev === "list" ? "explore" : "list"));
+  };
 
   return (
     <div className={styles.page}>
@@ -180,7 +228,7 @@ export default function TeamPage() {
             if (members.length === 0) return null;
 
             return (
-              <section key={div.id} className={styles.sectionBlock}>
+              <section key={div.id} id={div.id} className={styles.sectionBlock}>
                 <div className={styles.sectionHeading}>
                   <span className={styles.sectionPill}>{div.code}</span>
                   <div className={styles.headingTextGroup}>
@@ -208,6 +256,15 @@ export default function TeamPage() {
       <MemberInfoDrawer 
         member={selectedMember} 
         onClose={() => setSelectedMember(null)} 
+      />
+
+      {/* Floating Glassmorphic Committee Dock with Sliding Hover Indicator */}
+      <CommitteeBar
+        divisions={teamDivisions}
+        activeDivisionId={activeDivisionId}
+        viewMode={viewMode}
+        onToggleMode={handleToggleMode}
+        onSelectDivision={handleSelectDivision}
       />
     </div>
   );

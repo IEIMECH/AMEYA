@@ -1,0 +1,213 @@
+/* Floating Bottom Dock Container */
+.dockWrapper {
+  position: fixed;
+  bottom: 1.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 80;
+  max-width: calc(100vw - 24px);
+  pointer-events: auto;
+  animation: dockSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes dockSlideUp {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 28px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+/* Glassmorphic Pill Dock */
+.dockBar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 6px;
+  border-radius: 9999px;
+  background: rgba(14, 14, 16, 0.78);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 
+    0 20px 45px -10px rgba(0, 0, 0, 0.85),
+    0 0 25px rgba(230, 29, 29, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.dockBar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Dynamic Sliding Glass Highlight Pill */
+.slidingPill {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 0;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 
+    0 4px 14px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  pointer-events: none;
+  transition: 
+    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    width 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.2s ease,
+    background 0.22s ease,
+    border-color 0.22s ease;
+  will-change: transform, width, opacity;
+  z-index: 1;
+}
+
+/* Explore Pill Highlight: Ivory / Cream style matching SITCON */
+.slidingPillExplore {
+  background: #f1ede4;
+  border-color: #ffffff;
+  box-shadow: 
+    0 4px 20px rgba(255, 255, 255, 0.25),
+    0 0 15px rgba(241, 237, 228, 0.4);
+}
+
+/* Common Dock Button */
+.dockBtn {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 7px 15px;
+  border-radius: 9999px;
+  border: none;
+  background: transparent;
+  color: #b3b3b3;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.15s ease;
+  user-select: none;
+}
+
+.dockBtn:hover {
+  color: #ffffff;
+}
+
+.dockBtn:active {
+  transform: scale(0.97);
+}
+
+/* Explore Mode Button */
+.exploreBtn {
+  font-weight: 600;
+  color: #e5e0d8;
+  padding: 7px 18px;
+  transition: color 0.22s ease;
+}
+
+.dotGridIcon {
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.exploreBtn:hover .dotGridIcon {
+  transform: rotate(90deg);
+}
+
+/* When Explore is active or hovered with sliding pill, text flips to dark contrast */
+.activeExplore,
+.dockBar:hover .exploreBtn:hover {
+  color: #111111 !important;
+}
+
+.activeExplore .dotGridIcon,
+.dockBar:hover .exploreBtn:hover .dotGridIcon {
+  color: #111111 !important;
+}
+
+.activeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e61d1d;
+  box-shadow: 0 0 8px #e61d1d;
+  animation: pulseDot 1.5s infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+}
+
+/* Subtle Glass Divider */
+.divider {
+  width: 1px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.12);
+  margin: 0 3px;
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+/* Committees Scrollable Track */
+.committeesTrack {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+/* Committee Buttons */
+.committeeBtn {
+  padding: 7px 14px;
+}
+
+.activeCommittee {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Mobile & Tablet Optimizations */
+@media (max-width: 768px) {
+  .dockWrapper {
+    bottom: 1rem;
+    max-width: calc(100vw - 16px);
+  }
+
+  .dockBar {
+    padding: 4px 5px;
+    gap: 2px;
+  }
+
+  .dockBtn {
+    padding: 6px 11px;
+    font-size: 0.76rem;
+    gap: 5px;
+  }
+
+  .exploreBtn {
+    padding: 6px 13px;
+  }
+}
