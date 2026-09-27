@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { teamMembers, teamDivisions, TeamMember, TeamDivision } from "@/data/team";
 import MemberInfoDrawer from "./MemberInfoDrawer";
 import styles from "./ExploreUniverse.module.css";
@@ -284,7 +285,17 @@ export default function ExploreUniverse({ isEmbedded = false }: { isEmbedded?: b
                     transform: `translate(${px * 6}px, ${py * 6}px)`,
                   }}
                 >
-                  <span className={styles.tokenInitials}>{m.avatar}</span>
+                  {m.image ? (
+                    <Image
+                      src={m.image}
+                      alt={m.name}
+                      fill
+                      sizes="96px"
+                      style={{ objectFit: "cover" }}
+                    />
+                  ) : (
+                    <span className={styles.tokenInitials}>{m.avatar}</span>
+                  )}
                 </div>
 
                 {/* Front Layer: Glowing Reticle Hairline */}
