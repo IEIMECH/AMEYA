@@ -49,12 +49,13 @@ function MemberCard({ m, onSelect }: { m: TeamMember; onSelect: (m: TeamMember) 
           
           <div className={styles.portraitOverlayInfo}>
             <div className={styles.cardHud}>
-              <span className={styles.hudBadge}>SEC // {m.callsign}</span>
+              <span className={styles.hudBadge}>ID // {m.callsign}</span>
               <span className={styles.hudRole}>{m.year}</span>
             </div>
             <h3 className={styles.memberName}>{m.name}</h3>
             <p className={styles.memberRole}>{m.role}</p>
             <p className={styles.memberDept}>{m.department}</p>
+            {m.bio && <p className={styles.memberBioText}>{m.bio}</p>}
           </div>
         </div>
       ) : (
@@ -82,12 +83,13 @@ function MemberCard({ m, onSelect }: { m: TeamMember; onSelect: (m: TeamMember) 
               <span>{m.avatar}</span>
             </div>
             <div className={styles.specIndex}>
-              <span>CHASSIS // {String(m.id).padStart(2, "0")}</span>
+              <span>ID // {m.callsign}</span>
               <span>{m.year}</span>
             </div>
             <h3 className={styles.memberName}>{m.name}</h3>
             <p className={styles.memberRole}>{m.role}</p>
-            <p className={styles.memberDept}>{m.specialization}</p>
+            <p className={styles.memberDept}>{m.department}</p>
+            {m.bio && <p className={styles.memberBioText}>{m.bio}</p>}
           </div>
         </div>
       )}

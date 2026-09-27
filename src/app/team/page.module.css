@@ -481,3 +481,15 @@
     justify-content: center;
   }
 }
+
+.memberBioText {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: #999999;
+  line-height: 1.45;
+  margin: 0.55rem 0 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
