@@ -1,0 +1,188 @@
+.transitionContainer {
+  position: relative;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 3rem 5vw;
+  z-index: 5;
+  pointer-events: none;
+  user-select: none;
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  width: 100%;
+}
+
+.labelLeft {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  color: var(--text-secondary, #96908B);
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.pulseDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--crimson-core, #E51D25);
+  box-shadow: 0 0 8px rgba(229, 29, 37, 0.8);
+}
+
+.sourceText {
+  color: var(--text-secondary, #96908B);
+}
+
+.arrowIcon {
+  color: var(--crimson-core, #E51D25);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.targetText {
+  color: var(--text-primary, #F2EDE8);
+  font-weight: 700;
+}
+
+/* Axis Track */
+.axisTrack {
+  position: relative;
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.04);
+  overflow: visible;
+}
+
+.axisLine {
+  position: absolute;
+  inset: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(229, 29, 37, 0.2) 0%,
+    rgba(229, 29, 37, 0.8) 45%,
+    rgba(242, 237, 232, 0.9) 70%,
+    rgba(229, 29, 37, 0.25) 100%
+  );
+  box-shadow: 0 0 8px rgba(229, 29, 37, 0.35);
+}
+
+/* Variant-specific line glows */
+.line_laser-expand {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(229, 29, 37, 0.95) 50%,
+    transparent 100%
+  );
+  box-shadow: 0 0 14px rgba(229, 29, 37, 0.7);
+}
+
+.line_spacious-axis {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(229, 29, 37, 0.5) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+}
+
+.line_terminal-horizon {
+  background: linear-gradient(
+    90deg,
+    rgba(229, 29, 37, 0.6) 0%,
+    rgba(242, 237, 232, 0.6) 40%,
+    transparent 100%
+  );
+}
+
+/* Traveling Node */
+.travelingNode {
+  position: absolute;
+  top: -3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--crimson-core, #E51D25);
+  box-shadow: 0 0 10px rgba(229, 29, 37, 0.9);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.microTick {
+  display: block;
+  width: 1px;
+  height: 7px;
+  background: #FFFFFF;
+  margin: 0 auto;
+}
+
+/* Blueprint Crosses */
+.blueprintCrosses {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  pointer-events: none;
+}
+
+.cross {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: rgba(229, 29, 37, 0.4);
+  line-height: 1;
+}
+
+/* Calibration Marks */
+.calibrationMarks {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  pointer-events: none;
+}
+
+.tick {
+  width: 1px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Right Stamp */
+.labelRight {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: var(--text-muted, #605B56);
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.axisTitle {
+  color: var(--text-secondary, #96908B);
+}
+
+.coordinateStamp {
+  color: var(--text-muted, #605B56);
+}
+
+@media (max-width: 840px) {
+  .transitionContainer {
+    padding: 2rem 1.25rem;
+  }
+  .labelRight {
+    display: none;
+  }
+}

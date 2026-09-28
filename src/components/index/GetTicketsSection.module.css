@@ -1,0 +1,412 @@
+.section {
+  position: relative;
+  width: 100%;
+  padding: 6.5rem 5vw 7.5rem;
+  background-color: var(--machined-dark, #050505);
+  color: var(--text-primary, #F2EDE8);
+  overflow: hidden;
+  z-index: 2;
+}
+
+.backgroundGrid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 80px 80px;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.datumWatermark {
+  position: absolute;
+  top: 2rem;
+  right: 5vw;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+  user-select: none;
+}
+
+.container {
+  position: relative;
+  max-width: 1320px;
+  margin: 0 auto;
+  z-index: 2;
+}
+
+/* Header */
+.header {
+  margin-bottom: 4rem;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  color: var(--text-secondary, #96908B);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+
+.codeMarker {
+  color: var(--crimson-core, #E51D25);
+  font-weight: 700;
+}
+
+.metaDivider {
+  color: var(--text-muted, #605B56);
+}
+
+.titleRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.titleCol {
+  max-width: 720px;
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+  font-weight: 800;
+  color: var(--text-primary, #F2EDE8);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  margin: 0 0 0.8rem 0;
+}
+
+.sectionSub {
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  color: var(--text-secondary, #96908B);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.calendarBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1.25rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-primary, #F2EDE8);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.calendarBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.calIcon {
+  color: var(--crimson-core, #E51D25);
+}
+
+/* 3 Cards Grid */
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  align-items: stretch;
+}
+
+.ticketCard {
+  position: relative;
+  background: #080808;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 4px;
+  padding: 2.25rem 2rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.28s ease,
+              box-shadow 0.28s ease;
+}
+
+.ticketCard:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
+}
+
+/* Featured Card Styling */
+.cardFeatured {
+  background: linear-gradient(180deg, rgba(229, 29, 37, 0.06) 0%, #080808 35%);
+  border-color: rgba(229, 29, 37, 0.35);
+  box-shadow: 0 8px 32px rgba(229, 29, 37, 0.08);
+}
+
+.cardFeatured:hover {
+  border-color: rgba(229, 29, 37, 0.6);
+  box-shadow: 0 18px 44px rgba(229, 29, 37, 0.14);
+}
+
+.featuredBadge {
+  position: absolute;
+  top: -12px;
+  left: 1.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  background: var(--crimson-core, #E51D25);
+  color: #FFFFFF;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  border-radius: 2px;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.tierCode {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  color: var(--crimson-core, #E51D25);
+  font-weight: 700;
+}
+
+.tierSub {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: var(--text-muted, #605B56);
+}
+
+/* Price Section */
+.priceContainer {
+  margin-bottom: 1.5rem;
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.currency {
+  font-family: var(--font-mono);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-primary, #F2EDE8);
+}
+
+.priceValue {
+  font-family: var(--font-mono);
+  font-size: clamp(3rem, 4vw, 3.8rem);
+  font-weight: 800;
+  color: var(--text-primary, #F2EDE8);
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.perStudent {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: var(--text-secondary, #96908B);
+  margin-left: 0.4rem;
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary, #F2EDE8);
+  letter-spacing: -0.01em;
+  margin: 0.4rem 0 0.5rem 0;
+}
+
+.cardDesc {
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text-secondary, #96908B);
+  margin: 0;
+  min-height: 2.7rem;
+}
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.25rem 0 1.5rem;
+}
+
+.dividerText {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  color: var(--text-muted, #605B56);
+  white-space: nowrap;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Feature List */
+.featureList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.featureItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+
+.checkIconWrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(229, 29, 37, 0.12);
+  color: var(--crimson-core, #E51D25);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.cardFeatured .checkIconWrapper {
+  background: rgba(229, 29, 37, 0.2);
+}
+
+.checkIcon {
+  stroke-width: 3;
+}
+
+.featureText {
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--text-secondary, #96908B);
+}
+
+/* Action button */
+.actionRow {
+  margin-top: auto;
+  margin-bottom: 1rem;
+}
+
+.ctaBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.25rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-primary, #F2EDE8);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ctaBtn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #FFFFFF;
+}
+
+.ctaFeatured {
+  background: var(--crimson-core, #E51D25);
+  border-color: var(--crimson-core, #E51D25);
+  color: #FFFFFF;
+}
+
+.ctaFeatured:hover {
+  background: #C4141B;
+  border-color: #C4141B;
+  box-shadow: 0 4px 18px rgba(229, 29, 37, 0.4);
+}
+
+.btnArrow {
+  transition: transform 0.2s ease;
+}
+
+.ctaBtn:hover .btnArrow {
+  transform: translateX(4px);
+}
+
+/* Card footer */
+.cardFooter {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  color: var(--text-muted, #605B56);
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.verifyIcon {
+  color: var(--crimson-core, #E51D25);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .cardsGrid {
+    grid-template-columns: 1fr;
+    max-width: 580px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: 4.5rem 1.25rem 5.5rem;
+  }
+  .titleRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .calendarBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}

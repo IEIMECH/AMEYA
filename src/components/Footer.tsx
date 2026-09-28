@@ -27,24 +27,12 @@ export default function Footer() {
     );
   }
 
-  // Master Redesign Guide Section 52: The Final Frame of the Experience
+  // Master Redesign: On Homepage, ClosingManifesto handles the chapter title sequence.
+  // Footer seamlessly provides the technical sitemap, apex navigation, and legal registry.
   return (
     <footer className={styles.footer}>
       <div className="container">
-        {/* Final Emotional Brand Statement (Section 52) */}
-        <div className={styles.finalBrandFrame}>
-          <div className={styles.brandTitle}>AMEYA &apos;26</div>
-          <div className={styles.brandMotto}>
-            WHERE ENGINEERS<br />
-            DARE TO DREAM.
-          </div>
-          <p className={styles.brandDesc}>
-            The National Level Technical Conclave of the Department of Mechanical Engineering,
-            Vasireddy Venkatadri Institute of Technology (VVITU), Nambur, Guntur.
-          </p>
-        </div>
-
-        {/* Technical Sitemap Grid (No grid wallpaper in footer, Section 08) */}
+        {/* Technical Sitemap Grid */}
         <div className={styles.sitemapGrid}>
           <div className={styles.linkGroup}>
             <h4 className={styles.groupHeading}>CONCLAVE</h4>
@@ -96,7 +84,7 @@ export default function Footer() {
               Department of Mechanical Engineering, VVITU<br />
               Nambur, Guntur, Andhra Pradesh &ndash; 522508
             </p>
-            <button type="button" onClick={scrollToTop} className={styles.scrollTopBtn}>
+            <button type="button" onClick={scrollToTop} className={styles.scrollTopBtn} aria-label="Scroll back to top">
               <span>ASCEND TO APEX</span>
               <ArrowUp size={13} />
             </button>

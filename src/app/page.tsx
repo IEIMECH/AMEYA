@@ -9,8 +9,10 @@ import PhotoWall from "@/components/index/PhotoWall";
 import SpeakerSection from "@/components/index/SpeakerSection";
 import EventsPreview from "@/components/index/EventsPreview";
 import GetTicketsSection from "@/components/index/GetTicketsSection";
-import Danmaku from "@/components/index/Danmaku";
+import FinalRegisterCta from "@/components/index/FinalRegisterCta";
 import SponsorSection from "@/components/index/SponsorSection";
+import ClosingManifesto from "@/components/index/ClosingManifesto";
+import SectionTransition from "@/components/index/SectionTransition";
 import RegistrationDialog from "@/components/RegistrationDialog";
 import { events, Event } from "@/data/events";
 import styles from "./page.module.css";
@@ -59,16 +61,17 @@ export default function Home() {
   };
 
   return (
-    <>
-      {/* 3D Kinematic Mechanical Assembly (The Visual Protagonist of AMEYA) */}
+    <main className={styles.mainWrapper}>
+      {/* ============================================================ */}
+      {/* CHAPTER 01 // MACHINE: Hero + Kinetic 3D Gear Assembly      */}
+      {/* ============================================================ */}
       <Hero3DCanvas />
 
-      {/* Editorial Asymmetric Hero Section */}
-      <section className={styles.heroSection}>
+      <section className={styles.heroSection} id="hero" aria-label="Conclave Hero">
         <div className={styles.heroGrid}>
-          {/* Main Left Content Block (Occupying ~42–46% of Hero) */}
+          {/* Main Left Content Block */}
           <div className={styles.leftHeroBlock}>
-            {/* Major Typographic Moment: Controlled Editorial Stagger */}
+            {/* Major Typographic Moment: Deliberate Editorial Stagger */}
             <h1 className={styles.editorialTitle}>
               <span className={styles.titleLineWhere}>WHERE</span>
               <span className={styles.titleLineEngineers}>ENGINEERS</span>
@@ -113,26 +116,117 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Narrative Step 2: Editorial Festival Statement & Raw Data */}
+      {/* TRANSITION 01 -> 02: Orbit Travel Line */}
+      <SectionTransition
+        sourceChapter="01 // MACHINE"
+        targetChapter="02 // IDEA"
+        coordinate="16.347°N 80.526°E"
+        axisLabel="ROTATIONAL_DATUM"
+        variant="orbit-travel"
+      />
+
+      {/* ============================================================ */}
+      {/* CHAPTER 02 // IDEA: Editorial Festival Statement & Counters  */}
+      {/* ============================================================ */}
       <FestivalStory />
 
-      {/* Narrative Step 3: Documentary Moments / Real Human Energy */}
+      {/* TRANSITION 02 -> 03: Telemetry Slide Line */}
+      <SectionTransition
+        sourceChapter="02 // IDEA"
+        targetChapter="03 // PEOPLE"
+        coordinate="REEL_35MM // 24FPS"
+        axisLabel="HISTOGRAM_DATUM"
+        variant="telemetry-slide"
+      />
+
+      {/* ============================================================ */}
+      {/* CHAPTER 03 // PEOPLE: Documentary Filmstrip & Moments       */}
+      {/* ============================================================ */}
       <PhotoWall />
 
-      {/* Narrative Step 4: Keynote & Guest Speakers */}
+      {/* TRANSITION 03 -> 04: Central Dossier Line */}
+      <SectionTransition
+        sourceChapter="03 // PEOPLE"
+        targetChapter="04 // MINDS"
+        coordinate="DOSSIER_ARCHIVE // 2026"
+        axisLabel="CENTRAL_AXIS"
+        variant="central-dossier"
+      />
+
+      {/* ============================================================ */}
+      {/* CHAPTER 04 // MINDS: Keynote & Guest Engineering Dossier    */}
+      {/* ============================================================ */}
       <SpeakerSection />
 
-      {/* Narrative Step 5: Events Lineup with True Visual Hierarchy */}
+      {/* TRANSITION 04 -> 05: Blueprint Vector Datum Line */}
+      <SectionTransition
+        sourceChapter="04 // MINDS"
+        targetChapter="05 // CHALLENGE"
+        coordinate="ARENA_BLUEPRINTS // 10_LABS"
+        axisLabel="BLUEPRINT_VECTOR"
+        variant="blueprint-datum"
+      />
+
+      {/* ============================================================ */}
+      {/* CHAPTER 05 // CHALLENGE: Arenas & Lineup Hierarchy           */}
+      {/* ============================================================ */}
       <EventsPreview onRegisterClick={handleOpenRegister} />
 
-      {/* Narrative Step 6: Registration & Entry Passes */}
+      {/* TRANSITION 05 -> 06: Pricing Calibration Line */}
+      <SectionTransition
+        sourceChapter="05 // CHALLENGE"
+        targetChapter="06 // ENTRY"
+        coordinate="TIER_CALIBRATION // 01_03"
+        axisLabel="CALIBRATION_AXIS"
+        variant="pricing-rise"
+      />
+
+      {/* ============================================================ */}
+      {/* CHAPTER 06 // ENTRY: Entry Passes & Access Decisions        */}
+      {/* ============================================================ */}
       <GetTicketsSection onRegisterClick={handleOpenRegister} />
 
-      {/* Live Danmaku Telemetry Comments */}
-      <Danmaku />
+      {/* TRANSITION 06 -> 07: Laser Expand Line */}
+      <SectionTransition
+        sourceChapter="06 // ENTRY"
+        targetChapter="07 // DECISION"
+        coordinate="MACHINE_GATE // PASS_OK"
+        axisLabel="CONVERSION_VECTOR"
+        variant="laser-expand"
+      />
 
-      {/* Narrative Step 7: Sponsors & Industrial Alliances */}
+      {/* ============================================================ */}
+      {/* CHAPTER 07 // DECISION: Final Registration Conversion Strip */}
+      {/* ============================================================ */}
+      <FinalRegisterCta onRegisterClick={() => handleOpenRegister()} />
+
+      {/* TRANSITION 07 -> 08: Spacious Alliance Axis */}
+      <SectionTransition
+        sourceChapter="07 // DECISION"
+        targetChapter="08 // SUPPORT"
+        coordinate="INDUSTRIAL_ALLIANCE"
+        axisLabel="ALLIANCE_DATUM"
+        variant="spacious-axis"
+      />
+
+      {/* ============================================================ */}
+      {/* CHAPTER 08 // SUPPORT: Sponsors & Technical Supporters      */}
+      {/* ============================================================ */}
       <SponsorSection />
+
+      {/* TRANSITION 08 -> 09: Terminal Horizon Line */}
+      <SectionTransition
+        sourceChapter="08 // SUPPORT"
+        targetChapter="09 // MANIFESTO"
+        coordinate="TERMINAL_HORIZON // VVITU"
+        axisLabel="TERMINAL_VECTOR"
+        variant="terminal-horizon"
+      />
+
+      {/* ============================================================ */}
+      {/* CHAPTER 09 // MANIFESTO: Closing Title Sequence            */}
+      {/* ============================================================ */}
+      <ClosingManifesto />
 
       {/* Registration Dialog Modal */}
       {selectedEvent && (
@@ -141,6 +235,6 @@ export default function Home() {
           onClose={() => setSelectedEvent(null)}
         />
       )}
-    </>
+    </main>
   );
 }

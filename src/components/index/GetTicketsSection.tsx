@@ -1,66 +1,95 @@
 "use client";
 
-import { Calendar, ArrowRight, Check } from "lucide-react";
+import { useState } from "react";
+import { Check, Calendar, ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
+import styles from "./GetTicketsSection.module.css";
 
 interface Props {
   onRegisterClick: (ticketType?: string) => void;
 }
 
-const ticketTiers = [
+interface TicketTier {
+  id: string;
+  code: string;
+  price: string;
+  currency?: string;
+  title: string;
+  sub: string;
+  description: string;
+  isFeatured: boolean;
+  tag?: string;
+  features: string[];
+}
+
+const ticketTiers: TicketTier[] = [
   {
     id: "general",
-    title: "General Delegate Pass",
+    code: "TIER_01 // GENERAL",
     price: "FREE",
-    badge: "OPEN ACCESS // GENERAL",
-    isPrimary: false,
+    title: "DELEGATE PASS",
+    sub: "SPECTATOR ACCESS",
+    description: "Open access for visiting engineering students, project observers, and technology enthusiasts.",
+    isFeatured: false,
     features: [
-      "Access to all Keynote Addresses & Invited Tech Talks",
-      "Spectator entry to Live Robotics & Combat Arenas",
-      "Official Digital Participation Certificate",
+      "Access to all Keynotes & Tech Lectures",
+      "Spectator entry to Robo Rumble arenas",
+      "Hardware Prototype Exhibition access",
+      "Official Digital Participation Credential",
       "Campus Wi-Fi & Technical Networking Kit",
     ],
   },
   {
     id: "competitor",
-    title: "Technical Competitor Pass",
-    price: "₹200",
-    badge: "FULL ACCESS // COMPETITOR",
-    isPrimary: true,
+    code: "TIER_02 // CORE",
+    price: "200",
+    currency: "₹",
+    title: "COMPETITOR PASS",
+    sub: "TECHNICAL PARTICIPANT",
+    description: "Full competition registration across two technical arenas with hardware testing bay privilege.",
+    isFeatured: true,
+    tag: "MOST POPULAR // RECOMMENDED",
     features: [
       "Registration for any 2 Technical Competitions",
-      "Eligibility for ₹50,000 Total Prize Pool",
-      "Hardware Testing Bay & Power Station Access",
-      "Official Conclave Swag & Certificate of Merit",
+      "Eligible for ₹150,000 Total Prize Pool",
+      "Hardware Testing Bay & Power Station access",
+      "Official Conclave Kit, Lanyard & Swag",
+      "Certificate of Merit with Verification ID",
     ],
   },
   {
-    id: "vip",
-    title: "All-Access Engineering Pass",
-    price: "₹450",
-    badge: "OMNI ACCESS // ALL-ARENAS",
-    isPrimary: false,
+    id: "omni",
+    code: "TIER_03 // OMNI",
+    price: "450",
+    currency: "₹",
+    title: "ALL-ACCESS PASS",
+    sub: "FULL IMMERSION",
+    description: "Unrestricted entry across all 10 technical arenas, HackSprint 24H prototyping, and dinner.",
+    isFeatured: false,
     features: [
       "Unlimited registration across all 10 Arenas",
-      "Priority Pit Lane & Prototyping Lab Access",
-      "Exclusive Speakers Dinner & Networking Banquet",
-      "Premium Hardware Toolkit & Printed Dossier",
+      "HackSprint 24H Hardware Prototyping Bay",
+      "Speakers & Jury Networking Banquet",
+      "Printed Hardcover Engineering Journal",
+      "Priority Pit Lane & Workshop Calibrations",
     ],
   },
 ];
 
 export default function GetTicketsSection({ onRegisterClick }: Props) {
-  const generateICS = (title: string) => {
+  const [downloaded, setDownloaded] = useState(false);
+
+  const generateICS = () => {
     const icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Ameya 2026//EN
 BEGIN:VEVENT
 UID:${Date.now()}@ameya.vvitu.edu.in
-DTSTAMP:20260925T000000Z
+DTSTAMP:20260928T000000Z
 DTSTART:20261004T033000Z
 DTEND:20261005T123000Z
-SUMMARY:Ameya 2026 - ${title}
-DESCRIPTION:Annual Mechanical Technical Fest by IEI SAME at VVITU Nambur.
-LOCATION:VVITU Campus, Nambur, Guntur, Andhra Pradesh
+SUMMARY:AMEYA '26 — National Mechanical Conclave
+DESCRIPTION:Where Engineers Dare to Dream. Annual technical conclave at VVITU Campus, Nambur, Guntur.
+LOCATION:VVITU Campus, Nambur, Guntur, Andhra Pradesh 522508
 STATUS:CONFIRMED
 END:VEVENT
 END:VCALENDAR`;
@@ -69,232 +98,124 @@ END:VCALENDAR`;
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `Ameya2026_${title.replace(/\s+/g, "_")}.ics`);
+    link.setAttribute("download", "AMEYA_2026_Schedule.ics");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    setDownloaded(true);
+    setTimeout(() => setDownloaded(false), 3000);
   };
 
   return (
-    <section
-      id="tickets"
-      style={{
-        position: "relative",
-        zIndex: 2,
-        padding: "8rem 1.5rem 7.5rem",
-        background: "var(--machined-dark, #050505)",
-        overflow: "hidden",
-      }}
-    >
-      <div className="container" style={{ maxWidth: "1280px", margin: "0 auto" }}>
-        {/* Editorial Section Header */}
-        <div style={{ marginBottom: "4rem" }}>
-          <div
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: "0.7rem",
-              letterSpacing: "0.2em",
-              color: "var(--text-secondary, #96908B)",
-              textTransform: "uppercase",
-              marginBottom: "0.75rem",
-            }}
-          >
-            REGISTRATION // ADMISSION TIERS
+    <section id="register" className={styles.section} aria-labelledby="pricing-heading">
+      {/* Editorial Watermark & Datum */}
+      <div className={styles.backgroundGrid} aria-hidden="true" />
+      <div className={styles.datumWatermark} aria-hidden="true">CHAPTER 06 // ACCESS</div>
+
+      <div className={styles.container}>
+        {/* Section Header */}
+        <header className={styles.header}>
+          <div className={styles.metaRow}>
+            <span className={styles.codeMarker}>[SECTION_06]</span>
+            <span className={styles.metaDivider}>/</span>
+            <span className={styles.metaCategory}>ADMISSION & ACCESS TIERS</span>
+            <span className={styles.metaDivider}>/</span>
+            <span className={styles.metaSpec}>OCTOBER 04–05, 2026</span>
           </div>
-          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "1.5rem" }}>
-            <h2
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "clamp(2.4rem, 4.8vw, 4rem)",
-                fontWeight: 800,
-                color: "var(--text-primary, #F2EDE8)",
-                letterSpacing: "-0.02em",
-                margin: 0,
-                lineHeight: 1,
-              }}
+
+          <div className={styles.titleRow}>
+            <div className={styles.titleCol}>
+              <h2 id="pricing-heading" className={styles.sectionTitle}>
+                ENTRY PASSES &amp; ACCESS
+              </h2>
+              <p className={styles.sectionSub}>
+                Simple, transparent participation tiers. Select your level of immersion in the machine.
+              </p>
+            </div>
+
+            <button
+              onClick={generateICS}
+              className={styles.calendarBtn}
+              type="button"
+              aria-label="Add AMEYA 26 schedule to calendar"
             >
-              Entry Passes &amp; Access
-            </h2>
-            <p
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.85rem",
-                color: "var(--text-secondary, #96908B)",
-                maxWidth: "460px",
-                margin: 0,
-                lineHeight: 1.6,
-              }}
-            >
-              Select your participation tier. All registrations include full access to the festival exhibition floor and technical keynotes.
-            </p>
+              <Calendar size={14} className={styles.calIcon} />
+              <span>{downloaded ? "CALENDAR ADDED (.ICS)" : "ADD CONCLAVE TO CALENDAR"}</span>
+            </button>
           </div>
-        </div>
+        </header>
 
-        {/* Priority 8: Editorial Pricing Spread (Zero card repetition, generous breathing room) */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "2.5rem",
-            alignItems: "stretch",
-          }}
-        >
-          {ticketTiers.map((tk) => {
-            const isFeatured = tk.isPrimary;
-            return (
-              <div
-                key={tk.id}
-                style={{
-                  position: "relative",
-                  background: isFeatured ? "var(--machined-surface, #101010)" : "transparent",
-                  border: isFeatured ? "1px solid rgba(229, 29, 37, 0.4)" : "1px solid rgba(255, 255, 255, 0.08)",
-                  borderRadius: "4px",
-                  padding: "2.5rem 2rem",
-                  display: "flex",
-                  flexDirection: "column",
-                  boxShadow: isFeatured ? "0 16px 40px rgba(0, 0, 0, 0.85), 0 0 25px rgba(229, 29, 37, 0.12)" : "none",
-                  transition: "border-color 0.25s ease, transform 0.25s ease",
-                }}
-              >
-                {/* Header Tag */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
-                  <span
-                    style={{
-                      fontFamily: "var(--font-mono)",
-                      fontSize: "0.68rem",
-                      fontWeight: 700,
-                      letterSpacing: "0.15em",
-                      color: isFeatured ? "var(--crimson-core, #E51D25)" : "var(--text-secondary, #96908B)",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    {tk.badge}
-                  </span>
+        {/* 3 Differentiated Cards Grid */}
+        <div className={styles.cardsGrid}>
+          {ticketTiers.map((tier) => (
+            <article
+              key={tier.id}
+              className={`${styles.ticketCard} ${tier.isFeatured ? styles.cardFeatured : ""}`}
+              id={`pass-${tier.id}`}
+            >
+              {/* Featured Badge */}
+              {tier.tag && (
+                <div className={styles.featuredBadge}>
+                  <Sparkles size={11} className={styles.badgeIcon} />
+                  <span>{tier.tag}</span>
                 </div>
+              )}
 
-                {/* Monumental Price & Title */}
-                <div style={{ marginBottom: "2rem" }}>
-                  <div
-                    style={{
-                      fontFamily: "var(--font-display)",
-                      fontSize: "clamp(2.6rem, 4vw, 3.8rem)",
-                      fontWeight: 800,
-                      color: "var(--text-primary, #F2EDE8)",
-                      lineHeight: 1,
-                      marginBottom: "0.65rem",
-                      letterSpacing: "-0.02em",
-                    }}
-                  >
-                    {tk.price}
-                  </div>
-                  <h3
-                    style={{
-                      fontFamily: "var(--font-display)",
-                      fontSize: "1.35rem",
-                      fontWeight: 700,
-                      color: "var(--text-primary, #F2EDE8)",
-                      margin: 0,
-                    }}
-                  >
-                    {tk.title}
-                  </h3>
-                </div>
-
-                {/* Features List */}
-                <div style={{ flex: 1, marginBottom: "2.5rem" }}>
-                  <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.9rem" }}>
-                    {tk.features.map((feat, fIdx) => (
-                      <li
-                        key={fIdx}
-                        style={{
-                          display: "flex",
-                          alignItems: "flex-start",
-                          gap: "0.75rem",
-                          fontSize: "0.85rem",
-                          lineHeight: 1.5,
-                          color: "var(--text-secondary, #96908B)",
-                        }}
-                      >
-                        <Check size={14} color={isFeatured ? "#E51D25" : "#605B56"} style={{ flexShrink: 0, marginTop: "2px" }} />
-                        <span>{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Bottom Action Row */}
-                <div style={{ display: "flex", gap: "0.65rem", paddingTop: "1.5rem", borderTop: "1px solid rgba(255, 255, 255, 0.08)" }}>
-                  <button
-                    suppressHydrationWarning
-                    type="button"
-                    onClick={() => onRegisterClick(tk.title)}
-                    style={{
-                      flex: 1,
-                      background: isFeatured ? "var(--crimson-core, #E51D25)" : "transparent",
-                      border: isFeatured ? "1px solid var(--crimson-glow, #ff3b3b)" : "1px solid rgba(255, 255, 255, 0.15)",
-                      color: isFeatured ? "#ffffff" : "var(--text-primary, #F2EDE8)",
-                      fontFamily: "var(--font-mono)",
-                      fontSize: "0.75rem",
-                      fontWeight: 700,
-                      letterSpacing: "0.12em",
-                      padding: "0.85rem 1rem",
-                      borderRadius: "3px",
-                      cursor: "pointer",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "0.5rem",
-                      transition: "all 0.2s ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isFeatured) {
-                        e.currentTarget.style.borderColor = "var(--crimson-core, #E51D25)";
-                        e.currentTarget.style.color = "#ffffff";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isFeatured) {
-                        e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
-                        e.currentTarget.style.color = "var(--text-primary, #F2EDE8)";
-                      }
-                    }}
-                  >
-                    <span>CLAIM PASS</span>
-                    <ArrowRight size={13} />
-                  </button>
-
-                  <button
-                    suppressHydrationWarning
-                    type="button"
-                    onClick={() => generateICS(tk.title)}
-                    style={{
-                      background: "transparent",
-                      border: "1px solid rgba(255, 255, 255, 0.12)",
-                      color: "var(--text-secondary, #96908B)",
-                      padding: "0.85rem",
-                      borderRadius: "3px",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      transition: "border-color 0.2s ease, color 0.2s ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = "var(--crimson-core, #E51D25)";
-                      e.currentTarget.style.color = "#ffffff";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.12)";
-                      e.currentTarget.style.color = "var(--text-secondary, #96908B)";
-                    }}
-                    title="Add dates to calendar (.ics)"
-                  >
-                    <Calendar size={14} />
-                  </button>
-                </div>
+              {/* Top Code Strip */}
+              <div className={styles.cardHeader}>
+                <span className={styles.tierCode}>{tier.code}</span>
+                <span className={styles.tierSub}>{tier.sub}</span>
               </div>
-            );
-          })}
+
+              {/* Price Dominant Visual Anchor */}
+              <div className={styles.priceContainer}>
+                <div className={styles.priceRow}>
+                  {tier.currency && <span className={styles.currency}>{tier.currency}</span>}
+                  <span className={styles.priceValue}>{tier.price}</span>
+                  {tier.price !== "FREE" && <span className={styles.perStudent}>/ DELEGATE</span>}
+                </div>
+                <h3 className={styles.cardTitle}>{tier.title}</h3>
+                <p className={styles.cardDesc}>{tier.description}</p>
+              </div>
+
+              {/* Engineering Rule Divider */}
+              <div className={styles.divider}>
+                <span className={styles.dividerText}>INCLUDED IN PASS</span>
+                <span className={styles.dividerLine} />
+              </div>
+
+              {/* Features Checklist */}
+              <ul className={styles.featureList}>
+                {tier.features.map((feature, idx) => (
+                  <li key={idx} className={styles.featureItem}>
+                    <span className={styles.checkIconWrapper}>
+                      <Check size={12} className={styles.checkIcon} />
+                    </span>
+                    <span className={styles.featureText}>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Clear Action Button */}
+              <div className={styles.actionRow}>
+                <button
+                  type="button"
+                  onClick={() => onRegisterClick(tier.title)}
+                  className={`${styles.ctaBtn} ${tier.isFeatured ? styles.ctaFeatured : ""}`}
+                  id={`btn-pass-${tier.id}`}
+                >
+                  <span>GET PASS</span>
+                  <ArrowRight size={14} className={styles.btnArrow} />
+                </button>
+              </div>
+
+              {/* Subtle Bottom Technical Coordinate */}
+              <div className={styles.cardFooter}>
+                <ShieldCheck size={11} className={styles.verifyIcon} />
+                <span>VERIFIED REGISTRATION // SECURE INSTANT CONFIRMATION</span>
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </section>

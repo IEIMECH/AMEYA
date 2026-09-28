@@ -1,3 +1,10 @@
+.mainWrapper {
+  position: relative;
+  width: 100%;
+  background-color: var(--machined-dark, #050505);
+  overflow: clip;
+}
+
 .heroSection {
   position: relative;
   min-height: 100vh;
@@ -33,23 +40,16 @@
   margin-top: 1.5rem;
   margin-bottom: auto;
   pointer-events: auto;
-  animation: fadeInHero 1s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @media (min-width: 1024px) {
   .leftHeroBlock {
-    /* Keep the overall text block occupying approximately the left 42–46% of the hero */
     width: 44%;
     max-width: 640px;
   }
 }
 
-@keyframes fadeInHero {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Major Typographic Moment: Controlled Editorial Stagger */
+/* Major Typographic Moment: Deliberate Editorial Stagger */
 .editorialTitle {
   font-family: var(--font-serif, "Playfair Display", Georgia, serif);
   font-weight: 800;
@@ -62,10 +62,10 @@
 }
 
 /* Stagger Alignment System:
-   WHERE    -> base position (0px)
-   ENGINEERS -> slight horizontal offset (~24-40px)
-   DARE TO  -> return toward base position (~6-12px)
-   DREAM    -> larger offset / strongest red statement (~50-76px)
+   WHERE     -> base position (0px)
+   ENGINEERS -> horizontal offset (~24-40px)
+   DARE TO   -> return toward base position (~6-12px)
+   DREAM     -> strongest red statement offset (~40-72px)
 */
 .titleLineWhere {
   display: block;
@@ -73,6 +73,7 @@
   color: var(--steel-bright, #F2EDE8);
   letter-spacing: -0.025em;
   transform: translateX(0);
+  animation: revealLine 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
 }
 
 .titleLineEngineers {
@@ -81,6 +82,7 @@
   color: var(--steel-bright, #F2EDE8);
   letter-spacing: -0.02em;
   transform: translateX(clamp(20px, 3.0vw, 38px));
+  animation: revealLine 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both;
 }
 
 .titleLineDareTo {
@@ -89,6 +91,7 @@
   color: var(--steel-bright, #F2EDE8);
   letter-spacing: -0.02em;
   transform: translateX(clamp(6px, 0.9vw, 12px));
+  animation: revealLine 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both;
 }
 
 .titleLineDream {
@@ -97,22 +100,34 @@
   color: var(--crimson-core, #E51D25);
   letter-spacing: -0.035em;
   transform: translateX(clamp(36px, 5.5vw, 72px));
-  text-shadow: 0 0 35px rgba(229, 29, 37, 0.22);
+  text-shadow: 0 0 35px rgba(229, 29, 37, 0.25);
+  animation: revealLine 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.75s both;
+}
+
+@keyframes revealLine {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Body Copy Alignment */
 .editorialSub {
   font-family: var(--font-mono);
-  font-size: clamp(0.95rem, 1.12vw, 1.08rem); /* approx 16-18px desktop */
-  line-height: 1.62; /* 1.55 - 1.7 */
-  color: #A8A29E; /* muted warm gray */
-  max-width: 580px; /* 560 - 620px */
+  font-size: clamp(0.95rem, 1.12vw, 1.08rem);
+  line-height: 1.62;
+  color: #A8A29E;
+  max-width: 580px;
   margin: 0.25rem 0 0.5rem;
-  /* subtle horizontal offset relating to headline composition */
   transform: translateX(clamp(14px, 1.8vw, 24px));
+  animation: revealLine 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.95s both;
 }
 
-/* CTA Alignment */
+/* CTA Alignment: Appears Last in sequence */
 .ctaRow {
   display: flex;
   flex-direction: row;
@@ -120,8 +135,8 @@
   gap: 1.25rem;
   flex-wrap: wrap;
   margin-top: 0.75rem;
-  /* Align CTA group with primary visual axis of hero typography */
   transform: translateX(clamp(14px, 1.8vw, 24px));
+  animation: revealLine 0.85s cubic-bezier(0.16, 1, 0.3, 1) 1.2s both;
 }
 
 .primaryHeroCta {
@@ -194,6 +209,7 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   max-width: 420px;
+  animation: revealLine 0.85s cubic-bezier(0.16, 1, 0.3, 1) 1.35s both;
 }
 
 .metaDept {
@@ -245,23 +261,8 @@
   }
 
   .bottomMetaBlock {
-  align-self: flex-end;
-  text-align: right;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  margin-top: auto;
-  pointer-events: auto;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  line-height: 1.75;
-  letter-spacing: 0.12em;
-  background: rgba(11, 11, 11, 0.65);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 1rem 1.5rem;
-  border-radius: 3px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  max-width: 420px;
-}
+    align-self: flex-start;
+    text-align: left;
+    margin-top: 2.5rem;
+  }
 }

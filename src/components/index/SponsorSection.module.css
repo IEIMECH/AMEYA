@@ -1,0 +1,173 @@
+.section {
+  position: relative;
+  width: 100%;
+  padding: 6.5rem 5vw 7.5rem;
+  background-color: var(--machined-dark, #050505);
+  color: var(--text-primary, #F2EDE8);
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  z-index: 2;
+}
+
+.container {
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 4rem;
+  max-width: 760px;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  color: var(--text-secondary, #96908B);
+  margin-bottom: 0.85rem;
+  text-transform: uppercase;
+}
+
+.marker {
+  color: var(--crimson-core, #E51D25);
+  font-weight: 700;
+}
+
+.divider {
+  color: var(--text-muted, #605B56);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.8vw, 3.2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary, #F2EDE8);
+  line-height: 1.1;
+  margin: 0 0 0.75rem 0;
+}
+
+.subtitle {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--text-secondary, #96908B);
+  margin: 0;
+}
+
+/* Exhibition Grid */
+.exhibitionGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.75rem;
+}
+
+.exhibitionPedestal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 3rem 1.75rem 2.25rem;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.exhibitionPedestal:hover {
+  background: rgba(255, 255, 255, 0.035);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.categoryLabel {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  color: var(--text-muted, #605B56);
+  text-transform: uppercase;
+  margin-bottom: 2.25rem;
+}
+
+.logoFrame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70px;
+  margin-bottom: 2.25rem;
+  filter: grayscale(100%) brightness(0.72) contrast(1.1);
+  opacity: 0.8;
+  transition: filter 0.25s ease, opacity 0.25s ease;
+}
+
+.exhibitionPedestal:hover .logoFrame {
+  filter: grayscale(0%) brightness(1) contrast(1);
+  opacity: 1;
+}
+
+.partnerLogo {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.descriptorGroup {
+  margin-top: auto;
+}
+
+.partnerName {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary, #F2EDE8);
+  margin-bottom: 0.35rem;
+  letter-spacing: -0.01em;
+}
+
+.partnerDescriptor {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  color: var(--text-secondary, #96908B);
+  line-height: 1.4;
+}
+
+/* Micro Engineering Line */
+.pedestalAxis {
+  position: absolute;
+  bottom: 0;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: var(--crimson-core, #E51D25);
+  opacity: 0;
+  transform: scaleX(0);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.exhibitionPedestal:hover .pedestalAxis {
+  opacity: 0.75;
+  transform: scaleX(1);
+}
+
+@media (max-width: 1024px) {
+  .exhibitionGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: 4.5rem 1.25rem 5.5rem;
+  }
+  .exhibitionGrid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  .exhibitionPedestal {
+    padding: 2.25rem 1.25rem 1.75rem;
+  }
+}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Trophy, Clock, MapPin, Users, Flame, ShieldAlert, Cpu } from "lucide-react";
 import styles from "./EventsPreview.module.css";
@@ -8,15 +9,72 @@ interface EventsPreviewProps {
   onRegisterClick: (eventName: string) => void;
 }
 
+interface SecondaryArena {
+  id: string;
+  number: string;
+  name: string;
+  category: string;
+  desc: string;
+  prizes: string;
+  time: string;
+  venue: string;
+}
+
+const secondaryArenas: SecondaryArena[] = [
+  {
+    id: "roborumble",
+    number: "02",
+    name: "Robo Rumble Combat",
+    category: "COMBAT ROBOTICS",
+    desc: "Full-contact armored robotics warfare in an enclosed polycarbonate cage.",
+    prizes: "₹20,000",
+    time: "Day 2 // 14:00",
+    venue: "Arena 1 // Polycarbonate Pit",
+  },
+  {
+    id: "cadclash",
+    number: "03",
+    name: "CAD Clash Speed Sprint",
+    category: "DIGITAL PROTOTYPING",
+    desc: "On-the-spot 3D parametric modeling against the clock in SolidWorks / Fusion.",
+    prizes: "₹8,000",
+    time: "Day 1 // 11:00",
+    venue: "Simulation Lab // Tech Towers",
+  },
+  {
+    id: "techmanuscript",
+    number: "04",
+    name: "Tech Manuscript Defense",
+    category: "RESEARCH SYMPOSIUM",
+    desc: "Defend pioneering mechanical engineering papers before an expert academic jury.",
+    prizes: "₹10,000",
+    time: "Day 1 // 10:00",
+    venue: "Seminar Hall A // Main Block",
+  },
+  {
+    id: "gearhunt",
+    number: "05",
+    name: "Gear Hunt Conundrum",
+    category: "MECHANICAL HUNT",
+    desc: "Campus-wide algorithmic puzzle solving deciphering complex mechanism clues.",
+    prizes: "₹6,000",
+    time: "Day 2 // 11:30",
+    venue: "Central Campus Lawn",
+  },
+];
+
 export default function EventsPreview({ onRegisterClick }: EventsPreviewProps) {
+  const [hoveredArenaId, setHoveredArenaId] = useState<string | null>(null);
+  const [heroCardHovered, setHeroCardHovered] = useState(false);
+
   return (
     <section className={styles.section} id="arenas">
-      <div className="container">
-        {/* Section Header with Major Typographic Moment 3 (Section 16 & 84) */}
+      <div className={styles.innerContainer}>
+        {/* Section Header */}
         <div className={styles.header}>
-          <div className={styles.metaLabel}>
-            <span className={styles.metaDot} />
-            COMPETITION CADRE // 10 ARENAS
+          <div className={styles.kicker}>
+            <span className={styles.kickerDot} />
+            CHAPTER_05 // HIGH-TORQUE ARENAS
           </div>
 
           <div className={styles.titleRow}>
@@ -31,14 +89,24 @@ export default function EventsPreview({ onRegisterClick }: EventsPreviewProps) {
           </div>
         </div>
 
-        {/* Event Hierarchy: Hero Event 01 Dominant (Section 33-35) */}
-        <div className={styles.heroEventCard}>
-          <div className={styles.heroCardBadge}>
+        {/* Featured Arena 01: HACKSPRINT 24H (Occupies ~65% visual attention) */}
+        <div
+          className={`${styles.featuredCard} ${heroCardHovered ? styles.featuredActive : ""}`}
+          onMouseEnter={() => setHeroCardHovered(true)}
+          onMouseLeave={() => setHeroCardHovered(false)}
+        >
+          <span className={styles.cornerTL}>+</span>
+          <span className={styles.cornerTR}>+</span>
+          <span className={styles.cornerBL}>+</span>
+          <span className={styles.cornerBR}>+</span>
+
+          <div className={styles.badgeRow}>
             <span className={styles.heroNumber}>01</span>
-            <span className={styles.heroTag}>FEATURED ARENA // 24-HOUR MARATHON</span>
+            <span className={styles.heroTag}>FEATURED ARENA // 24-HOUR HARDWARE MARATHON</span>
           </div>
 
           <div className={styles.heroGrid}>
+            {/* Left Content */}
             <div className={styles.heroContentLeft}>
               <h3 className={styles.heroTitle}>HACKSPRINT 24H</h3>
               <p className={styles.heroSlogan}>&ldquo;BUILD. BREAK. REBUILD.&rdquo;</p>
@@ -48,21 +116,21 @@ export default function EventsPreview({ onRegisterClick }: EventsPreviewProps) {
                 before the final clock expires.
               </p>
 
-              <div className={styles.heroSpecGrid}>
+              <div className={styles.specGrid}>
                 <div className={styles.specItem}>
-                  <Clock size={14} className={styles.specIcon} />
+                  <Clock size={13} className={styles.specIcon} />
                   <span>24 Hours Non-Stop</span>
                 </div>
                 <div className={styles.specItem}>
-                  <MapPin size={14} className={styles.specIcon} />
+                  <MapPin size={13} className={styles.specIcon} />
                   <span>Arena 3 // Simulation Lab</span>
                 </div>
                 <div className={styles.specItem}>
-                  <Users size={14} className={styles.specIcon} />
-                  <span>3–4 Engineers / Crew</span>
+                  <Users size={13} className={styles.specIcon} />
+                  <span>3?"4 Engineers / Crew</span>
                 </div>
                 <div className={styles.specItemHighlight}>
-                  <Trophy size={14} color="#E51D25" />
+                  <Trophy size={13} color="#E51D25" />
                   <span>₹15,000 Cash Pool</span>
                 </div>
               </div>
@@ -74,7 +142,7 @@ export default function EventsPreview({ onRegisterClick }: EventsPreviewProps) {
                   className={styles.primaryRegisterBtn}
                 >
                   <span>REGISTER FOR HACKSPRINT</span>
-                  <ArrowRight size={15} />
+                  <ArrowRight size={14} />
                 </button>
                 <Link href="/events" className={styles.ghostLink}>
                   <span>Full Rulebook &amp; Rubric</span>
@@ -82,121 +150,91 @@ export default function EventsPreview({ onRegisterClick }: EventsPreviewProps) {
               </div>
             </div>
 
+            {/* Right Blueprint Wireframe Box */}
             <div className={styles.heroVisualRight}>
-              <div className={styles.cadWireframeBox}>
+              <div className={styles.wireframeBox}>
                 <div className={styles.wireframeReticle} aria-hidden="true">
                   <div className={styles.reticleRing} />
-                  <div className={styles.reticleLineH} />
-                  <div className={styles.reticleLineV} />
+                  <div className={styles.reticleCrossH} />
+                  <div className={styles.reticleCrossV} />
                 </div>
+
                 <div className={styles.schematicText}>
-                  <span>ARENA PROTOCOL // 24H</span>
-                  <span>CHASSIS: HARDWARE EMBEDDED</span>
+                  <span>ARENA_PROTOCOL // 24H_SPRINT</span>
+                  <span>CHASSIS: EMBEDDED_STM32</span>
                   <span>TOLERANCE: 0.05 MM</span>
-                  <span>STATUS: WEAPONS ARMED</span>
+                  <span>CADRE: HARDWARE_CHAMPIONSHIP</span>
                 </div>
-                <div className={styles.wireframeWatermark}>HACK // 24</div>
+
+                <div className={styles.watermark}>HACK // 24H</div>
+                <div className={styles.activeLaserRay} />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Supporting Events Grid (Section 35) */}
-        <div className={styles.supportingGrid}>
-          {/* 02 Robo Rumble */}
-          <div 
-            className={styles.supportingCard}
-            onClick={() => onRegisterClick("Robo Rumble")}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onRegisterClick("Robo Rumble"); }}
-          >
-            <div className={styles.cardHeaderRow}>
-              <span className={styles.cardNumber}>02</span>
-              <span className={styles.cardCategory}>COMBAT ROBOTICS</span>
-            </div>
-            <h4 className={styles.cardTitle}>Robo Rumble</h4>
-            <p className={styles.cardDesc}>
-              High-kinetic combat robot warfare in a reinforced poly-carbonate arena. Remote and autonomous bots clash until knockout.
-            </p>
-            <div className={styles.cardFooter}>
-              <span className={styles.cardPrize}>₹12,000 PRIZE</span>
-              <span className={styles.cardAction}>REGISTER &rarr;</span>
-            </div>
+        {/* Secondary Arenas: Mechanical Accordion Grid */}
+        <div className={styles.accordionSection}>
+          <div className={styles.accordionHeader}>
+            <span className={styles.accordionLabel}>SECONDARY ARENAS // SELECT TO EXPAND</span>
+            <span className={styles.accordionCount}>04 EVENTS ACTIVE</span>
           </div>
 
-          {/* 03 CAD Clash */}
-          <div 
-            className={styles.supportingCard}
-            onClick={() => onRegisterClick("CAD Clash")}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onRegisterClick("CAD Clash"); }}
-          >
-            <div className={styles.cardHeaderRow}>
-              <span className={styles.cardNumber}>03</span>
-              <span className={styles.cardCategory}>PARAMETRIC DESIGN</span>
-            </div>
-            <h4 className={styles.cardTitle}>CAD Clash</h4>
-            <p className={styles.cardDesc}>
-              Speed 3D parametric part modeling, assembly constraints, and generative stress-testing under strict time limits.
-            </p>
-            <div className={styles.cardFooter}>
-              <span className={styles.cardPrize}>₹8,000 PRIZE</span>
-              <span className={styles.cardAction}>REGISTER &rarr;</span>
-            </div>
-          </div>
+          <div className={styles.accordionContainer}>
+            {secondaryArenas.map((arena) => {
+              const isHovered = hoveredArenaId === arena.id;
+              const hasHover = hoveredArenaId !== null;
+              const isCompressed = hasHover && !isHovered;
 
-          {/* 04 Tech Manuscript */}
-          <div 
-            className={styles.supportingCard}
-            onClick={() => onRegisterClick("Tech Manuscript")}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onRegisterClick("Tech Manuscript"); }}
-          >
-            <div className={styles.cardHeaderRow}>
-              <span className={styles.cardNumber}>04</span>
-              <span className={styles.cardCategory}>RESEARCH DEFENSE</span>
-            </div>
-            <h4 className={styles.cardTitle}>Tech Manuscript</h4>
-            <p className={styles.cardDesc}>
-              Present and defend peer-reviewed mechanical engineering research papers before an academic and industrial jury.
-            </p>
-            <div className={styles.cardFooter}>
-              <span className={styles.cardPrize}>₹8,000 PRIZE</span>
-              <span className={styles.cardAction}>REGISTER &rarr;</span>
-            </div>
-          </div>
+              return (
+                <div
+                  key={arena.id}
+                  className={`${styles.accordionCard} ${isHovered ? styles.cardExpanded : ""} ${
+                    isCompressed ? styles.cardCompressed : ""
+                  }`}
+                  onMouseEnter={() => setHoveredArenaId(arena.id)}
+                  onMouseLeave={() => setHoveredArenaId(null)}
+                >
+                  <div className={styles.accTopBar}>
+                    <span className={styles.accIndex}>{arena.number}</span>
+                    <span className={styles.accCategory}>{arena.category}</span>
+                  </div>
 
-          {/* 05 Gear Hunt */}
-          <div 
-            className={styles.supportingCard}
-            onClick={() => onRegisterClick("Gear Hunt")}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onRegisterClick("Gear Hunt"); }}
-          >
-            <div className={styles.cardHeaderRow}>
-              <span className={styles.cardNumber}>05</span>
-              <span className={styles.cardCategory}>CRYPTOGRAPHY</span>
-            </div>
-            <h4 className={styles.cardTitle}>Gear Hunt</h4>
-            <p className={styles.cardDesc}>
-              Campus-wide mechanical cryptography quest. Solve engineering puzzles, dismantle gearboxes, and crack kinetic ciphers.
-            </p>
-            <div className={styles.cardFooter}>
-              <span className={styles.cardPrize}>₹7,000 PRIZE</span>
-              <span className={styles.cardAction}>REGISTER &rarr;</span>
-            </div>
+                  <div className={styles.accBody}>
+                    <h4 className={styles.accTitle}>{arena.name}</h4>
+                    <p className={styles.accDesc}>{arena.desc}</p>
+                  </div>
+
+                  <div className={styles.accMeta}>
+                    <div className={styles.accMetaRow}>
+                      <span className={styles.accMetaLabel}>POOL:</span>
+                      <span className={styles.accMetaHighlight}>{arena.prizes}</span>
+                    </div>
+                    <div className={styles.accMetaRow}>
+                      <span className={styles.accMetaLabel}>TIMING:</span>
+                      <span className={styles.accMetaVal}>{arena.time}</span>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => onRegisterClick(arena.name)}
+                    className={styles.accRegisterBtn}
+                  >
+                    <span>ENTER ARENA</span>
+                    <ArrowRight size={13} />
+                  </button>
+                </div>
+              );
+            })}
           </div>
         </div>
 
-        {/* View All Arenas Action */}
-        <div className={styles.viewAllRow}>
-          <Link href="/events" className={styles.viewAllBtn}>
-            <span>EXPLORE ALL 10 ARENAS &amp; SCHEDULES</span>
-            <ArrowRight size={16} />
+        {/* Bottom All Arenas Link */}
+        <div className={styles.bottomLinkRow}>
+          <Link href="/events" className={styles.exploreAllLink}>
+            <span>View All 10 Championship Arenas &amp; Full Rulebooks</span>
+            <ArrowRight size={14} />
           </Link>
         </div>
       </div>
