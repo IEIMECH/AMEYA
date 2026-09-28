@@ -31,11 +31,11 @@ export default function EventsCatalogPage() {
 
       <div className={`container ${styles.contentContainer}`}>
         {/* Header */}
-        <div className={styles.headerArea}>
+        <header className={styles.headerArea}>
           <div className={styles.headerBackdrop} aria-hidden="true" />
           <div className={styles.sectionLabel}>
-            <ShieldAlert size={13} />
-            TECHNICAL ARENAS // AMEYA 2026
+            <ShieldAlert size={13} className={styles.sectionIcon} />
+            <span>TECHNICAL ARENAS // AMEYA 2026</span>
           </div>
           <h1 className={styles.title}>
             Event <span className={styles.gradientText}>Arenas &amp; Lineup</span>
@@ -44,8 +44,8 @@ export default function EventsCatalogPage() {
             [SYS // INDEX]: Explore high-precision CAD modeling, autonomous robot battles, 24H prototyping, and research symposia.
           </p>
 
-          {/* Filter Pills */}
-          <div className={styles.filtersWrapper}>
+          {/* Filter Pills with Technical Indicators */}
+          <nav className={styles.filtersWrapper} aria-label="Event category filters">
             {categories.map((cat) => {
               const isActive = activeCategory === cat;
               return (
@@ -54,16 +54,18 @@ export default function EventsCatalogPage() {
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
                   className={`${styles.filterBtn} ${isActive ? styles.filterBtnActive : ""}`}
+                  aria-pressed={isActive}
                 >
-                  {cat}
+                  {isActive && <span className={styles.filterDot} aria-hidden="true">•</span>}
+                  <span>{cat}</span>
                 </button>
               );
             })}
-          </div>
-        </div>
+          </nav>
+        </header>
 
-        {/* Event Cards Grid */}
-        <div className={styles.eventsGrid}>
+        {/* Event Cards Grid with Smooth Transition on Category Switch */}
+        <div key={activeCategory} className={styles.eventsGrid}>
           {filteredEvents.map((event, idx) => (
             <EventCard
               key={event.id}

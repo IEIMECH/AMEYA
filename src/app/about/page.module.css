@@ -40,6 +40,17 @@
   background: #111111;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 4px;
+  transition: border-color 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;
+}
+
+.mainCard:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
+}
+
+.mainCard:hover .hudCorner {
+  color: var(--crimson-core, #E51D25);
 }
 
 .crosshairTL {
@@ -100,6 +111,17 @@
   background: #111111;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 4px;
+  transition: border-color 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;
+}
+
+.infoCard:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
+}
+
+.infoCard:hover .hudCorner {
+  color: var(--crimson-core, #E51D25);
 }
 
 .infoCard h3 {
@@ -145,13 +167,13 @@
   align-items: center;
   text-align: center;
   gap: 0.8rem;
-  transition: transform var(--transition), border-color var(--transition);
+  transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
 .pillar:hover {
-  transform: translateY(-4px);
-  border-color: rgba(230, 29, 29, 0.5);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9), 0 0 20px rgba(230, 29, 29, 0.15);
+  transform: translateY(-2px);
+  border-color: rgba(229, 29, 37, 0.35);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7);
 }
 
 .pillarIcon {
@@ -161,22 +183,40 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(230, 29, 29, 0.08);
-  border: 1px solid rgba(230, 29, 29, 0.3);
-  color: #ff3b3b;
+  background: rgba(229, 29, 37, 0.08);
+  border: 1px solid rgba(229, 29, 37, 0.25);
+  color: var(--crimson-core, #E51D25);
+  transition: all 0.2s ease;
+}
+
+.pillar:hover .pillarIcon {
+  background: rgba(229, 29, 37, 0.16);
+  border-color: var(--crimson-core, #E51D25);
+  color: #FFFFFF;
+  box-shadow: 0 0 14px rgba(229, 29, 37, 0.35);
 }
 
 .pillar h4 {
   font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-primary, #F2EDE8);
+  transition: color 0.2s ease;
+}
+
+.pillar:hover h4 {
+  color: #FFFFFF;
 }
 
 .pillar p {
   font-size: 0.82rem;
-  color: #888888;
+  color: var(--text-muted, #605B56);
   line-height: 1.6;
+  transition: color 0.2s ease;
+}
+
+.pillar:hover p {
+  color: var(--text-secondary, #96908B);
 }
 
 .statsCard {

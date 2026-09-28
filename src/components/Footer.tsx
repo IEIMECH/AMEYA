@@ -17,8 +17,8 @@ export default function Footer() {
     return (
       <footer className={styles.minimalFooter}>
         <div className={`container ${styles.minimalInner}`}>
-          <p>© 2026 AMEYA &bull; Department of Mechanical Engineering, VVITU.</p>
-          <Link href="/" className={styles.backHome}>
+          <p>© 2026 AMEYA • Department of Mechanical Engineering, VVITU.</p>
+          <Link href="/" className={styles.backHome} aria-label="Return to conclave homepage">
             <span>Back to Home</span>
             <ArrowUp size={14} />
           </Link>
@@ -82,7 +82,7 @@ export default function Footer() {
             <h4 className={styles.groupHeading}>COMMUNICATIONS</h4>
             <p className={styles.commText}>
               Department of Mechanical Engineering, VVITU<br />
-              Nambur, Guntur, Andhra Pradesh &ndash; 522508
+              Nambur, Guntur, Andhra Pradesh – 522508
             </p>
             <button type="button" onClick={scrollToTop} className={styles.scrollTopBtn} aria-label="Scroll back to top">
               <span>ASCEND TO APEX</span>
@@ -93,8 +93,8 @@ export default function Footer() {
 
         {/* Bottom Legal Baseline */}
         <div className={styles.bottomBar}>
-          <p>© 2026 AMEYA &bull; IEI SAME COUNCIL, VVITU. ALL RIGHTS RESERVED.</p>
-          <p className={styles.bottomTag}>SYSTEM FOR CLARITY &bull; SURPRISE FOR MEMORY</p>
+          <p>© 2026 AMEYA • IEI SAME COUNCIL, VVITU. ALL RIGHTS RESERVED.</p>
+          <p className={styles.bottomTag}>SYSTEM FOR CLARITY • SURPRISE FOR MEMORY</p>
         </div>
       </div>
     </footer>

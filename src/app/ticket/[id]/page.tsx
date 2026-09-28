@@ -4,6 +4,7 @@ import { useEffect, useState, use } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import QRCode from "qrcode";
+import { Printer, Share2, Check, ArrowRight, ShieldCheck, Clock } from "lucide-react";
 import styles from "./page.module.css";
 
 interface TicketData {
@@ -65,17 +66,17 @@ export default function TicketPage({
         } else {
           setTicket({
             ticket_id: ticketId,
-            event_name: "Ameya 2026 Technical Fest",
-            leader_name: "Participant",
-            college: "VVITU",
+            event_name: "AMEYA '26 National Conclave",
+            leader_name: "Registered Delegate",
+            college: "VVITU Guntur",
             year: "2026",
             is_team: false,
-            team_id: `PASS-${ticketId.slice(-6)}`,
+            team_id: `DEL-${ticketId.slice(-6)}`,
             verified_at: null,
           });
         }
-      } catch (e) {
-        console.error("Failed to load ticket", e);
+      } catch (err) {
+        console.error("Error fetching ticket:", err);
       } finally {
         setLoading(false);
       }
@@ -85,12 +86,14 @@ export default function TicketPage({
   }, [ticketId, searchParams]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const url = window.location.href;
-      QRCode.toDataURL(url, {
-        width: 200,
+    if (ticketId) {
+      QRCode.toDataURL(ticketId, {
+        width: 220,
         margin: 1,
-        color: { dark: "#0a0f1e", light: "#ffffff" },
+        color: {
+          dark: "#050505",
+          light: "#FFFFFF",
+        },
       }).then(setQrSrc);
     }
   }, [ticketId]);
@@ -123,7 +126,7 @@ export default function TicketPage({
       <div className={styles.page}>
         <div className={styles.loadingState}>
           <div className={styles.scanner}></div>
-          <p className={styles.scanText}>VERIFYING TICKET QUANTUM SIGNATURE...</p>
+          <p className={styles.scanText}>VERIFYING CREDENTIAL SIGNATURE // TELEMETRY LINK...</p>
         </div>
       </div>
     );
@@ -133,86 +136,70 @@ export default function TicketPage({
 
   return (
     <div className={styles.page}>
-      <div className={styles.particles}>
-        {[...Array(12)].map((_, i) => (
-          <div
-            key={i}
-            className={styles.particle}
-            style={
-              {
-                "--x": `${(i * 37) % 100}%`,
-                "--y": `${(i * 53) % 100}%`,
-                "--delay": `${(i * 0.15).toFixed(2)}s`,
-              } as React.CSSProperties
-            }
-          />
-        ))}
-      </div>
-
       <div className={styles.content}>
         <div className={styles.card}>
-          <div className={styles.cardGlow}></div>
-
           <div className={styles.cardTop}>
-            <span className={styles.logo}>AMEYA &apos;26 PASS</span>
+            <span className={styles.logo}>AMEYA &apos;26 CREDENTIAL DOCKET</span>
             <span
               className={styles.verified}
               style={{
-                color: isVerified ? "#10b981" : "#00e5ff",
-                borderColor: isVerified ? "rgba(16,185,129,0.3)" : "rgba(0,229,255,0.3)",
-                background: isVerified ? "rgba(16,185,129,0.1)" : "rgba(0,229,255,0.1)",
+                color: isVerified ? "#10b981" : "var(--crimson-core, #E51D25)",
+                borderColor: isVerified ? "rgba(16,185,129,0.4)" : "rgba(229,29,37,0.4)",
+                background: isVerified ? "rgba(16,185,129,0.1)" : "rgba(229,29,37,0.1)",
               }}
             >
-              {isVerified ? "? ENTRY VERIFIED" : "? CONFIRMED PASS"}
+              {isVerified ? "✓ ENTRY VERIFIED" : "● CONFIRMED PASS"}
             </span>
           </div>
 
           <div className={styles.hero}>
-            <div className={styles.confetti}>???</div>
+            <div className={styles.subLabel}>OFFICIAL DELEGATE ACCESS</div>
             <h1 className={styles.greeting}>
-              Welcome, <span className={styles.name}>{ticket?.leader_name}</span>
+              <span className={styles.name}>{ticket?.leader_name}</span>
             </h1>
             <p className={styles.eventName}>{ticket?.event_name}</p>
           </div>
 
           <div className={styles.details}>
             <div className={styles.detail}>
-              <span>Ticket ID</span>
+              <span>DOCKET ID</span>
               <code>{ticket?.ticket_id}</code>
             </div>
 
             <div className={styles.detail}>
-              <span>Role / Team</span>
+              <span>CADRE / SQUAD</span>
               <strong className={styles.teamId}>
                 {ticket?.is_team && ticket.team_name ? ticket.team_name : ticket?.team_id}
               </strong>
             </div>
 
             <div className={styles.detail}>
-              <span>Institution</span>
+              <span>AFFILIATION</span>
               <strong>{ticket?.college}</strong>
             </div>
 
             <div className={styles.detail}>
-              <span>Date & Venue</span>
-              <strong>Oct 4, 2026 ? VVITU Campus</strong>
+              <span>CONCLAVE SCHEDULE</span>
+              <strong>OCT 04–05, 2026 // VVITU CAMPUS</strong>
             </div>
 
             {ticket?.members && ticket.members.length > 0 && (
-              <div style={{ marginTop: "0.5rem" }}>
-                <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", textTransform: "uppercase" }}>
-                  Squad Members
+              <div style={{ marginTop: "0.25rem", paddingBottom: "0.5rem" }}>
+                <span style={{ fontSize: "0.68rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "6px" }}>
+                  SQUAD PERSONNEL
                 </span>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "6px" }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
                   {ticket.members.map((m, idx) => (
                     <span
                       key={idx}
                       style={{
-                        fontSize: "0.75rem",
+                        fontFamily: "var(--font-mono)",
+                        fontSize: "0.72rem",
                         padding: "3px 8px",
-                        borderRadius: "6px",
+                        borderRadius: "2px",
                         background: "rgba(255,255,255,0.06)",
-                        color: "#e2e8f0",
+                        color: "var(--text-primary, #F2EDE8)",
+                        border: "1px solid rgba(255,255,255,0.08)",
                       }}
                     >
                       {m.name}
@@ -222,100 +209,67 @@ export default function TicketPage({
               </div>
             )}
 
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "1rem 0" }}>
+            <div className={styles.qrContainer}>
               {qrSrc ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={qrSrc}
                   alt="Cryptographic check-in QR code token for delegate credential verification"
-                  draggable="false"
+                  draggable={false}
                   onDragStart={(e) => e.preventDefault()}
                   width={140}
                   height={140}
-                  style={{
-                    borderRadius: "12px",
-                    border: "2px solid rgba(0, 229, 255, 0.4)",
-                    boxShadow: "0 0 20px rgba(0, 229, 255, 0.2)",
-                  }}
+                  className={styles.qrImage}
                 />
               ) : (
-                <div style={{ width: 140, height: 140, background: "rgba(255,255,255,0.05)", borderRadius: 12 }} />
+                <div style={{ width: 140, height: 140, background: "rgba(255,255,255,0.05)", borderRadius: 2 }} />
               )}
-              <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "8px" }}>
-                Scan at entrance gate for validation
+              <span className={styles.qrHint}>
+                PRESENT AT ACCESS CONTROL / ARENA GATES
               </span>
             </div>
 
-            <div style={{ display: "flex", gap: "10px", marginTop: "0.5rem" }}>
-              <button suppressHydrationWarning
+            <div className={styles.actions}>
+              <button
+                type="button"
                 onClick={() => window.print()}
-                style={{
-                  flex: 1,
-                  padding: "10px 14px",
-                  borderRadius: "10px",
-                  border: "1px solid rgba(255,255,255,0.15)",
-                  background: "rgba(255,255,255,0.05)",
-                  color: "#fff",
-                  fontSize: "0.85rem",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                }}
+                className={styles.actionBtn}
+                aria-label="Print or save pass docket"
               >
-                ??? Print / Save
+                <Printer size={13} />
+                <span>Print Docket</span>
               </button>
 
-              <button suppressHydrationWarning
+              <button
+                type="button"
                 onClick={handleShare}
-                style={{
-                  flex: 1,
-                  padding: "10px 14px",
-                  borderRadius: "10px",
-                  border: "1px solid rgba(0,229,255,0.3)",
-                  background: "rgba(0,229,255,0.1)",
-                  color: "#00e5ff",
-                  fontSize: "0.85rem",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                }}
+                className={styles.actionBtn}
+                aria-label="Copy credential link"
               >
-                {copied ? "? Link Copied!" : "?? Share Pass"}
+                {copied ? <Check size={13} color="#10b981" /> : <Share2 size={13} />}
+                <span>{copied ? "Link Copied" : "Share Pass"}</span>
               </button>
             </div>
 
             {!isVerified && (
-              <button suppressHydrationWarning
+              <button
+                type="button"
                 onClick={handleVerifyGate}
                 disabled={isVerifying}
-                style={{
-                  marginTop: "8px",
-                  padding: "8px 12px",
-                  borderRadius: "8px",
-                  border: "1px dashed rgba(16,185,129,0.4)",
-                  background: "rgba(16,185,129,0.05)",
-                  color: "#10b981",
-                  fontSize: "0.75rem",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  width: "100%",
-                }}
+                className={styles.verifyBtn}
+                aria-label="Verify entry at gate"
               >
-                {isVerifying ? "Verifying..." : "? Volunteer Check-in (Tap to verify at gate)"}
+                <ShieldCheck size={13} style={{ display: "inline-block", verticalAlign: "middle", marginRight: "6px" }} />
+                {isVerifying ? "AUTHENTICATING..." : "VOLUNTEER GATE CHECK-IN"}
               </button>
             )}
           </div>
 
           <div className={styles.footer}>
-            <p style={{ margin: "0 0 8px 0" }}>IEI SAME Student Chapter ? VVITU Nambur</p>
-            <Link
-              href="/agenda"
-              style={{
-                color: "#a78bfa",
-                textDecoration: "none",
-                fontWeight: 600,
-                fontSize: "0.8rem",
-              }}
-            >
-              ? Explore Schedule & Agenda
+            <p style={{ margin: "0 0 6px 0" }}>IEI SAME STUDENT CHAPTER • VVITU NAMBUR</p>
+            <Link href="/agenda" className={styles.agendaLink}>
+              <span>Access Conclave Agenda</span>
+              <ArrowRight size={12} />
             </Link>
           </div>
         </div>

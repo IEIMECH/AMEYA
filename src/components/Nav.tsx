@@ -104,16 +104,20 @@ export default function Nav() {
             }}
             enableHover
           >
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                data-id={link.label}
-                className={`${styles.navItem} ${currentTab === link.label ? styles.activeNavItem : ""}`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = currentTab === link.label;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  data-id={link.label}
+                  className={`${styles.navItem} ${isActive ? styles.activeNavItem : ""}`}
+                >
+                  <span>{link.label}</span>
+                  {isActive && <span className={styles.activeDot} aria-hidden="true">•</span>}
+                </Link>
+              );
+            })}
           </AnimatedBackground>
         </nav>
 

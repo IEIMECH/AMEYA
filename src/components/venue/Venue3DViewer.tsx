@@ -478,11 +478,11 @@ export default function Venue3DViewer() {
       ref={containerRef}
       style={{
         position: "relative",
-        background: "rgba(10, 15, 36, 0.8)",
-        border: "1px solid rgba(0, 229, 255, 0.25)",
-        borderRadius: "24px",
+        background: "#0c0c0e",
+        border: "1px solid rgba(255, 255, 255, 0.1)",
+        borderRadius: "4px",
         overflow: "hidden",
-        boxShadow: "0 20px 60px rgba(0, 0, 0, 0.6)",
+        boxShadow: "0 24px 60px rgba(0, 0, 0, 0.85)",
         marginBottom: "3rem",
       }}
     >
@@ -522,45 +522,55 @@ export default function Venue3DViewer() {
         <div
           style={{
             display: "inline-flex",
-            background: "rgba(255, 255, 255, 0.05)",
-            padding: "4px",
-            borderRadius: "99px",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
+            background: "rgba(255, 255, 255, 0.04)",
+            padding: "3px",
+            borderRadius: "4px",
+            border: "1px solid rgba(255, 255, 255, 0.08)",
           }}
         >
           <button
             suppressHydrationWarning
+            type="button"
             onClick={() => setActiveTab("3d")}
             style={{
-              padding: "6px 16px",
-              borderRadius: "99px",
-              border: "none",
-              fontSize: "0.85rem",
+              padding: "6px 14px",
+              borderRadius: "3px",
+              border: activeTab === "3d" ? "1px solid var(--crimson-core, #E51D25)" : "1px solid transparent",
+              fontSize: "0.78rem",
+              fontFamily: "var(--font-mono)",
               fontWeight: 700,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
               cursor: "pointer",
-              transition: "all 0.2s ease",
-              background: activeTab === "3d" ? "linear-gradient(135deg, #e61d1d, #b51212)" : "transparent",
-              color: activeTab === "3d" ? "#fff" : "#888888",
+              transition: "all 0.18s ease",
+              background: activeTab === "3d" ? "var(--crimson-core, #E51D25)" : "transparent",
+              color: activeTab === "3d" ? "#FFFFFF" : "var(--text-secondary, #96908B)",
             }}
+            aria-pressed={activeTab === "3d"}
           >
-            🏢 3D Digital Twin
+            3D DIGITAL TWIN
           </button>
           <button
             suppressHydrationWarning
+            type="button"
             onClick={() => setActiveTab("photo")}
             style={{
-              padding: "6px 16px",
-              borderRadius: "99px",
-              border: "none",
-              fontSize: "0.85rem",
+              padding: "6px 14px",
+              borderRadius: "3px",
+              border: activeTab === "photo" ? "1px solid var(--crimson-core, #E51D25)" : "1px solid transparent",
+              fontSize: "0.78rem",
+              fontFamily: "var(--font-mono)",
               fontWeight: 700,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
               cursor: "pointer",
-              transition: "all 0.2s ease",
-              background: activeTab === "photo" ? "linear-gradient(135deg, #e61d1d, #b51212)" : "transparent",
-              color: activeTab === "photo" ? "#fff" : "#888888",
+              transition: "all 0.18s ease",
+              background: activeTab === "photo" ? "var(--crimson-core, #E51D25)" : "transparent",
+              color: activeTab === "photo" ? "#FFFFFF" : "var(--text-secondary, #96908B)",
             }}
+            aria-pressed={activeTab === "photo"}
           >
-            📸 Real Aerial Drone View
+            REAL AERIAL VIEW
           </button>
         </div>
 
@@ -568,41 +578,54 @@ export default function Venue3DViewer() {
           <div style={{ display: "flex", gap: "8px" }}>
             <button
               suppressHydrationWarning
+              type="button"
               onClick={() => setAutoRotate(!autoRotate)}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "6px",
                 padding: "6px 12px",
-                borderRadius: "8px",
-                background: autoRotate ? "rgba(230, 29, 29, 0.2)" : "rgba(255, 255, 255, 0.06)",
-                border: "1px solid rgba(255, 255, 255, 0.12)",
-                color: autoRotate ? "#ff3b3b" : "#b0b0b0",
-                fontSize: "0.8rem",
-                fontWeight: 600,
+                borderRadius: "3px",
+                background: autoRotate ? "var(--crimson-core, #E51D25)" : "rgba(255, 255, 255, 0.04)",
+                border: `1px solid ${autoRotate ? "var(--crimson-core, #E51D25)" : "rgba(255, 255, 255, 0.1)"}`,
+                color: autoRotate ? "#FFFFFF" : "var(--text-secondary, #96908B)",
+                fontSize: "0.75rem",
+                fontFamily: "var(--font-mono)",
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                cursor: "pointer",
+                transition: "all 0.18s ease",
               }}
+              aria-pressed={autoRotate}
             >
-              <RotateCw size={14} />
-              {autoRotate ? "Auto Spin On" : "Auto Spin"}
+              <RotateCw size={12} />
+              {autoRotate ? "AUTO SPIN ACTIVE" : "AUTO SPIN"}
             </button>
             <button
               suppressHydrationWarning
+              type="button"
               onClick={handleResetCamera}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "6px",
                 padding: "6px 12px",
-                borderRadius: "8px",
-                background: "rgba(255, 255, 255, 0.06)",
-                border: "1px solid rgba(255, 255, 255, 0.12)",
-                color: "#b0b0b0",
-                fontSize: "0.8rem",
-                fontWeight: 600,
+                borderRadius: "3px",
+                background: "rgba(255, 255, 255, 0.04)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                color: "var(--text-secondary, #96908B)",
+                fontSize: "0.75rem",
+                fontFamily: "var(--font-mono)",
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                cursor: "pointer",
+                transition: "all 0.18s ease",
               }}
             >
-              <Camera size={14} />
-              Reset View
+              <Camera size={12} />
+              RESET VIEW
             </button>
           </div>
         )}

@@ -14,7 +14,7 @@ export default function EventCard({ event, index = 0, onRegister }: Props) {
   const formattedIndex = String(index + 1).padStart(2, "0");
 
   return (
-    <div
+    <article
       id={event.id}
       className={styles.cardContainer}
       onClick={onRegister}
@@ -26,11 +26,12 @@ export default function EventCard({ event, index = 0, onRegister }: Props) {
           onRegister();
         }
       }}
-      aria-label={`Register for ${event.name}`}
+      aria-label={`Inspect and register for ${event.name} - ${event.category}`}
+      onDragStart={(e) => e.preventDefault()}
     >
       {/* Outer Technical Chamfered Frame */}
       <div className={styles.cardFrame}>
-        {/* Technical Corner Crosshairs (+) */}
+        {/* Technical Corner Crosshairs (+) that illuminate on hover */}
         <span className={styles.crosshairTL} aria-hidden="true">+</span>
         <span className={styles.crosshairTR} aria-hidden="true">+</span>
         <span className={styles.crosshairBR} aria-hidden="true">+</span>
@@ -43,13 +44,13 @@ export default function EventCard({ event, index = 0, onRegister }: Props) {
           </div>
           <div className={styles.telemetryTag}>
             <Activity size={10} className={styles.pulseIcon} />
-            <span>STATUS: ARMED // SEC: {formattedIndex}</span>
+            <span className={styles.telemetryText}>STATUS: ARMED // SEC: {formattedIndex}</span>
           </div>
         </div>
 
         {/* Card Header */}
         <div className={styles.header}>
-          <div className={styles.iconBox}>
+          <div className={styles.iconBox} aria-hidden="true">
             <span className={styles.iconText}>{event.icon}</span>
           </div>
           <div className={styles.titleArea}>
@@ -88,9 +89,10 @@ export default function EventCard({ event, index = 0, onRegister }: Props) {
         {/* Action Foot */}
         <div className={styles.footer}>
           <div className={styles.specBadge}>
-            <ShieldCheck size={12} color="#e61d1d" />
+            <ShieldCheck size={12} className={styles.shieldIcon} />
             <span>IEI VALIDATED // MECH-26</span>
           </div>
+
           <button
             suppressHydrationWarning
             type="button"
@@ -99,9 +101,10 @@ export default function EventCard({ event, index = 0, onRegister }: Props) {
               e.stopPropagation();
               onRegister();
             }}
+            aria-label={`Register for ${event.name}`}
           >
-            <span>Register</span>
-            <ArrowRight size={13} />
+            <span className={styles.registerBtnText}>REGISTER</span>
+            <ArrowRight size={13} className={styles.btnArrow} />
           </button>
         </div>
 
@@ -111,6 +114,6 @@ export default function EventCard({ event, index = 0, onRegister }: Props) {
           <div className={styles.borderTailDot} />
         </div>
       </div>
-    </div>
+    </article>
   );
 }

@@ -41,6 +41,19 @@
   background: #111111;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 4px;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.specCard:hover {
+  border-color: rgba(229, 29, 37, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7);
+}
+
+.specCard:hover .specIconBox {
+  border-color: var(--crimson-core, #E51D25);
+  background: rgba(229, 29, 37, 0.16);
+  box-shadow: 0 0 10px rgba(229, 29, 37, 0.35);
 }
 
 .crosshairTL {
@@ -128,6 +141,12 @@
   border-radius: 3px;
   background: rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.transitItem:hover {
+  border-color: rgba(229, 29, 37, 0.35);
+  transform: translateY(-2px);
 }
 
 .transitHead {
@@ -166,13 +185,26 @@
   padding: 1rem 1.25rem;
   background: rgba(0, 0, 0, 0.4);
   border-radius: 3px;
-  border-left: 3px solid #e61d1d;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-left: 3px solid rgba(229, 29, 37, 0.4);
   font-size: 0.92rem;
-  color: #d8d8d8;
+  color: var(--text-secondary, #96908B);
   line-height: 1.6;
+  transition: background-color 0.2s ease, border-left-color 0.2s ease, color 0.2s ease;
+}
+
+.ruleItem:hover {
+  background: rgba(229, 29, 37, 0.04);
+  border-left-color: var(--crimson-core, #E51D25);
+  color: var(--text-primary, #F2EDE8);
 }
 
 .ruleIcon {
   flex-shrink: 0;
   margin-top: 3px;
+  transition: filter 0.2s ease;
+}
+
+.ruleItem:hover .ruleIcon {
+  filter: drop-shadow(0 0 6px rgba(229, 29, 37, 0.7));
 }

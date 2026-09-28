@@ -65,6 +65,17 @@
   color: var(--text-primary, #F2EDE8);
   margin: 0 0 1.25rem;
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.groupHeading::after {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 1px;
+  background: rgba(229, 29, 37, 0.5);
 }
 
 .linkList {
@@ -84,11 +95,34 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  transition: color 0.2s ease;
+  transition: color 0.18s ease, transform 0.18s ease;
+  position: relative;
+}
+
+.linkList a::before {
+  content: '•';
+  color: var(--crimson-core, #E51D25);
+  font-size: 0.65rem;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
 .linkList a:hover {
-  color: var(--crimson-core, #E51D25);
+  color: var(--text-primary, #F2EDE8);
+  transform: translateX(3px);
+}
+
+.linkList a:hover::before {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.linkList a:focus-visible {
+  outline: 2px solid var(--crimson-core, #E51D25);
+  outline-offset: 3px;
+  border-radius: 2px;
+  color: var(--text-primary, #F2EDE8);
 }
 
 .commText {
@@ -113,12 +147,24 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .scrollTopBtn:hover {
   border-color: var(--crimson-core, #E51D25);
-  background: var(--machined-interactive, #151515);
+  color: #fff;
+  background: var(--machined-interactive, #161616);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(229, 29, 37, 0.15);
+}
+
+.scrollTopBtn:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.scrollTopBtn:focus-visible {
+  outline: 2px solid var(--crimson-core, #E51D25);
+  outline-offset: 3px;
 }
 
 /* Bottom Bar */
@@ -164,11 +210,34 @@
   color: var(--text-secondary, #96908B);
   text-decoration: none;
   font-weight: 600;
-  transition: color 0.2s ease;
+  transition: color 0.18s ease, transform 0.18s ease;
+  position: relative;
+  padding: 0.25rem 0.5rem;
+  border-radius: 2px;
+}
+
+.backHome::before {
+  content: '←';
+  color: var(--crimson-core, #E51D25);
+  font-size: 0.8rem;
+  opacity: 0;
+  transform: translateX(4px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
 .backHome:hover {
-  color: var(--crimson-core, #E51D25);
+  color: var(--text-primary, #F2EDE8);
+  transform: translateX(-2px);
+}
+
+.backHome:hover::before {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.backHome:focus-visible {
+  outline: 2px solid var(--crimson-core, #E51D25);
+  outline-offset: 2px;
 }
 
 @media (max-width: 900px) {
