@@ -5,7 +5,8 @@ import { events } from "@/data/events";
 import EventCard from "@/components/EventCard";
 import RegistrationDialog from "@/components/RegistrationDialog";
 import type { Event } from "@/data/events";
-import { ShieldAlert, Activity } from "lucide-react";
+import { ShieldAlert } from "lucide-react";
+import styles from "./page.module.css";
 
 export default function EventsCatalogPage() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
@@ -18,35 +19,33 @@ export default function EventsCatalogPage() {
     : events.filter((e) => e.category === activeCategory);
 
   return (
-    <div
-      style={{
-        paddingTop: "calc(var(--nav-height) + 3.5rem)",
-        paddingBottom: "6rem",
-        minHeight: "100vh",
-        background: "transparent",
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      {/* Ghost Industrial Watermark */}
-      <div className="ghost-watermark">COMPETITIONS</div>
+    <div className={styles.pageWrapper}>
+      {/* Layer 1: Dark atmospheric vignette to protect text readability */}
+      <div className={styles.atmosphericVignette} aria-hidden="true" />
 
-      <div className="container" style={{ position: "relative", zIndex: 1 }}>
+      {/* Layer 2: Navbar legibility protection vignette */}
+      <div className={styles.navProtectionGlow} aria-hidden="true" />
+
+      {/* Ghost Industrial Watermark */}
+      <div className={styles.ghostWatermark} aria-hidden="true">COMPETITIONS</div>
+
+      <div className={`container ${styles.contentContainer}`}>
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
-          <div className="section-label">
+        <div className={styles.headerArea}>
+          <div className={styles.headerBackdrop} aria-hidden="true" />
+          <div className={styles.sectionLabel}>
             <ShieldAlert size={13} />
             TECHNICAL ARENAS // AMEYA 2026
           </div>
-          <h1 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2.4rem, 5vw, 4rem)", color: "#ffffff", marginBottom: "1rem", fontWeight: 800 }}>
-            Event <span className="gradient-text">Arenas &amp; Lineup</span>
+          <h1 className={styles.title}>
+            Event <span className={styles.gradientText}>Arenas &amp; Lineup</span>
           </h1>
-          <p style={{ color: "#888888", fontSize: "1.05rem", maxWidth: "680px", margin: "0 auto", fontFamily: "var(--font-mono)" }}>
+          <p className={styles.subtitle}>
             [SYS // INDEX]: Explore high-precision CAD modeling, autonomous robot battles, 24H prototyping, and research symposia.
           </p>
 
           {/* Filter Pills */}
-          <div style={{ display: "flex", justifyContent: "center", gap: "0.5rem", flexWrap: "wrap", marginTop: "2rem" }}>
+          <div className={styles.filtersWrapper}>
             {categories.map((cat) => {
               const isActive = activeCategory === cat;
               return (
@@ -54,20 +53,7 @@ export default function EventsCatalogPage() {
                   suppressHydrationWarning
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  style={{
-                    padding: "0.45rem 1.15rem",
-                    borderRadius: "3px",
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "0.78rem",
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    background: isActive ? "linear-gradient(135deg, #e61d1d, #b51212)" : "rgba(17, 17, 17, 0.9)",
-                    color: isActive ? "#ffffff" : "#888888",
-                    border: `1px solid ${isActive ? "#ff3b3b" : "rgba(255, 255, 255, 0.1)"}`,
-                    boxShadow: isActive ? "0 0 16px rgba(230, 29, 29, 0.5)" : "none",
-                  }}
+                  className={`${styles.filterBtn} ${isActive ? styles.filterBtnActive : ""}`}
                 >
                   {cat}
                 </button>
@@ -77,14 +63,7 @@ export default function EventsCatalogPage() {
         </div>
 
         {/* Event Cards Grid */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(330px, 1fr))",
-            gap: "2.5rem",
-            alignItems: "stretch",
-          }}
-        >
+        <div className={styles.eventsGrid}>
           {filteredEvents.map((event, idx) => (
             <EventCard
               key={event.id}

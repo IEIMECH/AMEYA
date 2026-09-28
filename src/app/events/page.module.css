@@ -1,0 +1,187 @@
+/* Events Page Dedicated Layout & Atmospheric Blending */
+.pageWrapper {
+  position: relative;
+  min-height: 100vh;
+  padding-top: calc(var(--nav-height, 70px) + 3.5rem);
+  padding-bottom: 6rem;
+  background: transparent;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Atmospheric Layer 1: Dedicated text readability gradient overlay */
+/* Top: rgba(0,0,0,0.55), Middle: rgba(0,0,0,0.45), Behind cards: rgba(0,0,0,0.55), Bottom: rgba(0,0,0,0.70) */
+.atmosphericVignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 6, 8, 0.55) 0%,
+    rgba(6, 6, 8, 0.45) 25%,
+    rgba(8, 8, 10, 0.55) 60%,
+    rgba(5, 5, 6, 0.72) 100%
+  );
+}
+
+/* Navbar Legibility Gradient Protection */
+.navProtectionGlow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 160px;
+  pointer-events: none;
+  z-index: 2;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 6, 8, 0.70) 0%,
+    rgba(6, 6, 8, 0.35) 65%,
+    transparent 100%
+  );
+}
+
+/* Main Content Container sitting strictly above background & atmospheric layers */
+.contentContainer {
+  position: relative;
+  z-index: 3;
+}
+
+/* Ghost Industrial Background Watermark */
+.ghostWatermark {
+  position: absolute;
+  top: 38%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 16vw, 15rem);
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.02);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+/* Header Area with Subtle Soft Dark Radial Backing to Subdue Video Behind Text */
+.headerArea {
+  position: relative;
+  text-align: center;
+  margin-bottom: 3.5rem;
+  padding: 1rem 1rem 1.5rem 1rem;
+}
+
+.headerBackdrop {
+  position: absolute;
+  inset: -1.5rem -2.5rem -1.5rem -2.5rem;
+  pointer-events: none;
+  z-index: -1;
+  background: radial-gradient(
+    ellipse 60% 60% at 50% 50%,
+    rgba(6, 6, 8, 0.65) 0%,
+    rgba(6, 6, 8, 0.40) 60%,
+    transparent 100%
+  );
+}
+
+.sectionLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #ff3b3b;
+  background: rgba(230, 29, 29, 0.08);
+  border: 1px solid rgba(230, 29, 29, 0.3);
+  padding: 0.35rem 0.95rem;
+  border-radius: 4px;
+  margin-bottom: 1.25rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  color: #ffffff;
+  margin-bottom: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.9);
+}
+
+.gradientText {
+  background: linear-gradient(135deg, #ffffff 0%, #ff3b3b 55%, #e61d1d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  color: #8e8e93;
+  font-size: 1.05rem;
+  max-width: 680px;
+  margin: 0 auto;
+  font-family: var(--font-mono);
+  line-height: 1.6;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.85);
+}
+
+/* Category Filter Pills */
+.filtersWrapper {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.filterBtn {
+  padding: 0.45rem 1.15rem;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(14, 14, 16, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #888888;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  outline: none;
+}
+
+.filterBtn:hover {
+  background: rgba(26, 26, 30, 0.9);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.filterBtnActive {
+  background: linear-gradient(135deg, #e61d1d, #b51212);
+  color: #ffffff;
+  border: 1px solid #ff3b3b;
+  box-shadow: 0 0 16px rgba(230, 29, 29, 0.5);
+}
+
+.filterBtnActive:hover {
+  background: linear-gradient(135deg, #ff2c2c, #c91414);
+  border-color: #ff5252;
+  box-shadow: 0 0 22px rgba(230, 29, 29, 0.7);
+}
+
+/* Events Grid */
+.eventsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 2.5rem;
+  align-items: stretch;
+}

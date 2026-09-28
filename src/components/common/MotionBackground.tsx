@@ -49,8 +49,9 @@ export default function MotionBackground() {
         <source src="/motion_background.mp4" type="video/mp4" />
       </video>
 
-      {/* Cinematic dark tint overlay to maintain crisp typography contrast */}
+      {/* Atmospheric dark overlays and AMEYA red ambience */}
       <div className={styles.videoOverlay} />
+      <div className={styles.crimsonOverlay} />
       <div className={styles.gridOverlay} />
     </div>
   );

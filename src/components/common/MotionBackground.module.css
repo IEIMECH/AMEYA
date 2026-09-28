@@ -1,4 +1,4 @@
-/* Motion Background Video - Infinite Looping Canvas (Audio-free) */
+/* Motion Background Video - Seamless Infinite Cinematic Canvas */
 .videoBackgroundWrapper {
   position: fixed;
   inset: 0;
@@ -7,43 +7,83 @@
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
-  background-color: #080808;
+  background-color: #060608;
 }
 
 .videoElement {
   position: absolute;
   top: 50%;
   left: 50%;
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
+  width: 100%;
+  height: 100%;
+  min-width: 100vw;
+  min-height: 100vh;
   transform: translate(-50%, -50%);
   object-fit: cover;
+  object-position: center 30%;
+  opacity: 0.28; /* Calibrated within 0.20-0.35 */
   pointer-events: none;
+  filter: contrast(1.05) brightness(0.95);
+  will-change: opacity;
 }
 
-/* Cinematic Dark Overlay: Preserves text contrast while letting kinetic motion shine through */
+/* Layer 1: Dark Atmospheric Overlay (rgba(0, 0, 0, 0.55–0.70)) */
 .videoOverlay {
   position: absolute;
   inset: 0;
   background: 
     radial-gradient(
-      ellipse at 50% 30%,
-      rgba(8, 8, 8, 0.40) 0%,
-      rgba(8, 8, 8, 0.68) 60%,
-      rgba(8, 8, 8, 0.88) 100%
+      ellipse 85% 65% at 50% 30%,
+      rgba(6, 6, 8, 0.48) 0%,
+      rgba(6, 6, 8, 0.68) 55%,
+      rgba(4, 4, 6, 0.90) 100%
     ),
-    linear-gradient(to bottom, rgba(8, 8, 8, 0.45) 0%, rgba(8, 8, 8, 0.75) 100%);
+    linear-gradient(
+      to bottom,
+      rgba(6, 6, 8, 0.58) 0%,
+      rgba(6, 6, 8, 0.45) 30%,
+      rgba(6, 6, 8, 0.55) 70%,
+      rgba(4, 4, 6, 0.82) 100%
+    );
   pointer-events: none;
 }
 
-/* Subtle carbon matrix texture to unify with AMEYA aesthetic */
+/* Layer 2: Subtle AMEYA Crimson Atmosphere (BLACK -> DARK RED -> VIDEO -> BLACK) */
+.crimsonOverlay {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(
+      ellipse 70% 45% at 50% 30%,
+      rgba(230, 29, 29, 0.08) 0%,
+      rgba(181, 18, 18, 0.035) 45%,
+      transparent 75%
+    ),
+    radial-gradient(
+      circle at 85% 20%,
+      rgba(230, 29, 29, 0.04) 0%,
+      transparent 50%
+    );
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* Layer 3: Subtle carbon matrix grid overlay */
 .gridOverlay {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.04) 1px, transparent 0);
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.035) 1px, transparent 0);
   background-size: 40px 40px;
   pointer-events: none;
-  opacity: 0.45;
+  opacity: 0.35;
+}
+
+/* Mobile Fallback: maintain visual elegance, reduced GPU overhead */
+@media (max-width: 768px) {
+  .videoElement {
+    opacity: 0.22;
+  }
+  .gridOverlay {
+    opacity: 0.2;
+  }
 }
