@@ -1,0 +1,166 @@
+/* Precision Mechanical Wrench Cursor System */
+.cursorContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99999;
+  pointer-events: none;
+  contain: layout style size;
+  opacity: 0;
+  transition: opacity 0.16s ease-out;
+  will-change: transform, opacity;
+}
+
+.cursorContainer[data-visible="true"] {
+  opacity: 1;
+}
+
+/* Wrench Graphic Assembly */
+.wrenchAssembly {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 26px;
+  height: 26px;
+  transform-origin: 4px 2px; /* Active jaw tip alignment */
+  will-change: transform;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.85));
+  transition: filter 0.2s ease;
+}
+
+/* Red Precision Indicator Dot */
+.redIndicator {
+  transform-origin: 7.4px 7.4px;
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+/* Mechanical Targeting Reticle */
+.targetingRing {
+  position: absolute;
+  top: -8px;
+  left: -6px;
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgba(229, 29, 37, 0.38);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.65);
+  transition: opacity 0.2s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+}
+
+/* CAD Hairline Crosshair Ticks */
+.tickTop, .tickBottom, .tickLeft, .tickRight {
+  position: absolute;
+  background: #e51d25;
+}
+.tickTop {
+  width: 1px;
+  height: 3px;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.tickBottom {
+  width: 1px;
+  height: 3px;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.tickLeft {
+  width: 3px;
+  height: 1px;
+  left: -2px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.tickRight {
+  width: 3px;
+  height: 1px;
+  right: -2px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Physical Click Ring Feedback */
+.clickRing {
+  position: absolute;
+  top: -6px;
+  left: -4px;
+  width: 18px;
+  height: 18px;
+  border: 1px solid rgba(255, 59, 59, 0.85);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.clickRingActive {
+  animation: mechanicalClickPulse 0.22s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+@keyframes mechanicalClickPulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+}
+
+/* Faint Ghost Trail Micro-dots */
+.trailDot {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgba(229, 29, 37, 0.45);
+  box-shadow: 0 0 2px rgba(229, 29, 37, 0.3);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.08s ease;
+}
+
+/* Interactive States Reaction */
+.cursorContainer[data-state="button"] .targetingRing {
+  opacity: 0.95;
+  transform: scale(1);
+  border-color: rgba(255, 59, 59, 0.65);
+}
+
+.cursorContainer[data-state="button"] .redIndicator {
+  filter: drop-shadow(0 0 6px #ff3b3b);
+  transform: scale(1.2);
+}
+
+.cursorContainer[data-state="card"] .targetingRing {
+  opacity: 0.75;
+  transform: scale(1.1);
+  border-color: rgba(229, 29, 37, 0.4);
+}
+
+.cursorContainer[data-state="card"] .redIndicator {
+  filter: drop-shadow(0 0 4px #e51d25);
+}
+
+.cursorContainer[data-state="drag"] .targetingRing {
+  opacity: 0.85;
+  transform: scale(0.9);
+  border-color: rgba(255, 59, 59, 0.7);
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  .cursorContainer {
+    transition: none;
+  }
+  .wrenchAssembly {
+    transition: none;
+  }
+  .trailDot {
+    display: none !important;
+  }
+}

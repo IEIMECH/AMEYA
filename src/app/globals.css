@@ -363,3 +363,10 @@ main {
   position: relative;
   z-index: 1;
 }
+
+/* Precision Mechanical Wrench Cursor: Hide standard OS pointer only on desktop devices with fine pointer */
+@media (hover: hover) and (pointer: fine) {
+  body, a, button, [role="button"], input, select, textarea, label {
+    cursor: none !important;
+  }
+}
