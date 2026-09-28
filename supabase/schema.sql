@@ -342,7 +342,8 @@ WITH CHECK (bucket_id = 'college_ids');
 -- 12. MASTER UNIFIED VIEW: all_registrations
 -- Aggregates all 8 competition tables for gate verification
 -- =====================================================================
-CREATE OR REPLACE VIEW public.all_registrations AS
+DROP VIEW IF EXISTS public.all_registrations CASCADE;
+CREATE VIEW public.all_registrations AS
 SELECT 'autocad' AS event_id, 'AutoCAD' AS event_name, ticket_id, participant_name, branch, college_roll_number, email, phone, college_id_card_url, verified_at, verified_by, created_at, 'reg_autocad' AS table_source FROM public.reg_autocad
 UNION ALL
 SELECT 'assemble-disassemble' AS event_id, 'Assemble and Disassemble the Mechanical Parts' AS event_name, ticket_id, participant_name, branch, college_roll_number, email, phone, college_id_card_url, verified_at, verified_by, created_at, 'reg_assemble_disassemble' AS table_source FROM public.reg_assemble_disassemble
