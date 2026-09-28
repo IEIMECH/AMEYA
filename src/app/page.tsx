@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, Zap } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Hero3DCanvas from "@/components/index/Hero3DCanvas";
 import FestivalStory from "@/components/index/FestivalStory";
 import PhotoWall from "@/components/index/PhotoWall";
@@ -66,21 +66,14 @@ export default function Home() {
       {/* Editorial Asymmetric Hero Section */}
       <section className={styles.heroSection}>
         <div className={styles.heroGrid}>
-          {/* Main Left Content Block */}
+          {/* Main Left Content Block (Occupying ~42–46% of Hero) */}
           <div className={styles.leftHeroBlock}>
-            {/* Top Telemetry Identity Kicker */}
-            <div className={styles.kicker}>
-              <span className={styles.kickerDot} />
-              IEI SAME // AMEYA &apos;26 NATIONAL CONCLAVE
-            </div>
-
-            {/* Major Typographic Moment 1: One Unified Monumental Statement (Priority 1 & 2) */}
+            {/* Major Typographic Moment: Controlled Editorial Stagger */}
             <h1 className={styles.editorialTitle}>
-              <span className={styles.titleLine1}>WHERE</span>
+              <span className={styles.titleLineWhere}>WHERE</span>
               <span className={styles.titleLineEngineers}>ENGINEERS</span>
-              <span className={styles.titleLine3}>
-                DARE TO <span className={styles.accentWord}>DREAM</span>
-              </span>
+              <span className={styles.titleLineDareTo}>DARE TO</span>
+              <span className={styles.titleLineDream}>DREAM</span>
             </h1>
 
             <p className={styles.editorialSub}>
@@ -99,7 +92,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Bottom Right Clean Technical Metadata Block (Section 22) */}
+          {/* Bottom Right Clean Technical Metadata Block */}
           <div className={styles.bottomMetaBlock}>
             <div className={styles.metaDept}>
               DEPARTMENT OF MECHANICAL ENGINEERING
@@ -120,16 +113,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Narrative Step 2: Editorial Festival Statement & Raw Data (Section 21, 28, 31) */}
+      {/* Narrative Step 2: Editorial Festival Statement & Raw Data */}
       <FestivalStory />
 
-      {/* Narrative Step 3: Documentary Moments / Real Human Energy (Section 05, 69) */}
+      {/* Narrative Step 3: Documentary Moments / Real Human Energy */}
       <PhotoWall />
 
-      {/* Narrative Step 4: Keynote & Guest Speakers (Section 21) */}
+      {/* Narrative Step 4: Keynote & Guest Speakers */}
       <SpeakerSection />
 
-      {/* Narrative Step 5: Events Lineup with True Visual Hierarchy (Section 32-37) */}
+      {/* Narrative Step 5: Events Lineup with True Visual Hierarchy */}
       <EventsPreview onRegisterClick={handleOpenRegister} />
 
       {/* Narrative Step 6: Registration & Entry Passes */}

@@ -4,15 +4,18 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, ShieldAlert } from "lucide-react";
+import { AnimatedBackground } from "@/components/core/animated-background";
 import styles from "./Nav.module.css";
 
+const TABS = ["EVENTS", "AGENDA", "VENUE", "TEAM", "ABOUT", "INFO"];
+
 const navLinks = [
-  { href: "/events", label: "Events" },
-  { href: "/agenda", label: "Agenda" },
-  { href: "/venue", label: "Venue" },
-  { href: "/team", label: "Team" },
-  { href: "/about", label: "About" },
-  { href: "/info", label: "Info" },
+  { href: "/events", label: "EVENTS" },
+  { href: "/agenda", label: "AGENDA" },
+  { href: "/venue", label: "VENUE" },
+  { href: "/team", label: "TEAM" },
+  { href: "/about", label: "ABOUT" },
+  { href: "/info", label: "INFO" },
 ];
 
 export default function Nav() {
@@ -30,6 +33,11 @@ export default function Nav() {
     setMenuOpen(false);
   }, [pathname]);
 
+  // Determine current active tab based on pathname
+  const currentTab = navLinks.find(
+    (link) => pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href))
+  )?.label;
+
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
       <div className={styles.navContainer}>
@@ -41,18 +49,30 @@ export default function Nav() {
           </span>
         </Link>
 
-        {/* Desktop SITCON Pill Links */}
-        <div className={styles.navItemsContainer}>
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`${styles.navItem} ${pathname === link.href ? styles.active : ""}`}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
+        {/* Desktop Smoked Glass Animated Tabs */}
+        <nav className={styles.navItemsContainer} aria-label="Primary Navigation">
+          <AnimatedBackground
+            defaultValue={currentTab || TABS[0]}
+            className={styles.glassBackground}
+            transition={{
+              type: "spring",
+              bounce: 0.2,
+              duration: 0.3,
+            }}
+            enableHover
+          >
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                data-id={link.label}
+                className={`${styles.navItem} ${pathname === link.href ? styles.active : ""}`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </AnimatedBackground>
+        </nav>
 
         {/* Mobile Hamburger */}
         <button
@@ -76,7 +96,7 @@ export default function Nav() {
             href="/"
             className={`${styles.mobileLink} ${pathname === "/" ? styles.mobileActive : ""}`}
           >
-            Home
+            HOME
           </Link>
           {navLinks.map((link) => (
             <Link

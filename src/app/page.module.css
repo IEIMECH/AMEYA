@@ -1,4 +1,3 @@
-/* Editorial Asymmetric Hero Section (Phase 2 Master Refinement Pass) */
 .heroSection {
   position: relative;
   min-height: 100vh;
@@ -6,7 +5,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: calc(var(--nav-height) + 3.25rem) 5vw 3.5rem;
+  padding: calc(var(--nav-height, 4.5rem) + 3.25rem) 5vw 3.5rem;
   max-width: 1920px;
   margin: 0 auto;
   z-index: 2;
@@ -25,6 +24,7 @@
 }
 
 .leftHeroBlock {
+  width: 100%;
   max-width: 680px;
   display: flex;
   flex-direction: column;
@@ -36,102 +36,92 @@
   animation: fadeInHero 1s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+@media (min-width: 1024px) {
+  .leftHeroBlock {
+    /* Keep the overall text block occupying approximately the left 42–46% of the hero */
+    width: 44%;
+    max-width: 640px;
+  }
+}
+
 @keyframes fadeInHero {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  color: var(--text-secondary, #96908B);
-  background: transparent;
-  padding: 0;
-  border: none;
-}
-
-.kickerDot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--crimson-core, #E51D25);
-  box-shadow: 0 0 6px rgba(229, 29, 37, 0.7);
-}
-
-/* Major Typographic Moment 1: Monumental, Unified Headline Statement */
+/* Major Typographic Moment: Controlled Editorial Stagger */
 .editorialTitle {
-  font-family: var(--font-display);
+  font-family: var(--font-serif, "Playfair Display", Georgia, serif);
   font-weight: 800;
   text-transform: uppercase;
-  color: var(--text-primary, #F2EDE8);
   user-select: none;
-  line-height: 0.92;
-  margin: 0.5rem 0 0.75rem;
-  letter-spacing: -0.025em;
+  line-height: 0.88;
+  margin: 0 0 0.5rem;
   display: flex;
   flex-direction: column;
 }
 
-.titleLine1 {
+/* Stagger Alignment System:
+   WHERE    -> base position (0px)
+   ENGINEERS -> slight horizontal offset (~24-40px)
+   DARE TO  -> return toward base position (~6-12px)
+   DREAM    -> larger offset / strongest red statement (~50-76px)
+*/
+.titleLineWhere {
   display: block;
-  font-size: clamp(3.4rem, 7.5vw, 6.6rem);
-  color: var(--text-primary, #F2EDE8);
-  opacity: 0.95;
+  font-size: clamp(3.2rem, 6.8vw, 6.4rem);
+  color: var(--steel-bright, #F2EDE8);
+  letter-spacing: -0.025em;
+  transform: translateX(0);
 }
 
-/* Priority 2: Distinct typography without any UI container/box */
 .titleLineEngineers {
   display: block;
-  font-size: clamp(3.4rem, 7.5vw, 6.6rem);
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  color: var(--text-primary, #F2EDE8);
-  position: relative;
+  font-size: clamp(3.2rem, 6.8vw, 6.4rem);
+  color: var(--steel-bright, #F2EDE8);
+  letter-spacing: -0.02em;
+  transform: translateX(clamp(20px, 3.0vw, 38px));
 }
 
-.titleLineEngineers::after {
-  content: "";
+.titleLineDareTo {
   display: block;
-  width: 48px;
-  height: 2px;
-  background: var(--crimson-core, #E51D25);
-  margin-top: 0.35rem;
-  margin-bottom: 0.25rem;
-  opacity: 0.85;
+  font-size: clamp(3.0rem, 6.4vw, 6.0rem);
+  color: var(--steel-bright, #F2EDE8);
+  letter-spacing: -0.02em;
+  transform: translateX(clamp(6px, 0.9vw, 12px));
 }
 
-.titleLine3 {
+.titleLineDream {
   display: block;
-  font-size: clamp(3.2rem, 7vw, 6.2rem);
-  color: var(--text-primary, #F2EDE8);
-}
-
-.accentWord {
+  font-size: clamp(3.4rem, 7.2vw, 6.8rem);
   color: var(--crimson-core, #E51D25);
-  font-style: italic;
-  font-family: var(--font-display);
+  letter-spacing: -0.035em;
+  transform: translateX(clamp(36px, 5.5vw, 72px));
+  text-shadow: 0 0 35px rgba(229, 29, 37, 0.22);
 }
 
+/* Body Copy Alignment */
 .editorialSub {
   font-family: var(--font-mono);
-  font-size: clamp(0.88rem, 1.1vw, 1rem);
-  line-height: 1.7;
-  color: var(--text-secondary, #96908B);
-  max-width: 540px;
-  margin: 0.5rem 0 1rem;
+  font-size: clamp(0.95rem, 1.12vw, 1.08rem); /* approx 16-18px desktop */
+  line-height: 1.62; /* 1.55 - 1.7 */
+  color: #A8A29E; /* muted warm gray */
+  max-width: 580px; /* 560 - 620px */
+  margin: 0.25rem 0 0.5rem;
+  /* subtle horizontal offset relating to headline composition */
+  transform: translateX(clamp(14px, 1.8vw, 24px));
 }
 
+/* CTA Alignment */
 .ctaRow {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 1.25rem;
   flex-wrap: wrap;
-  margin-top: 1.25rem;
+  margin-top: 0.75rem;
+  /* Align CTA group with primary visual axis of hero typography */
+  transform: translateX(clamp(14px, 1.8vw, 24px));
 }
 
 .primaryHeroCta {
@@ -164,7 +154,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.04);
   color: var(--text-primary, #F2EDE8);
   font-family: var(--font-mono);
   font-size: 0.82rem;
@@ -178,19 +168,23 @@
 }
 
 .secondaryHeroCta:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.32);
   color: #ffffff;
   transform: translateY(-2px);
 }
 
-/* Bottom Right Technical Metadata Block (Quiet & Anchored) */
+/* Bottom Right Technical Metadata Block */
 .bottomMetaBlock {
   align-self: flex-end;
   text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: auto;
+  pointer-events: auto;
   font-family: var(--font-mono);
   font-size: 0.7rem;
-  color: var(--text-muted, #605B56);
   line-height: 1.75;
   letter-spacing: 0.12em;
   background: rgba(11, 11, 11, 0.65);
@@ -198,70 +192,76 @@
   padding: 1rem 1.5rem;
   border-radius: 3px;
   backdrop-filter: blur(12px);
-  pointer-events: auto;
+  -webkit-backdrop-filter: blur(12px);
   max-width: 420px;
-  margin-top: 2rem;
 }
 
 .metaDept {
   color: var(--text-secondary, #96908B);
-  font-weight: 600;
+  font-weight: 700;
+}
+
+.metaCollege {
+  color: var(--text-muted, #605B56);
+}
+
+.metaDate {
+  color: var(--text-secondary, #96908B);
 }
 
 .metaCountdown {
   color: var(--crimson-core, #E51D25);
   font-weight: 700;
-  margin-top: 0.4rem;
-  padding-top: 0.4rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  letter-spacing: 0.14em;
+  letter-spacing: 0.18em;
+  margin-top: 0.2rem;
 }
 
-@media (max-width: 868px) {
+@media (max-width: 900px) {
   .heroSection {
-    padding: calc(var(--nav-height) + 1.25rem) 1.25rem 2rem;
+    padding: calc(var(--nav-height, 4rem) + 1.5rem) 1.5rem 2rem;
     min-height: auto;
   }
+
   .leftHeroBlock {
     max-width: 100%;
+    margin-top: 2rem;
   }
-  .editorialTitle {
-    font-size: clamp(2.4rem, 11vw, 3.8rem);
-    line-height: 0.96;
-  }
-  .editorialSub {
-    font-size: 0.9rem;
-    line-height: 1.5;
-    margin: 0.6rem 0 1.25rem;
-  }
-  .ctaRow {
-    flex-direction: row;
-    gap: 0.85rem;
-    width: 100%;
-  }
-  .primaryHeroCta,
-  .secondaryHeroCta {
-    flex: 1;
-    min-height: 48px;
-    padding: 0.8rem 1rem;
-    font-size: 0.78rem;
-    text-align: center;
-  }
-  .bottomMetaBlock {
-    align-self: stretch;
-    text-align: left;
-    max-width: 100%;
-    margin-top: 1.5rem;
-  }
-}
 
-@media (max-width: 480px) {
+  .titleLineEngineers {
+    transform: translateX(18px);
+  }
+
+  .titleLineDareTo {
+    transform: translateX(6px);
+  }
+
+  .titleLineDream {
+    transform: translateX(28px);
+  }
+
+  .editorialSub,
   .ctaRow {
-    flex-direction: column;
-    align-items: stretch;
+    transform: translateX(10px);
   }
-  .primaryHeroCta,
-  .secondaryHeroCta {
-    width: 100%;
-  }
+
+  .bottomMetaBlock {
+  align-self: flex-end;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: auto;
+  pointer-events: auto;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  line-height: 1.75;
+  letter-spacing: 0.12em;
+  background: rgba(11, 11, 11, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 1rem 1.5rem;
+  border-radius: 3px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  max-width: 420px;
+}
 }
