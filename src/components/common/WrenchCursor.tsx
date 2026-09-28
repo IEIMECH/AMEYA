@@ -6,7 +6,6 @@ import styles from "./WrenchCursor.module.css";
 export default function WrenchCursor() {
   const containerRef = useRef<HTMLDivElement>(null);
   const wrenchRef = useRef<HTMLDivElement>(null);
-  const clickRingRef = useRef<HTMLDivElement>(null);
   const trailDotsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   // Only render on devices with a mouse/fine pointer and hover support
@@ -29,19 +28,30 @@ export default function WrenchCursor() {
     };
     reducedMotion.addEventListener("change", onMotionChange);
 
-    // Physics & movement tracking
+    // Coordinates & velocity
     let targetX = -100;
     let targetY = -100;
     let currentX = -100;
     let currentY = -100;
     let prevTargetX = -100;
     let currentAngle = 0;
+
+    // Interaction & drag states
     let isMouseDown = false;
     let isDragging = false;
     let dragStartX = 0;
     let dragStartY = 0;
-    let currentState: "default" | "button" | "card" | "drag" = "default";
+    let currentState: "default" | "button" | "card" | "link" | "drag" = "default";
     let isVisible = false;
+
+    // Physical tightening animation state
+    // When an interactive fastener is clicked, wrench applies torque:
+    // 0-90ms: rotates clockwise up to +28 deg (torque applied)
+    // 90-155ms: mechanical resistance hold (fastener tightened)
+    // 155-230ms: recoil / torque release back to +16 deg
+    // 230-320ms: settle smoothly back to neutral
+    let tighteningStartTime = 0;
+    const TIGHTEN_DURATION = 320;
 
     // Trail history (3 positions)
     const trailPositions = [
@@ -75,11 +85,17 @@ export default function WrenchCursor() {
       if (target) {
         const isButton =
           !!target.closest(
-            'button, a, [role="button"], input[type="submit"], input[type="button"], select, .btn, [class*="registerBtn"], [data-cursor="button"]'
-          ) || window.getComputedStyle(target).cursor === "pointer";
+            'button, [role="button"], input[type="submit"], input[type="button"], select, .btn, [class*="registerBtn"], [class*="filterBtn"], [data-cursor="button"]'
+          );
+
+        const isLink =
+          !isButton &&
+          (!!target.closest('a, [class*="navItem"], [class*="mobileLink"], [data-cursor="link"]') ||
+            window.getComputedStyle(target).cursor === "pointer");
 
         const isCard =
           !isButton &&
+          !isLink &&
           !!target.closest(
             '[data-cursor="card"], [class*="card"], [class*="Card"], article, .glass-card, [class*="orbitCard"], [class*="teamMember"]'
           );
@@ -91,7 +107,15 @@ export default function WrenchCursor() {
             window.getComputedStyle(target).cursor === "grab" ||
             window.getComputedStyle(target).cursor === "grabbing");
 
-        const newState = isDragEl ? "drag" : isButton ? "button" : isCard ? "card" : "default";
+        const newState = isDragEl
+          ? "drag"
+          : isButton
+          ? "button"
+          : isCard
+          ? "card"
+          : isLink
+          ? "link"
+          : "default";
 
         if (newState !== currentState) {
           currentState = newState;
@@ -107,12 +131,19 @@ export default function WrenchCursor() {
       dragStartX = e.clientX;
       dragStartY = e.clientY;
 
-      // Trigger click compression and mechanical shockwave pulse
-      if (clickRingRef.current) {
-        clickRingRef.current.classList.remove(styles.clickRingActive);
-        // Force reflow
-        void clickRingRef.current.offsetWidth;
-        clickRingRef.current.classList.add(styles.clickRingActive);
+      // Check if click target is interactive
+      const target = e.target as HTMLElement | null;
+      const isInteractive =
+        target &&
+        (!!target.closest(
+          'button, a, [role="button"], input, select, textarea, [class*="btn"], [class*="Btn"], [class*="card"], [class*="Card"], [class*="orbit"], [class*="team"], [class*="navItem"], [class*="filterBtn"], [data-cursor], label'
+        ) ||
+          window.getComputedStyle(target).cursor === "pointer" ||
+          window.getComputedStyle(target).cursor === "grab");
+
+      if (isInteractive) {
+        // Trigger physical fastener tightening torque motion
+        tighteningStartTime = performance.now();
       }
     };
 
@@ -164,7 +195,7 @@ export default function WrenchCursor() {
         const vx = targetX - prevTargetX;
         prevTargetX = targetX;
 
-        // In dragging mode, wrench rotates slightly more to communicate grip
+        // In dragging mode, wrench rotates slightly more to communicate grip (+18deg)
         const targetAngle = isDragging
           ? 18
           : currentState === "button"
@@ -173,7 +204,7 @@ export default function WrenchCursor() {
 
         currentAngle += (targetAngle - currentAngle) * 0.22;
 
-        // Trail updates
+        // Trail micro-dot updates (subtle kinetic feedback)
         trailPositions[2] = { ...trailPositions[1] };
         trailPositions[1] = { ...trailPositions[0] };
         trailPositions[0] = { x: currentX, y: currentY };
@@ -183,29 +214,72 @@ export default function WrenchCursor() {
           if (!dot) return;
           const pos = trailPositions[idx];
           dot.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0)`;
-          dot.style.opacity = speed > 4 ? String((0.35 / (idx + 1)).toFixed(2)) : "0";
+          dot.style.opacity = speed > 4 ? String((0.30 / (idx + 1)).toFixed(2)) : "0";
         });
       }
 
-      // Scale calculation based on interactive state
-      let scale = 1;
-      if (isMouseDown) {
-        scale = 0.85; // Physical press compression
-      } else if (currentState === "button") {
-        scale = 1.15; // Button hover scale
+      // Calculate interactive hover engagement (restrained, 1.05-1.08x)
+      let baseScale = 1;
+      let hoverTilt = 0;
+
+      if (currentState === "button") {
+        baseScale = 1.08;
+        hoverTilt = -4; // Subtle engagement tilt toward target fastener
       } else if (currentState === "card") {
-        scale = 1.10; // Card hover scale
+        baseScale = 1.06;
+        hoverTilt = -3;
+      } else if (currentState === "link") {
+        baseScale = 1.04;
+        hoverTilt = -2;
       } else if (currentState === "drag") {
-        scale = 1.05; // Dragging scale
+        baseScale = 1.06;
       }
 
-      // Render transform on container and wrench assembly
+      // Physical tightening torque animation calculation
+      let torqueAngle = 0;
+      let torqueScale = 1;
+
+      if (!isReduced && tighteningStartTime > 0) {
+        const elapsed = performance.now() - tighteningStartTime;
+
+        if (elapsed < 90) {
+          // Phase 1 (0-90ms): Wrench grips bolt and applies clockwise torque (+28 deg)
+          const p = elapsed / 90;
+          const ease = 1 - Math.pow(1 - p, 3); // Cubic ease-out
+          torqueAngle = ease * 28;
+          torqueScale = 1 - ease * 0.04; // Micro-compression into the fastener
+        } else if (elapsed < 155) {
+          // Phase 2 (90-155ms): Mechanical resistance hold (65ms at peak torque)
+          torqueAngle = 28;
+          torqueScale = 0.96;
+        } else if (elapsed < 230) {
+          // Phase 3 (155-230ms): Torque recoil / slight return back 12 deg (to +16 deg)
+          const p = (elapsed - 155) / 75;
+          const ease = 1 - Math.pow(1 - p, 2);
+          torqueAngle = 28 - ease * 12; // 28 -> 16 deg
+          torqueScale = 0.96 + ease * 0.03; // 0.96 -> 0.99
+        } else if (elapsed < TIGHTEN_DURATION) {
+          // Phase 4 (230-320ms): Smooth mechanical settle back to neutral
+          const p = (elapsed - 230) / 90;
+          const ease = Math.sin((p * Math.PI) / 2);
+          torqueAngle = 16 * (1 - ease); // 16 -> 0 deg
+          torqueScale = 0.99 + ease * 0.01; // 0.99 -> 1.0
+        } else {
+          tighteningStartTime = 0;
+        }
+      }
+
+      // Total composed angle & scale
+      const totalAngle = isReduced ? 0 : currentAngle + torqueAngle + hoverTilt;
+      const totalScale = baseScale * torqueScale;
+
+      // Render hardware-accelerated transforms
       if (containerRef.current) {
         containerRef.current.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
       }
 
       if (wrenchRef.current) {
-        wrenchRef.current.style.transform = `rotate(${currentAngle.toFixed(2)}deg) scale(${scale})`;
+        wrenchRef.current.style.transform = `rotate(${totalAngle.toFixed(2)}deg) scale(${totalScale.toFixed(3)})`;
       }
 
       animationFrameId = requestAnimationFrame(tick);
@@ -230,7 +304,7 @@ export default function WrenchCursor() {
 
   return (
     <>
-      {/* Ghost trail dots */}
+      {/* Subtle ghost trail micro-dots */}
       <div
         ref={(el) => {
           trailDotsRef.current[0] = el;
@@ -253,7 +327,7 @@ export default function WrenchCursor() {
         aria-hidden="true"
       />
 
-      {/* Primary Custom Wrench Cursor */}
+      {/* Primary Custom Wrench Cursor (Clean Mechanical Tool, No Targeting Reticle/HUD) */}
       <div
         ref={containerRef}
         className={styles.cursorContainer}
@@ -261,17 +335,6 @@ export default function WrenchCursor() {
         data-visible="false"
         aria-hidden="true"
       >
-        {/* Subtle Mechanical Targeting Reticle */}
-        <div className={styles.targetingRing}>
-          <div className={styles.tickTop} />
-          <div className={styles.tickBottom} />
-          <div className={styles.tickLeft} />
-          <div className={styles.tickRight} />
-        </div>
-
-        {/* Click Shockwave Feedback Ring */}
-        <div ref={clickRingRef} className={styles.clickRing} />
-
         {/* High-Precision Wrench Assembly */}
         <div ref={wrenchRef} className={styles.wrenchAssembly}>
           <svg
