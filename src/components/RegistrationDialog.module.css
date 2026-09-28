@@ -1,20 +1,33 @@
-/* Registration Dialog — AMEYA // SYSTEM Standards */
-.dialog {
-  border: none;
-  background: transparent;
-  padding: 0;
-  max-width: 95vw;
-  width: 660px;
-  color: var(--text-primary, #F2EDE8);
-}
-
-.dialog::backdrop {
+/* Registration Modal — Exact Architectural Layering Hierarchy */
+/* Hierarchy: page content (z: 1) < modal backdrop (z: 900) < registration card (z: 950) < wrench cursor (z: 99999) */
+.dialogBackdrop {
+  position: fixed;
+  inset: 0;
   background: rgba(4, 4, 4, 0.88);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  z-index: 900;
+  animation: modalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.dialogContainer {
+  position: fixed;
+  inset: 0;
+  z-index: 950;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  pointer-events: none;
 }
 
 .dialogInner {
+  pointer-events: auto;
   background: #0C0C0C;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-top: 2px solid var(--crimson-core, #E51D25);
@@ -22,7 +35,22 @@
   display: flex;
   flex-direction: column;
   max-height: 90vh;
+  width: 660px;
+  max-width: 95vw;
   overflow: hidden;
+  color: var(--text-primary, #F2EDE8);
+  animation: modalCardPop 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalCardPop {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 /* Head */

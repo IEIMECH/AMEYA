@@ -132,7 +132,6 @@ interface Props {
 
 export default function RegistrationDialog({ event, onClose }: Props) {
   const router = useRouter();
-  const dialogRef = useRef<HTMLDialogElement>(null);
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormData>(initForm());
   const [errors, setErrors] = useState<FormErrors>({});
@@ -151,21 +150,28 @@ export default function RegistrationDialog({ event, onClose }: Props) {
   const totalSteps = STEPS.length;
 
   useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
     if (event) {
-      if (!dialog.open) {
-        dialog.showModal();
-      }
       setStep(0);
       setErrors({});
       setStatus("idle");
-    } else {
-      if (dialog.open) {
-        dialog.close();
-      }
+
+      // Lock body scroll while modal is active
+      const prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+
+      const onKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+          onClose();
+        }
+      };
+      window.addEventListener("keydown", onKeyDown);
+
+      return () => {
+        document.body.style.overflow = prevOverflow;
+        window.removeEventListener("keydown", onKeyDown);
+      };
     }
-  }, [event]);
+  }, [event, onClose]);
 
   function validateEmail(email: string): boolean {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
@@ -375,8 +381,22 @@ export default function RegistrationDialog({ event, onClose }: Props) {
   if (!event) return null;
 
   return (
-    <dialog ref={dialogRef} className={styles.dialog} onClose={onClose}>
-      <div className={styles.dialogInner}>
+    <>
+      {/* Modal Backdrop Layer: z-index 900 (below card & below wrench cursor) */}
+      <div
+        className={styles.dialogBackdrop}
+        onClick={handleClose}
+        aria-hidden="true"
+      />
+
+      {/* Registration Card Layer: z-index 950 (below wrench cursor at 99999) */}
+      <div
+        className={styles.dialogContainer}
+        role="dialog"
+        aria-modal="true"
+        aria-label={event.name}
+      >
+        <div className={styles.dialogInner} onClick={(e) => e.stopPropagation()}>
         {/* Header with technical badge */}
         <div className={styles.dialogHead}>
           <div className={styles.eventBadge}>
@@ -595,7 +615,8 @@ export default function RegistrationDialog({ event, onClose }: Props) {
           </div>
         )}
       </div>
-    </dialog>
+      </div>
+    </>
   );
 }
 
