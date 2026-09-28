@@ -85,7 +85,7 @@
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #888888;
-  cursor: pointer;
+  cursor: none;
   transition: all 0.2s ease;
   user-select: none;
 }
@@ -241,7 +241,7 @@
   font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.06em;
-  cursor: pointer;
+  cursor: none;
   transition: all 0.2s ease;
 }
 
@@ -280,7 +280,7 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
-  cursor: pointer;
+  cursor: none;
   overflow: hidden;
   transition: 
     transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
@@ -542,7 +542,7 @@
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.06em;
-  cursor: pointer;
+  cursor: none;
   transition: all 0.2s ease;
 }
 

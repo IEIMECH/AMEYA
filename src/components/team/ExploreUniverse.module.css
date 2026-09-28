@@ -4,13 +4,13 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
-  cursor: grab;
+  cursor: none;
   user-select: none;
   background: #070708;
 }
 
 .container:active {
-  cursor: grabbing;
+  cursor: none;
 }
 
 .embedded {
@@ -74,7 +74,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  cursor: none;
   transition: background 0.15s ease, transform 0.1s ease;
 }
 
@@ -110,7 +110,7 @@
   font-family: var(--font-mono);
   font-weight: 700;
   letter-spacing: 0.06em;
-  cursor: pointer;
+  cursor: none;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
@@ -175,7 +175,7 @@
   width: 86px;
   height: 86px;
   transform: translate(-50%, -50%);
-  cursor: pointer;
+  cursor: none;
   transition: 
     transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
     z-index 0.1s ease;
