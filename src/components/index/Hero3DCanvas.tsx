@@ -8,16 +8,20 @@ export default function Hero3DCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    if (!canvasRef.current || !containerRef.current) return;
+    const canvas = canvasRef.current;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
 
     let isRunning = true;
     let animationFrameId: number;
 
-    // Scene & Atmospheric Fog Setup
+    // =========================================================================
+    // Scene & Atmospheric Lighting Setup
+    // =========================================================================
     const scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0x080808, 0.016);
 
-    const initialAspect = window.innerWidth / window.innerHeight;
+    const initialAspect = window.innerWidth / (window.innerHeight || 1);
     const initialZ = initialAspect < 1.4 ? 32 : 28;
 
     const camera = new THREE.PerspectiveCamera(
@@ -29,14 +33,14 @@ export default function Hero3DCanvas() {
     camera.position.set(0, 0, initialZ);
 
     const renderer = new THREE.WebGLRenderer({
-      canvas: canvasRef.current,
+      canvas,
       alpha: true,
       antialias: true,
       powerPreference: "high-performance",
     });
     renderer.setClearColor(0x080808, 0);
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.35;
 
@@ -101,17 +105,14 @@ export default function Hero3DCanvas() {
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.45);
     scene.add(ambientLight);
 
-    // High-contrast directional key light (cold white)
     const keyLight = new THREE.DirectionalLight(0xffffff, 3.5);
     keyLight.position.set(12, 18, 15);
     scene.add(keyLight);
 
-    // Surgical Crimson rim backlight from rear-bottom
     const crimsonRimLight = new THREE.DirectionalLight(0xff2222, 4.0);
     crimsonRimLight.position.set(-15, -10, -10);
     scene.add(crimsonRimLight);
 
-    // Secondary cold steel fill light
     const steelFillLight = new THREE.DirectionalLight(0xcfd8dc, 1.5);
     steelFillLight.position.set(25, -12, 10);
     scene.add(steelFillLight);
@@ -120,23 +121,35 @@ export default function Hero3DCanvas() {
     const assemblyGroup = new THREE.Group();
     scene.add(assemblyGroup);
 
-    // Base Isometric Tilt (Reveals teeth depth, chamfers, and gear extrusion)
+    // Base Isometric Tilt
     const baseTiltX = 0.18;
     const baseTiltY = -0.32;
     const baseTiltZ = 0.08;
     assemblyGroup.rotation.set(baseTiltX, baseTiltY, baseTiltZ);
 
-    // Assembly Positioning: Anchor to the right hemisphere on desktop, clear of typography
+    // Baseline Position Anchors
+    let basePosX = 12.8;
+    let basePosY = 0.4;
+    let basePosZ = 0.0;
+    let baseScale = 0.85;
+
     const updateAssemblyPosition = () => {
+      if (typeof window === "undefined") return;
       if (window.innerWidth > 960) {
-        // Desktop: Scaled down by ~15% (scale: 0.85) and anchored at X = 12.8, giving headline dominant breathing room
-        assemblyGroup.position.set(12.8, 0.4, 0);
-        assemblyGroup.scale.set(0.85, 0.85, 0.85);
+        // Desktop: scaled to 0.85, anchored on right hemisphere at X = 12.8
+        basePosX = 12.8;
+        basePosY = 0.4;
+        basePosZ = 0.0;
+        baseScale = 0.85;
       } else {
-        // Mobile / Small Tablet (scaled down to 0.54)
-        assemblyGroup.position.set(0, 3.0, -4);
-        assemblyGroup.scale.set(0.54, 0.54, 0.54);
+        // Mobile / Small Tablet
+        basePosX = 0.0;
+        basePosY = 3.0;
+        basePosZ = -4.0;
+        baseScale = 0.54;
       }
+      assemblyGroup.position.set(basePosX, basePosY, basePosZ);
+      assemblyGroup.scale.set(baseScale, baseScale, baseScale);
     };
     updateAssemblyPosition();
 
@@ -200,7 +213,6 @@ export default function Hero3DCanvas() {
         }
       }
 
-      // Sharp tooth chamfer: 3 bevel segments, 0.1 size, 0.15 thickness
       return new THREE.ExtrudeGeometry(shape, {
         depth,
         bevelEnabled: true,
@@ -211,7 +223,7 @@ export default function Hero3DCanvas() {
       });
     };
 
-    // Scaled-down gear dimensions (outer ring gear radius scaled down to 8.8)
+    // Scaled-down gear dimensions
     const sunPitchRadius = 3.0;
     const sunTeeth = 18;
     const planetPitchRadius = 2.0;
@@ -230,17 +242,14 @@ export default function Hero3DCanvas() {
     const hubGroup = new THREE.Group();
     sunGear.add(hubGroup);
 
-    // Outer bearing steel collar
     const outerCollarGeom = new THREE.TorusGeometry(1.3, 0.14, 16, 32);
     const outerCollar = new THREE.Mesh(outerCollarGeom, coldSteelMaterial);
     hubGroup.add(outerCollar);
 
-    // Inner keyed axle sleeve
     const innerSleeveGeom = new THREE.TorusGeometry(0.75, 0.11, 16, 32);
     const innerSleeve = new THREE.Mesh(innerSleeveGeom, coldSteelMaterial);
     hubGroup.add(innerSleeve);
 
-    // 8 Chrome Ball Bearings arranged in a circle
     const ballGeom = new THREE.SphereGeometry(0.2, 16, 16);
     for (let b = 0; b < 8; b++) {
       const ba = (b * Math.PI * 2) / 8;
@@ -269,13 +278,11 @@ export default function Hero3DCanvas() {
       const planetMesh = new THREE.Mesh(planetGeom, carbonSteelMaterial);
       planetMesh.position.set(planetOrbitRadius, 0, 0);
 
-      // Planet Center Pin Axle (Crimson Anodized)
       const pinGeom = new THREE.CylinderGeometry(0.5, 0.5, 1.7, 24);
       pinGeom.rotateX(Math.PI / 2);
       const pinMesh = new THREE.Mesh(pinGeom, crimsonSunMaterial);
       planetMesh.add(pinMesh);
 
-      // Axle retaining bolt (Cold steel)
       const capGeom = new THREE.CylinderGeometry(0.65, 0.65, 0.2, 16);
       capGeom.rotateX(Math.PI / 2);
       const capMesh = new THREE.Mesh(capGeom, coldSteelMaterial);
@@ -348,7 +355,7 @@ export default function Hero3DCanvas() {
       ringGear.add(boltMesh);
     }
 
-    // 5. Turbomachinery Rotor Disk (Cold Steel Impeller Blades Behind Assembly)
+    // 5. Turbomachinery Rotor Disk
     const turbomachineryGroup = new THREE.Group();
     turbomachineryGroup.position.z = -2.2;
     assemblyGroup.add(turbomachineryGroup);
@@ -375,7 +382,7 @@ export default function Hero3DCanvas() {
       turbomachineryGroup.add(bladeMesh);
     }
 
-    // Concentric CAD Coordinate Rings (HUD Reticle Lines in Glowing Crimson)
+    // Concentric CAD Coordinate Rings
     const cadRing1 = new THREE.Mesh(new THREE.RingGeometry(9.6, 9.66, 64), hudReticleMaterial);
     cadRing1.position.z = -1.1;
     assemblyGroup.add(cadRing1);
@@ -384,7 +391,7 @@ export default function Hero3DCanvas() {
     cadRing2.position.z = -1.9;
     assemblyGroup.add(cadRing2);
 
-    // 6. Laser Splines: CLAMPED STRICTLY TO RIGHT HEMISPHERE (X > 6, X < 32)
+    // 6. Laser Splines (Clamped strictly to right hemisphere)
     const splinePoints1 = [
       new THREE.Vector3(7.5, -14, -18),
       new THREE.Vector3(15.0, -6, -8),
@@ -422,91 +429,136 @@ export default function Hero3DCanvas() {
     scene.add(tubeMesh3);
 
     // =========================================================================
-    // Mechanical Physical Interaction & Torque Physics Engine
+    // Mechanical State Machine & Torque Physics Engine
+    // State Machine: IDLE | HOVER | ACCELERATING | DECELERATING
     // =========================================================================
-    // Baseline rotation: 0.20 rotation / sec (~1.256 rad/s)
-    const BASE_ROT_PER_SEC = 0.20;
+    type GearState = "IDLE" | "HOVER" | "ACCELERATING" | "DECELERATING";
+    let gearState: GearState = "IDLE";
+
+    const BASE_ROT_PER_SEC = 0.20; // ~1.2566 rad/s (slow, cinematic baseline)
     const BASE_RAD_PER_SEC = BASE_ROT_PER_SEC * Math.PI * 2;
 
     let currentMultiplier = 1.0;
-    let isHolding = false;
     let holdStartTime = 0;
     let isPointerOverGear = false;
     let hoverAwareness = 0;
+    let currentZOffset = 0;
+    let activePointerId: number | null = null;
 
     const mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
     let scrollY = 0;
     let lastScrollY = 0;
     let vortexScrollVelocity = 0;
 
+    // Helper: Finite Number Guard
+    const sanitizeNumber = (val: number, fallback: number): number => {
+      return Number.isFinite(val) ? val : fallback;
+    };
+
     // Projected 2D Hit Testing for the 3D Gear Assembly with Hysteresis
     const tempVec = new THREE.Vector3();
-    const checkPointerOverGear = (clientX: number, clientY: number, activeHold: boolean = false): boolean => {
+    const checkPointerOverGear = (clientX: number, clientY: number, isEngaged: boolean = false): boolean => {
       if (!camera || !assemblyGroup) return false;
-      const ndcX = (clientX / window.innerWidth) * 2 - 1;
-      const ndcY = -(clientY / window.innerHeight) * 2 + 1;
+      const width = window.innerWidth || 1;
+      const height = window.innerHeight || 1;
+      const ndcX = (clientX / width) * 2 - 1;
+      const ndcY = -(clientY / height) * 2 + 1;
 
       assemblyGroup.getWorldPosition(tempVec);
       const projected = tempVec.clone().project(camera);
 
-      const aspect = window.innerWidth / window.innerHeight;
+      const aspect = width / height;
       const dx = (ndcX - projected.x) * aspect;
       const dy = ndcY - projected.y;
       const dist = Math.hypot(dx, dy);
 
       // Base disc boundary threshold (~0.88 NDC on desktop, 0.65 on mobile)
-      // Generous hysteresis threshold while holding (~1.12) to prevent accidental release
-      const baseRadius = window.innerWidth > 960 ? 0.88 : 0.65;
-      const hitRadius = activeHold ? baseRadius * 1.25 : baseRadius;
+      // Generous hysteresis threshold while holding (~1.25x) to maintain torque
+      const baseRadius = width > 960 ? 0.88 : 0.65;
+      const hitRadius = isEngaged ? baseRadius * 1.35 : baseRadius;
       return dist <= hitRadius;
     };
 
+    // Pointer Event Listeners
     const onPointerMove = (e: PointerEvent) => {
-      mouse.targetX = (e.clientX / window.innerWidth - 0.5) * 2;
-      mouse.targetY = -(e.clientY / window.innerHeight - 0.5) * 2;
+      const width = window.innerWidth || 1;
+      const height = window.innerHeight || 1;
+      mouse.targetX = (e.clientX / width - 0.5) * 2;
+      mouse.targetY = -(e.clientY / height - 0.5) * 2;
 
-      const over = checkPointerOverGear(e.clientX, e.clientY, isHolding);
-      if (isPointerOverGear !== over) {
-        isPointerOverGear = over;
-        if (!over && isHolding) {
-          // Pointer leaves gear while holding:
-          // Preserve current accelerated state briefly, then smoothly damp toward normal speed
-          isHolding = false;
-        }
+      const isAccelerating = gearState === "ACCELERATING";
+      const over = checkPointerOverGear(e.clientX, e.clientY, isAccelerating);
+      isPointerOverGear = over;
+
+      if (!isAccelerating) {
+        gearState = over ? "HOVER" : "IDLE";
+      } else if (!over && distFarFromGear(e.clientX, e.clientY)) {
+        // If pointer wanders very far off screen while held, release gracefully
+        releaseTorque();
       }
     };
 
-    const onPointerDown = (e: PointerEvent) => {
-      // Primary button or touch
+    const distFarFromGear = (clientX: number, clientY: number): boolean => {
+      return !checkPointerOverGear(clientX, clientY, true);
+    };
+
+    const onCanvasPointerDown = (e: PointerEvent) => {
       if (e.button !== 0 && e.pointerType === "mouse") return;
-      const over = checkPointerOverGear(e.clientX, e.clientY);
+      const over = checkPointerOverGear(e.clientX, e.clientY, false);
       if (over) {
-        isHolding = true;
+        activePointerId = e.pointerId;
+        try {
+          canvas.setPointerCapture(e.pointerId);
+        } catch {
+          // Defensive: ignore capture errors on older browsers
+        }
+        gearState = "ACCELERATING";
         holdStartTime = performance.now();
       }
     };
 
-    const onPointerUp = () => {
-      if (isHolding) {
-        isHolding = false;
+    const releaseTorque = () => {
+      if (activePointerId !== null) {
+        try {
+          if (canvas.hasPointerCapture(activePointerId)) {
+            canvas.releasePointerCapture(activePointerId);
+          }
+        } catch {
+          // Defensive
+        }
+        activePointerId = null;
+      }
+      if (gearState === "ACCELERATING") {
+        gearState = "DECELERATING";
       }
     };
 
-    const onPointerLeave = () => {
-      isPointerOverGear = false;
-      if (isHolding) {
-        isHolding = false;
+    const onPointerUp = (e: PointerEvent) => {
+      if (activePointerId === null || e.pointerId === activePointerId) {
+        releaseTorque();
+      }
+    };
+
+    const onPointerCancel = (e: PointerEvent) => {
+      onPointerUp(e);
+    };
+
+    const onCanvasPointerLeave = () => {
+      // Never hide or reset the gear on pointerleave. Only update hover flag if not holding.
+      if (gearState !== "ACCELERATING") {
+        isPointerOverGear = false;
+        gearState = "IDLE";
       }
     };
 
     window.addEventListener("pointermove", onPointerMove, { passive: true });
-    window.addEventListener("pointerdown", onPointerDown, { passive: true });
     window.addEventListener("pointerup", onPointerUp, { passive: true });
-    window.addEventListener("pointercancel", onPointerUp, { passive: true });
-    window.addEventListener("pointerleave", onPointerLeave, { passive: true });
+    window.addEventListener("pointercancel", onPointerCancel, { passive: true });
+    canvas.addEventListener("pointerdown", onCanvasPointerDown, { passive: true });
+    canvas.addEventListener("pointerleave", onCanvasPointerLeave, { passive: true });
 
     const onScroll = () => {
-      scrollY = window.scrollY;
+      scrollY = window.scrollY || 0;
       const scrollDelta = Math.abs(scrollY - lastScrollY);
       vortexScrollVelocity += Math.min(scrollDelta * 0.0015, 0.05);
       lastScrollY = scrollY;
@@ -518,11 +570,17 @@ export default function Hero3DCanvas() {
     let orbitAngle = 0;
     let lastTime = performance.now();
 
-    // 60 FPS Mechanical Physics Loop
+    // =========================================================================
+    // Authoritative Single 60 FPS Mechanical Physics Loop
+    // =========================================================================
     const animate = (currentTime: number) => {
       if (!isRunning) return;
-      const delta = Math.min((currentTime - lastTime) * 0.001, 0.1);
-      lastTime = currentTime;
+
+      // Safe Delta Time with NaN & zero guards
+      const validCurrentTime = Number.isFinite(currentTime) && currentTime > 0 ? currentTime : performance.now();
+      const rawDelta = (validCurrentTime - lastTime) * 0.001;
+      const delta = Number.isFinite(rawDelta) && rawDelta > 0 ? Math.min(rawDelta, 0.1) : 0.016;
+      lastTime = validCurrentTime;
 
       // Mouse smoothing
       mouse.x += (mouse.targetX - mouse.x) * 0.05;
@@ -530,44 +588,64 @@ export default function Hero3DCanvas() {
 
       // Scroll Velocity Decay
       vortexScrollVelocity *= 0.94;
+      if (!Number.isFinite(vortexScrollVelocity)) vortexScrollVelocity = 0;
 
-      // Smooth Hover Awareness (0 -> 1)
-      const targetAwareness = isPointerOverGear ? 1.0 : 0.0;
+      // Hover Awareness Smooth Interpolation
+      const targetAwareness = isPointerOverGear || gearState === "ACCELERATING" ? 1.0 : 0.0;
       hoverAwareness += (targetAwareness - hoverAwareness) * 0.08;
+      hoverAwareness = sanitizeNumber(hoverAwareness, 0);
 
-      // Progressive Acceleration Ramp on Pointer HOLD:
-      // Over 500-900ms, ramp: 0.3x -> 0.7x -> 1.2x -> 2.0x acceleration
-      // The longer the hold, the faster the torque applied.
-      if (isHolding) {
-        const holdDuration = (currentTime - holdStartTime) * 0.001; // seconds
+      // State Machine Speed Management:
+      if (gearState === "ACCELERATING") {
+        // Safe holdDuration strictly >= 0
+        const holdDuration = Math.max(0, (validCurrentTime - holdStartTime) * 0.001);
         // 750ms acceleration ramp progression (500-900ms window)
         // Checkpoints: 0ms -> 1.0x, ~180ms -> +0.3x, ~360ms -> +0.7x, ~540ms -> +1.2x, ~750ms -> +2.0x
-        const t = Math.min(holdDuration / 0.75, 1.0);
-        const rampProgress = 2.0 * Math.pow(t, 1.35);
-        // Extended holding continues to slowly build torque up to +0.5x
+        const t = Math.min(Math.max(holdDuration / 0.75, 0), 1.0);
+        const rampProgress = 2.0 * Math.pow(Math.max(0, t), 1.35);
         const extendedHold = Math.min(Math.max(holdDuration - 0.75, 0) * 0.25, 0.5);
         const targetMultiplier = 1.0 + rampProgress + extendedHold;
-        currentMultiplier += (targetMultiplier - currentMultiplier) * Math.min(delta * 6.0, 0.35);
+
+        const lerpSpeed = Math.min(Math.max(delta * 6.0, 0), 0.35);
+        currentMultiplier += (targetMultiplier - currentMultiplier) * lerpSpeed;
       } else {
         // Pointer Release:
-        // Smoothly decelerate back to normal cinematic speed over 700-1200ms damping
+        // Smoothly decelerate back to baseline over 700-1200ms damping
         currentMultiplier = THREE.MathUtils.damp(currentMultiplier, 1.0, 2.2, delta);
+        if (Math.abs(currentMultiplier - 1.0) < 0.01) {
+          currentMultiplier = 1.0;
+          if (gearState === "DECELERATING") {
+            gearState = isPointerOverGear ? "HOVER" : "IDLE";
+          }
+        }
+      }
+
+      // Fallback NaN & Non-finite Recovery Watchdog
+      if (!Number.isFinite(currentMultiplier) || currentMultiplier <= 0) {
+        currentMultiplier = 1.0;
+        gearState = isPointerOverGear ? "HOVER" : "IDLE";
       }
 
       // Time-delta normalized angular velocity
       const baseDeltaAngle = BASE_RAD_PER_SEC * delta;
-      const effectiveOmega = (baseDeltaAngle * currentMultiplier) + (vortexScrollVelocity * 0.08);
+      const safeMultiplier = sanitizeNumber(currentMultiplier, 1.0);
+      const effectiveOmega = (baseDeltaAngle * safeMultiplier) + (vortexScrollVelocity * 0.08);
 
-      // Kinematic Rotations - Strictly Coupled:
+      // Strictly Coupled Kinematic Rotations
+      sunAngle += sanitizeNumber(effectiveOmega, baseDeltaAngle);
+      orbitAngle += sanitizeNumber(effectiveOmega / 3, baseDeltaAngle / 3);
+
+      // Prevent angle overflow over long uptime
+      if (Math.abs(sunAngle) > 100000) sunAngle = sunAngle % (Math.PI * 2);
+      if (Math.abs(orbitAngle) > 100000) orbitAngle = orbitAngle % (Math.PI * 2);
+
       // 1. Central Sun Gear rotates clockwise
-      sunAngle += effectiveOmega;
       sunGear.rotation.z = sunAngle;
 
-      // 2. Planetary spider arm carrier rotates in same direction at 1/3 speed
-      orbitAngle += effectiveOmega / 3;
+      // 2. Planetary spider arm carrier rotates at 1/3 speed
       spiderArmGroup.rotation.z = orbitAngle;
 
-      // 3. Planet gears counter-rotate opposite to sun gear (strict mechanical meshing)
+      // 3. Planet gears counter-rotate opposite to sun gear
       planets.forEach((p) => {
         p.carrier.rotation.z = orbitAngle + p.baseAngle;
         p.mesh.rotation.z = -sunAngle * 2.5;
@@ -581,36 +659,58 @@ export default function Hero3DCanvas() {
       cadRing1.rotation.z = -sunAngle * 0.15;
       cadRing2.rotation.z = sunAngle * 0.1;
 
-      // Subtle mechanical parallax response:
-      // Aware of presence without generic glowing effects
-      const parallaxResponsiveness = 1.0 + hoverAwareness * 0.45;
-      const torqueVibration = isHolding && currentMultiplier > 1.8
-        ? Math.sin(currentTime * 0.05) * 0.008
+      // Mechanical Parallax & Torque Vibration
+      const parallaxFactor = 1.0 + hoverAwareness * 0.45;
+      const torqueVibration = gearState === "ACCELERATING" && currentMultiplier > 1.8
+        ? Math.sin(validCurrentTime * 0.05) * 0.008
         : 0;
 
-      assemblyGroup.rotation.x = baseTiltX + (mouse.y * 0.14 * parallaxResponsiveness) + torqueVibration;
-      assemblyGroup.rotation.y = baseTiltY + (mouse.x * 0.16 * parallaxResponsiveness);
+      const targetRotX = baseTiltX + (mouse.y * 0.14 * parallaxFactor) + torqueVibration;
+      const targetRotY = baseTiltY + (mouse.x * 0.16 * parallaxFactor);
+
+      assemblyGroup.rotation.x = sanitizeNumber(targetRotX, baseTiltX);
+      assemblyGroup.rotation.y = sanitizeNumber(targetRotY, baseTiltY);
       assemblyGroup.rotation.z = baseTiltZ;
 
-      // Subtle mechanical axial step forward when hovered / held
-      const targetZOffset = isHolding ? 0.6 : (hoverAwareness * 0.3);
-      assemblyGroup.position.z = THREE.MathUtils.lerp(assemblyGroup.position.z, targetZOffset, 0.08);
+      // Subtle mechanical axial step forward when hovered / accelerated
+      const targetZOffset = gearState === "ACCELERATING" ? 0.6 : (hoverAwareness * 0.3);
+      currentZOffset = THREE.MathUtils.lerp(currentZOffset, targetZOffset, 0.08);
+
+      // Maintain separate base position + axial offset
+      assemblyGroup.position.x = basePosX;
+      assemblyGroup.position.y = basePosY;
+      assemblyGroup.position.z = basePosZ + sanitizeNumber(currentZOffset, 0);
+      assemblyGroup.scale.set(baseScale, baseScale, baseScale);
 
       // Dynamic Camera Clamping based on Aspect Ratio
-      const currentAspect = window.innerWidth / window.innerHeight;
+      const width = window.innerWidth || 1;
+      const height = window.innerHeight || 1;
+      const currentAspect = width / height;
       const baseZ = currentAspect < 1.4 ? 32 : 28;
 
-      // Smooth Camera Dolly along Z-axis (baseZ -> baseZ - 6 over first 800px)
-      const scrollFactor = Math.min(Math.max(scrollY / 800, 0), 1.0);
+      const scrollFactor = Math.min(Math.max((window.scrollY || 0) / 800, 0), 1.0);
       const targetCameraZ = baseZ - scrollFactor * 6;
       const targetPitch = scrollFactor * (12 * (Math.PI / 180));
 
-      camera.position.z = THREE.MathUtils.lerp(camera.position.z, targetCameraZ, 0.08);
-      camera.position.x = THREE.MathUtils.lerp(camera.position.x, mouse.x * 2.5, 0.05);
-      camera.position.y = THREE.MathUtils.lerp(camera.position.y, mouse.y * 1.8 + scrollFactor * 1.8, 0.05);
+      const newCamZ = THREE.MathUtils.lerp(camera.position.z, targetCameraZ, 0.08);
+      const newCamX = THREE.MathUtils.lerp(camera.position.x, mouse.x * 2.5, 0.05);
+      const newCamY = THREE.MathUtils.lerp(camera.position.y, mouse.y * 1.8 + scrollFactor * 1.8, 0.05);
 
-      camera.rotation.x = THREE.MathUtils.lerp(camera.rotation.x, targetPitch + mouse.y * 0.04, 0.05);
-      camera.rotation.y = THREE.MathUtils.lerp(camera.rotation.y, -mouse.x * 0.06, 0.05);
+      camera.position.z = sanitizeNumber(newCamZ, baseZ);
+      camera.position.x = sanitizeNumber(newCamX, 0);
+      camera.position.y = sanitizeNumber(newCamY, 0);
+
+      const newRotX = THREE.MathUtils.lerp(camera.rotation.x, targetPitch + mouse.y * 0.04, 0.05);
+      const newRotY = THREE.MathUtils.lerp(camera.rotation.y, -mouse.x * 0.06, 0.05);
+
+      camera.rotation.x = sanitizeNumber(newRotX, 0);
+      camera.rotation.y = sanitizeNumber(newRotY, 0);
+
+      // Guaranteed Visible Render
+      assemblyGroup.visible = true;
+      sunGear.visible = true;
+      ringGear.visible = true;
+      spiderArmGroup.visible = true;
 
       renderer.render(scene, camera);
       animationFrameId = requestAnimationFrame(animate);
@@ -618,13 +718,15 @@ export default function Hero3DCanvas() {
 
     animationFrameId = requestAnimationFrame(animate);
 
-    // Dynamic Resize Clamping Listener
+    // Dynamic Resize Listener
     const handleResize = () => {
-      const aspect = window.innerWidth / window.innerHeight;
+      const width = window.innerWidth || 1;
+      const height = window.innerHeight || 1;
+      const aspect = width / height;
       camera.aspect = aspect;
       camera.position.z = aspect < 1.4 ? 32 : 28;
       camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setSize(width, height);
       updateAssemblyPosition();
     };
     window.addEventListener("resize", handleResize);
@@ -633,10 +735,10 @@ export default function Hero3DCanvas() {
       isRunning = false;
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
       window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("pointerup", onPointerUp);
-      window.removeEventListener("pointercancel", onPointerUp);
-      window.removeEventListener("pointerleave", onPointerLeave);
+      window.removeEventListener("pointercancel", onPointerCancel);
+      canvas.removeEventListener("pointerdown", onCanvasPointerDown);
+      canvas.removeEventListener("pointerleave", onCanvasPointerLeave);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", handleResize);
       renderer.dispose();
@@ -656,6 +758,9 @@ export default function Hero3DCanvas() {
         overflow: "hidden",
         backgroundColor: "#080808",
         touchAction: "pan-y",
+        display: "block",
+        visibility: "visible",
+        opacity: 1,
         backgroundImage: `
           radial-gradient(circle at 75% 35%, rgba(204, 17, 17, 0.14) 0%, rgba(99, 8, 8, 0.08) 42%, transparent 70%),
           radial-gradient(circle at 88% 18%, rgba(255, 59, 59, 0.06) 0%, transparent 40%),
@@ -669,6 +774,8 @@ export default function Hero3DCanvas() {
           width: "100%",
           height: "100%",
           display: "block",
+          visibility: "visible",
+          opacity: 1,
           pointerEvents: "auto",
           touchAction: "pan-y",
         }}
