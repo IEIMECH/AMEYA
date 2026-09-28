@@ -621,6 +621,8 @@ export default function Venue3DViewer() {
             <Image
               src="/img/venue/vvit-campus-aerial.jpg"
               alt="Aerial campus photography of VVIIT central quadrangle and mechanical engineering laboratories"
+              draggable={false}
+              onDragStart={(e) => e.preventDefault()}
               fill
               style={{ objectFit: "cover" }}
               priority

@@ -381,7 +381,7 @@ export default function CircularOrbit() {
                 <span className={styles.cornerBR} aria-hidden="true">+</span>
 
                 {/* Card Portrait Showcase */}
-                <div className={styles.portraitBox}>
+                <div className={styles.portraitBox} onDragStart={(e) => e.preventDefault()}>
                   {m.image ? (
                     <Image
                       src={m.image}
@@ -390,6 +390,8 @@ export default function CircularOrbit() {
                       sizes="300px"
                       className={styles.cardImage}
                       priority={false}
+                      draggable={false}
+                      onDragStart={(e) => e.preventDefault()}
                     />
                   ) : (
                     <div className={styles.avatarFallback}>

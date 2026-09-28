@@ -161,6 +161,8 @@ export default function SpeakerSection() {
                       sizes="220px"
                       className={styles.portraitImage}
                       priority
+                      draggable={false}
+                      onDragStart={(e) => e.preventDefault()}
                     />
                     <div className={styles.portraitOverlay} />
                     <div className={styles.photoCrosshairTL}>+</div>

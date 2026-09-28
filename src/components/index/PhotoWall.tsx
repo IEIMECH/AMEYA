@@ -117,13 +117,15 @@ export default function PhotoWall() {
                 </div>
 
                 {/* Photograph Viewport */}
-                <div className={styles.imageWrapper}>
+                <div className={styles.imageWrapper} onDragStart={(e) => e.preventDefault()}>
                   <Image
                     src={item.src}
                     alt={`Documentary capture: ${item.title}`}
                     fill
                     sizes={item.isPrimary ? "460px" : "260px"}
                     className={styles.imageElement}
+                    draggable={false}
+                    onDragStart={(e) => e.preventDefault()}
                   />
                   <div className={styles.lensOverlay} />
                   <div className={styles.crosshairTL}>+</div>

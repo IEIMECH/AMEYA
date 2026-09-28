@@ -194,6 +194,9 @@
 
 .avatarCore {
   position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
   width: 116px;
   height: 116px;
   border-radius: 50%;
@@ -208,6 +211,9 @@
 
 .avatarImg {
   width: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
   height: 100%;
   object-fit: cover;
 }

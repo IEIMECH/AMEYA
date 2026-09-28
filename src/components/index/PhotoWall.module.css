@@ -148,6 +148,9 @@
 
 .imageWrapper {
   position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
   width: 100%;
   border-radius: 2px;
   overflow: hidden;
@@ -157,6 +160,9 @@
 
 .imageElement {
   object-fit: cover;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
   filter: contrast(1.05) brightness(0.95);
 }

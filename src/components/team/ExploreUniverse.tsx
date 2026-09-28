@@ -351,6 +351,8 @@ export default function ExploreUniverse({
                     sizes="120px"
                     className={styles.photoImg}
                     priority={false}
+                    draggable={false}
+                    onDragStart={(e) => e.preventDefault()}
                   />
                 ) : (
                   <div className={styles.photoFallback}>

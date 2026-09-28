@@ -129,6 +129,8 @@ export default function MemberInfoDrawer({ member, onClose }: MemberInfoDrawerPr
                     width={140}
                     height={140}
                     className={styles.avatarImg}
+                    draggable={false}
+                    onDragStart={(e) => e.preventDefault()}
                   />
                 ) : (
                   <div className={styles.initialsPlate}>

@@ -101,6 +101,8 @@ export default function SponsorSection() {
                   width={partner.width}
                   height={partner.height}
                   className={styles.partnerLogo}
+                  draggable={false}
+                  onDragStart={(e) => e.preventDefault()}
                 />
               </div>
 

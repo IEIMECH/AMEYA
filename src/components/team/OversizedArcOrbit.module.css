@@ -138,6 +138,7 @@
 .portraitCard {
   position: relative;
   width: 165px;
+  -webkit-user-drag: none;
   height: 230px;
   border-radius: 18px;
   background: #111113;
@@ -159,6 +160,9 @@
 /* Image Surface (Pure Photo During Movement) */
 .imageSurface {
   position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -167,6 +171,9 @@
 
 .portraitPhoto {
   object-fit: cover;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
   transition: transform 0.5s ease;
 }
 

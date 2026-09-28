@@ -314,6 +314,9 @@
 /* Portrait Container */
 .portraitBox {
   position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
   width: 100%;
   aspect-ratio: 3 / 3.4;
   overflow: hidden;
@@ -321,6 +324,9 @@
 
 .cardImage {
   object-fit: cover;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
   transition: transform 0.4s ease;
 }
 

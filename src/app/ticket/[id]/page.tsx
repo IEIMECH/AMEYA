@@ -228,6 +228,8 @@ export default function TicketPage({
                 <img
                   src={qrSrc}
                   alt="Cryptographic check-in QR code token for delegate credential verification"
+                  draggable="false"
+                  onDragStart={(e) => e.preventDefault()}
                   width={140}
                   height={140}
                   style={{

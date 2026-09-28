@@ -547,6 +547,7 @@ export default function OversizedArcOrbit() {
                     }
                   }}
                   aria-label={`Team member portrait: ${m.name}, ${m.role}. Click to open dossier.`}
+                  onDragStart={(e) => e.preventDefault()}
                 >
                   {/* Visual Portrait Image (Pure Photo, No Text While Moving) */}
                   <div className={styles.imageSurface}>
@@ -558,6 +559,8 @@ export default function OversizedArcOrbit() {
                         sizes="380px"
                         className={styles.portraitPhoto}
                         priority={false}
+                        draggable={false}
+                        onDragStart={(e) => e.preventDefault()}
                       />
                     ) : (
                       <div className={styles.fallbackMonogram}>

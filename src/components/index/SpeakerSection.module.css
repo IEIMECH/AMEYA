@@ -245,6 +245,9 @@
 
 .portraitWrapper {
   position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
   width: 210px;
   height: 260px;
   border-radius: 3px;
@@ -256,6 +259,9 @@
 
 .portraitImage {
   object-fit: cover;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
   filter: contrast(1.08) brightness(0.96);
 }
 
