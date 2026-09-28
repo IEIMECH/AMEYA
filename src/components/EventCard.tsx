@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock, MapPin, Users, Trophy, ArrowRight, ShieldCheck, Activity } from "lucide-react";
+import { ArrowRight, User, Calendar, ShieldCheck } from "lucide-react";
 import type { Event } from "@/data/events";
 import styles from "./EventCard.module.css";
 
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function EventCard({ event, index = 0, onRegister }: Props) {
-  const formattedIndex = String(index + 1).padStart(2, "0");
+  const isTechnical = event.category.toLowerCase() === "technical";
 
   return (
     <article
@@ -26,7 +26,7 @@ export default function EventCard({ event, index = 0, onRegister }: Props) {
           onRegister();
         }
       }}
-      aria-label={`Inspect and register for ${event.name} - ${event.category}`}
+      aria-label={`Register for ${event.name} - ${event.category} - Day ${event.day}`}
       onDragStart={(e) => e.preventDefault()}
     >
       {/* Outer Technical Chamfered Frame */}
@@ -39,50 +39,41 @@ export default function EventCard({ event, index = 0, onRegister }: Props) {
         {/* Top Technical Metadata Bar */}
         <div className={styles.topHud}>
           <div className={styles.categoryPill}>
-            <span className={styles.categoryDot} />
+            <span className={styles.categoryDot} style={{ background: isTechnical ? "var(--crimson-core, #E51D25)" : "#F2EDE8" }} />
             <span className={styles.categoryText}>{event.category}</span>
           </div>
-          <div className={styles.telemetryTag}>
-            <Activity size={10} className={styles.pulseIcon} />
-            <span className={styles.telemetryText}>STATUS: ARMED // SEC: {formattedIndex}</span>
+          <div className={styles.dayTag}>
+            <Calendar size={11} className={styles.dayIcon} />
+            <span className={styles.dayText}>DAY 0{event.day}</span>
           </div>
         </div>
 
         {/* Card Header */}
         <div className={styles.header}>
           <div className={styles.iconBox} aria-hidden="true">
-            <span className={styles.iconText}>{event.icon}</span>
+            <span className={styles.iconText}>{event.icon || "⚙️"}</span>
           </div>
           <div className={styles.titleArea}>
-            <div className={styles.techFreq}>FREQ // 60Hz • TOLERANCE // ±0.005mm</div>
+            <span className={styles.kickerText}>CONCLAVE // ARENA 0{index + 1}</span>
             <h3 className={styles.title}>{event.name}</h3>
-            <p className={styles.tagline}>{event.tagline}</p>
+            {event.tagline && <p className={styles.tagline}>{event.tagline}</p>}
           </div>
         </div>
 
-        {/* Description */}
+        {/* Event Brief / Details */}
         <p className={styles.description}>
-          {event.description}
+          {event.description || "Details to be announced."}
         </p>
 
-        {/* Technical Specs Grid */}
+        {/* Precision Telemetry Specs */}
         <div className={styles.specsGrid}>
           <div className={styles.specItem}>
-            <Clock size={12} className={styles.specIcon} />
-            <span>{event.time}</span>
-          </div>
-          <div className={styles.specItem}>
-            <MapPin size={12} className={styles.specIcon} />
-            <span className={styles.truncate}>{event.venue}</span>
-          </div>
-          <div className={styles.specItem}>
-            <Users size={12} className={styles.specIcon} />
-            <span>{event.type === "team" ? `Team: ${event.teamSize}` : "Individual (Solo)"}</span>
+            <User size={12} className={styles.specIcon} />
+            <span>PARTICIPATION: <strong>SOLO (INDIVIDUAL)</strong></span>
           </div>
           <div className={styles.specItemHighlight}>
-            <Trophy size={12} className={styles.trophyIcon} />
-            <span className={styles.prizeLabel}>PRIZE POOL:</span>
-            <span className={styles.prizeText}>{event.prizes}</span>
+            <span className={styles.statusDot} />
+            <span className={styles.statusText}>SCHEDULE &amp; VENUE: DETAILS TO BE ANNOUNCED</span>
           </div>
         </div>
 

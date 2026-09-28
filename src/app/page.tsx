@@ -80,7 +80,7 @@ export default function Home() {
             </h1>
 
             <p className={styles.editorialSub}>
-              Two days of autonomous robotics warfare, 24-hour rapid hardware prototyping,
+              Two days of high-precision design, kinetic challenges,
               and mechanical engineering excellence at Vasireddy Venkatadri Institute of Technology.
             </p>
 
@@ -89,8 +89,8 @@ export default function Home() {
                 <span>EXPLORE EVENTS</span>
                 <ArrowRight size={16} />
               </Link>
-              <Link href="/agenda" className={styles.secondaryHeroCta} id="hero-secondary-cta">
-                <span>VIEW AGENDA</span>
+              <Link href="/venue" className={styles.secondaryHeroCta} id="hero-secondary-cta">
+                <span>3D CAMPUS MAP</span>
               </Link>
             </div>
           </div>

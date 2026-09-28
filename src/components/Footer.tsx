@@ -12,7 +12,7 @@ export default function Footer() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // On sub-pages (/about, /agenda, /venue, /team, /info, etc.), maintain minimal bar
+  // On sub-pages (/about, /events, /venue, /team, /info, etc.), maintain minimal bar
   if (pathname !== "/") {
     return (
       <footer className={styles.minimalFooter}>
@@ -28,7 +28,7 @@ export default function Footer() {
   }
 
   // Master Redesign: On Homepage, ClosingManifesto handles the chapter title sequence.
-  // Footer seamlessly provides the technical sitemap, apex navigation, and legal registry.
+  // Footer provides the technical sitemap, apex navigation, and legal registry.
   return (
     <footer className={styles.footer}>
       <div className="container">
@@ -38,22 +38,22 @@ export default function Footer() {
             <h4 className={styles.groupHeading}>CONCLAVE</h4>
             <ul className={styles.linkList}>
               <li><Link href="/">Homepage</Link></li>
-              <li><Link href="/about">About Ameya</Link></li>
-              <li><Link href="/agenda">Conclave Schedule</Link></li>
+              <li><Link href="/events">Official Arenas</Link></li>
               <li><Link href="/venue">3D Campus Map</Link></li>
               <li><Link href="/team">Engineering Cadre</Link></li>
-              <li><Link href="/team/explore">Explore Universe</Link></li>
+              <li><Link href="/about">About Ameya</Link></li>
+              <li><Link href="/info">Conclave Protocols</Link></li>
             </ul>
           </div>
 
           <div className={styles.linkGroup}>
             <h4 className={styles.groupHeading}>ARENAS</h4>
             <ul className={styles.linkList}>
-              <li><Link href="/events">HackSprint 24H</Link></li>
-              <li><Link href="/events">Robo Rumble</Link></li>
-              <li><Link href="/events">CAD Clash</Link></li>
-              <li><Link href="/events">Tech Manuscript</Link></li>
-              <li><Link href="/events">Gear Hunt</Link></li>
+              <li><Link href="/events">AutoCAD (Day 1)</Link></li>
+              <li><Link href="/events">Assemble &amp; Disassemble (Day 1)</Link></li>
+              <li><Link href="/events">RC Car Challenge (Day 1)</Link></li>
+              <li><Link href="/events">Engineering Drawing (Day 2)</Link></li>
+              <li><Link href="/events">Treasure Hunt (Day 2)</Link></li>
             </ul>
           </div>
 

@@ -18,6 +18,15 @@ const nextConfig: NextConfig = {
     ],
   },
   compress: true,
+  async redirects() {
+    return [
+      {
+        source: "/agenda",
+        destination: "/events",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

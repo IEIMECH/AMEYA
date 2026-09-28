@@ -32,7 +32,7 @@ const ticketTiers: TicketTier[] = [
     isFeatured: false,
     features: [
       "Access to all Keynotes & Tech Lectures",
-      "Spectator entry to Robo Rumble arenas",
+      "Spectator entry to RC Car Challenge arena",
       "Hardware Prototype Exhibition access",
       "Official Digital Participation Credential",
       "Campus Wi-Fi & Technical Networking Kit",
@@ -63,11 +63,11 @@ const ticketTiers: TicketTier[] = [
     currency: "₹",
     title: "ALL-ACCESS PASS",
     sub: "FULL IMMERSION",
-    description: "Unrestricted entry across all 10 technical arenas, HackSprint 24H prototyping, and dinner.",
+    description: "Unrestricted registration access across all 8 official competition arenas.",
     isFeatured: false,
     features: [
-      "Unlimited registration across all 10 Arenas",
-      "HackSprint 24H Hardware Prototyping Bay",
+      "Registration access across all 8 Official Arenas",
+      "AutoCAD and Drafting Studio Workspace access",
       "Speakers & Jury Networking Banquet",
       "Printed Hardcover Engineering Journal",
       "Priority Pit Lane & Workshop Calibrations",

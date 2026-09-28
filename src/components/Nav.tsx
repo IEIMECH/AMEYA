@@ -7,11 +7,10 @@ import { Menu, X, ShieldAlert } from "lucide-react";
 import { AnimatedBackground } from "@/components/core/animated-background";
 import styles from "./Nav.module.css";
 
-const TABS = ["EVENTS", "AGENDA", "VENUE", "TEAM", "ABOUT", "INFO"];
+const TABS = ["EVENTS", "VENUE", "TEAM", "ABOUT", "INFO"];
 
 const navLinks = [
   { href: "/events", label: "EVENTS" },
-  { href: "/agenda", label: "AGENDA" },
   { href: "/venue", label: "VENUE" },
   { href: "/team", label: "TEAM" },
   { href: "/about", label: "ABOUT" },

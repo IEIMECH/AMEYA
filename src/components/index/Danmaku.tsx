@@ -5,14 +5,14 @@ import { Send, ShieldAlert } from "lucide-react";
 
 const initialLines = [
   "Ameya 2026: Machined Crimson & Cold Steel! ⚡",
-  "Free delegate passes live on portal! ⚙️",
-  "HackSprint 24H prototype slots filling fast! 🛠️",
-  "Robo Rumble battle arena primed for combat! 🤖",
-  "Who will claim the ₹50,000 prize pool? 🏆",
-  "CAD Clash speed modeling: Bring your precision calipers! 📐",
+  "Official event registrations now live! ⚙️",
+  "AutoCAD precision drafting slots filling fast! 📐",
+  "RC Car Challenge obstacle track primed! 🏎️",
+  "Assemble & Disassemble: Show your mechanical speed! 🔧",
+  "Engineering Drawing & Drafting standards ready! ✏️",
   "Mechanical engineers assemble at VVITU! 🚀",
-  "Can any outstation college beat the home champions? ⚔️",
-  "Live turbomachinery & drone telemetry active! ✨",
+  "Treasure Hunt clue matrix deployed! 🧭",
+  "Nuts & Bolts Speed Race: Rapid threading challenge! 🔩",
   "October 4–5, 2026: Mark your engineering calendars!",
   "Official technical conclave by IEI SAME council! 🛡️",
 ];

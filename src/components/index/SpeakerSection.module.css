@@ -421,7 +421,7 @@
   color: var(--text-muted, #605B56);
 }
 
-.agendaButton {
+.eventsButton {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -439,7 +439,7 @@
   transition: all 0.2s ease;
 }
 
-.agendaButton:hover {
+.eventsButton:hover {
   background: var(--crimson-core, #E51D25);
   border-color: var(--crimson-core, #E51D25);
   color: #ffffff;

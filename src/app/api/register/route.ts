@@ -1,269 +1,305 @@
 import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 import QRCode from "qrcode";
 import { Resend } from "resend";
 import { supabaseAdmin, isDatabaseConfigured, getEventTableName } from "@/lib/supabase";
+import { events } from "@/data/events";
 
 const resend = new Resend(process.env.RESEND_API_KEY || "re_dummy");
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://ameyafest.vercel.app";
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { event, form, isTeam } = body;
+    let eventId = "";
+    let eventName = "";
+    let day = 1;
+    let category = "Technical";
+    let name = "";
+    let branch = "";
+    let collegeRollNumber = "";
+    let email = "";
+    let phone = "";
+    let collegeIdCardFile: File | null = null;
 
-    if (!event || !form || !form.name || !form.email) {
-      return NextResponse.json({ error: "INPUT ERROR // Missing required registration parameters." }, { status: 400 });
+    const contentType = req.headers.get("content-type") || "";
+
+    // Support both multipart/form-data and application/json
+    if (contentType.includes("multipart/form-data")) {
+      const formData = await req.formData();
+      eventId = String(formData.get("eventId") || "").trim();
+      eventName = String(formData.get("eventName") || "").trim();
+      day = Number(formData.get("day")) || 1;
+      category = String(formData.get("category") || "Technical").trim();
+      name = String(formData.get("name") || "").trim();
+      branch = String(formData.get("branch") || "").trim();
+      collegeRollNumber = String(formData.get("collegeRollNumber") || "").trim().toUpperCase();
+      email = String(formData.get("email") || "").trim().toLowerCase();
+      phone = String(formData.get("phone") || "").trim();
+      
+      const fileEntry = formData.get("collegeIdCard");
+      if (fileEntry instanceof File) {
+        collegeIdCardFile = fileEntry;
+      }
+    } else {
+      const json = await req.json();
+      eventId = String(json.eventId || (json.event && json.event.id) || "").trim();
+      eventName = String(json.eventName || (json.event && json.event.name) || "").trim();
+      day = Number(json.day || (json.event && json.event.day)) || 1;
+      category = String(json.category || (json.event && json.event.category) || "Technical").trim();
+      name = String(json.name || (json.form && json.form.name) || "").trim();
+      branch = String(json.branch || (json.form && json.form.branch) || "").trim();
+      collegeRollNumber = String(json.collegeRollNumber || (json.form && json.form.collegeRollNumber) || "").trim().toUpperCase();
+      email = String(json.email || (json.form && json.form.email) || "").trim().toLowerCase();
+      phone = String(json.phone || (json.form && json.form.phone) || "").trim();
     }
 
-    const eventId = String(event.id || "general");
-    const isVisitor = eventId === "visitor-pass" || eventId === "visitor";
+    // Resolve event details from authoritative data if missing
+    if (!eventName && eventId) {
+      const found = events.find((e) => e.id === eventId);
+      if (found) {
+        eventName = found.name;
+        day = found.day;
+        category = found.category;
+      }
+    }
 
-    // Generate unique AMEYA '26 docket tokens
+    // 1. Validation for all required participant fields
+    if (!name) {
+      return NextResponse.json({ error: "Participant Full Name is required." }, { status: 400 });
+    }
+    if (!branch) {
+      return NextResponse.json({ error: "Engineering Branch is required." }, { status: 400 });
+    }
+    if (!collegeRollNumber) {
+      return NextResponse.json({ error: "College Roll Number is required." }, { status: 400 });
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      return NextResponse.json({ error: "A valid Email address is required." }, { status: 400 });
+    }
+    const phoneRegex = /^[+]?[0-9\s-]{10,15}$/;
+    if (!phone || !phoneRegex.test(phone.replace(/\s/g, ""))) {
+      return NextResponse.json({ error: "A valid 10-digit Phone number is required." }, { status: 400 });
+    }
+
+    // Generate unique AMEYA '26 Ticket Token
+    const prefix = eventId ? eventId.replace(/[^a-zA-Z0-9]/g, "").substring(0, 4).toUpperCase() : "SOLO";
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
-    const eventPrefix = isVisitor
-      ? "VISIT"
-      : eventId.substring(0, 4).toUpperCase();
-    const ticketId = `AMEYA-2026-${eventPrefix}-${randomSuffix}`;
-    const teamId = isVisitor
-      ? `VIS-${Math.random().toString(36).substring(2, 7).toUpperCase()}`
-      : isTeam
-      ? `TEAM-${Math.random().toString(36).substring(2, 7).toUpperCase()}`
-      : `SOLO-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
-
-    // Target dedicated table in Supabase
+    const ticketId = `AMEYA-2026-${prefix}-${randomSuffix}`;
     const targetTable = getEventTableName(eventId);
 
-    // Persist to Supabase if configured
-    if (isDatabaseConfigured() && supabaseAdmin) {
+    let collegeIdCardUrl = `local_ref_${crypto.randomUUID()}`;
+
+    // 2. Storage upload for College ID Card Image
+    if (collegeIdCardFile && isDatabaseConfigured() && supabaseAdmin) {
       try {
-        let insertPayload: Record<string, any> = {
-          ticket_id: ticketId,
-          payment_status: isVisitor ? "free" : "confirmed",
-        };
+        const fileExt = collegeIdCardFile.name.split(".").pop()?.toLowerCase() || "jpg";
+        // Anonymized storage path to protect participant personal identity
+        const secureStoragePath = `ids/${eventId || "general"}/id_${crypto.randomUUID()}.${fileExt}`;
+        const arrayBuffer = await collegeIdCardFile.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
 
-        if (isVisitor) {
-          insertPayload = {
-            ...insertPayload,
-            visitor_id: teamId,
-            full_name: form.name,
-            email: form.email,
-            phone: form.phone || "N/A",
-            college: form.college || "Visitor / Guest",
-            year: form.year || "General Delegate",
-            attending_days: form.attendingDays || "Both Days (Oct 04–05)",
-            areas_of_interest: form.areasOfInterest || ["Keynote Lectures", "Robotics Arena Spectator", "Project Expo"],
-            purpose_of_visit: form.purposeOfVisit || null,
-          };
-        } else {
-          // Standard Event Registration Base
-          insertPayload = {
-            ...insertPayload,
-            team_id: teamId,
-            leader_name: form.name,
-            leader_email: form.email,
-            leader_phone: form.phone || "N/A",
-            college: form.college || "VVIIT Nambur",
-            year: form.year || "1st Year",
-          };
-
-          // Tailored Event-Specific Attributes
-          switch (eventId) {
-            case "hackathon":
-              insertPayload.team_name = form.teamName || "HackSprint Squad";
-              insertPayload.members = isTeam && Array.isArray(form.members) ? form.members : [];
-              insertPayload.domain_track = form.domainTrack || "Automation & Robotics";
-              insertPayload.project_title = form.projectTitle || null;
-              insertPayload.proposal_synopsis = form.proposalSynopsis || null;
-              insertPayload.hardware_requirements = form.hardwareRequirements || null;
-              break;
-
-            case "paper-presentation":
-              insertPayload.team_name = form.teamName || null;
-              insertPayload.members = isTeam && Array.isArray(form.members) ? form.members : [];
-              insertPayload.paper_title = form.paperTitle || `${form.name} Research Paper`;
-              insertPayload.research_track = form.researchTrack || "Thermal & Fluid Dynamics";
-              insertPayload.abstract_text = form.abstractText || null;
-              insertPayload.manuscript_drive_link = form.manuscriptDriveLink || form.driveLink || null;
-              break;
-
-            case "cad-design":
-              insertPayload.cad_software = form.cadSoftware || form.softwarePreference || "SolidWorks";
-              insertPayload.cad_experience = form.cadExperience || form.experienceLevel || "Intermediate";
-              insertPayload.bringing_own_laptop = Boolean(form.bringingOwnLaptop ?? true);
-              break;
-
-            case "robo-race":
-              insertPayload.team_name = form.teamName || "Bot Combatants";
-              insertPayload.members = isTeam && Array.isArray(form.members) ? form.members : [];
-              insertPayload.bot_moniker = form.botMoniker || form.botName || "Kinetic Striker";
-              insertPayload.weight_class = form.weightClass || form.weightCategory || "Under 5kg (Standard Class)";
-              insertPayload.drive_system = form.driveSystem || "4WD Skid Steer";
-              insertPayload.weapon_mechanism = form.weaponMechanism || "Spinner";
-              insertPayload.frequency_band = form.frequencyBand || "2.4 GHz FHSS";
-              break;
-
-            case "circuit-debug":
-              insertPayload.controller_pref = form.controllerPref || form.preferredController || "Arduino / ATmega";
-              insertPayload.lab_experience = form.labExperience || "Intermediate";
-              break;
-
-            case "quiz":
-              insertPayload.team_name = form.teamName || "Brainiac Duo";
-              insertPayload.members = isTeam && Array.isArray(form.members) ? form.members : [];
-              insertPayload.sub_discipline = form.subDiscipline || "Core Mechanical & Manufacturing";
-              break;
-
-            case "treasure-hunt":
-              insertPayload.team_name = form.teamName || "Gear Hunters";
-              insertPayload.members = isTeam && Array.isArray(form.members) ? form.members : [];
-              insertPayload.emergency_contact = form.emergencyContact || null;
-              break;
-
-            case "photography":
-              insertPayload.device_type = form.deviceType || "DSLR / Mirrorless";
-              insertPayload.camera_model = form.cameraModel || null;
-              insertPayload.portfolio_link = form.portfolioLink || null;
-              break;
-
-            case "debate":
-              insertPayload.debate_topic_pref = form.debateTopicPref || form.topicPreference || "Autonomous Machines & Ethics";
-              insertPayload.debate_experience = form.debateExperience || form.priorDebateExperience || "Collegiate / District Level";
-              break;
-
-            default:
-              // Fallback
-              insertPayload.event_id = eventId;
-              insertPayload.event_name = event.name;
-              insertPayload.is_team = Boolean(isTeam);
-              insertPayload.team_name = form.teamName || null;
-              insertPayload.members = isTeam && Array.isArray(form.members) ? form.members : [];
-              break;
+        // Ensure private bucket exists
+        try {
+          const { data: buckets } = await supabaseAdmin.storage.listBuckets();
+          const bucketExists = buckets?.some((b) => b.name === "college_ids");
+          if (!bucketExists) {
+            await supabaseAdmin.storage.createBucket("college_ids", {
+              public: false, // Private access: only authorized admins/service role can access
+              fileSizeLimit: 5242880,
+              allowedMimeTypes: ["image/jpeg", "image/png", "image/jpg"],
+            });
           }
+        } catch (bucketErr) {
+          console.warn("Storage bucket check warning:", bucketErr);
         }
 
-        // Insert into dedicated table
-        const { error: dbError } = await supabaseAdmin.from(targetTable).insert(insertPayload);
+        const { error: uploadError } = await supabaseAdmin.storage
+          .from("college_ids")
+          .upload(secureStoragePath, buffer, {
+            contentType: collegeIdCardFile.type || "image/jpeg",
+            upsert: false,
+          });
+
+        if (uploadError) {
+          console.error("Supabase Storage upload error:", uploadError);
+          // If storage upload fails due to RLS/Bucket policy, return specific error
+          return NextResponse.json(
+            { error: `College ID card image upload failed: ${uploadError.message}. Please check your connection and try again.` },
+            { status: 500 }
+          );
+        }
+
+        collegeIdCardUrl = `college_ids/${secureStoragePath}`;
+      } catch (storageErr: any) {
+        console.error("Storage processing error:", storageErr);
+        return NextResponse.json(
+          { error: "College ID card image upload failed. Please try again with a valid JPG/PNG image." },
+          { status: 500 }
+        );
+      }
+    }
+
+    // 3. Duplicate Registration Protection: Check (email OR collegeRollNumber) for this specific event
+    if (isDatabaseConfigured() && supabaseAdmin) {
+      try {
+        // Check dedicated table first
+        const { data: existingDedicated } = await supabaseAdmin
+          .from(targetTable)
+          .select("id, ticket_id, email, college_roll_number")
+          .or(`email.eq.${email},college_roll_number.eq.${collegeRollNumber}`)
+          .limit(1)
+          .maybeSingle();
+
+        if (existingDedicated) {
+          return NextResponse.json(
+            {
+              error: `Duplicate Registration: Participant with email "${email}" or roll number "${collegeRollNumber}" is already registered for ${eventName || "this event"}.`,
+              isDuplicate: true,
+              ticketId: existingDedicated.ticket_id,
+            },
+            { status: 409 }
+          );
+        }
+
+        // Check unified registrations table
+        if (targetTable !== "registrations") {
+          const { data: existingUnified } = await supabaseAdmin
+            .from("registrations")
+            .select("id, ticket_id")
+            .eq("event_id", eventId)
+            .or(`email.eq.${email},college_roll_number.eq.${collegeRollNumber}`)
+            .limit(1)
+            .maybeSingle();
+
+          if (existingUnified) {
+            return NextResponse.json(
+              {
+                error: `Duplicate Registration: Participant with email "${email}" or roll number "${collegeRollNumber}" is already registered for ${eventName || "this event"}.`,
+                isDuplicate: true,
+                ticketId: existingUnified.ticket_id,
+              },
+              { status: 409 }
+            );
+          }
+        }
+      } catch (dupErr) {
+        console.warn("Duplicate check non-blocking error:", dupErr);
+      }
+
+      // 4. Insert into database
+      try {
+        const registrationPayload = {
+          ticket_id: ticketId,
+          registration_id: ticketId,
+          event_id: eventId,
+          event_name: eventName,
+          participant_name: name,
+          leader_name: name, // backward compatibility
+          branch: branch,
+          college_roll_number: collegeRollNumber,
+          email: email,
+          leader_email: email, // backward compatibility
+          phone: phone,
+          leader_phone: phone, // backward compatibility
+          college: "VVITU Nambur",
+          college_id_card_url: collegeIdCardUrl,
+          payment_status: "confirmed",
+          created_at: new Date().toISOString(),
+        };
+
+        const { error: dbError } = await supabaseAdmin.from(targetTable).insert(registrationPayload);
         if (dbError) {
           console.error(`Supabase ${targetTable} insert error:`, dbError);
-          // If specific table fails (e.g. not migrated yet), fallback to general registrations table
+          // Fallback to registrations table
           if (targetTable !== "registrations") {
             try {
-              await supabaseAdmin.from("registrations").insert({
-              ticket_id: ticketId,
-              event_id: eventId,
-              event_name: event.name,
-              is_team: Boolean(isTeam),
-              team_id: teamId,
-              team_name: isTeam ? form.teamName : null,
-              leader_name: form.name,
-              leader_email: form.email,
-              leader_phone: form.phone || null,
-              college: form.college || "VVIIT Nambur",
-              year: form.year || "1st Year",
-              members: isTeam && Array.isArray(form.members) ? form.members : [],
-              payment_status: "confirmed",
-            });
+              await supabaseAdmin.from("registrations").insert(registrationPayload);
             } catch (fallbackErr) {
-              console.error('Fallback insert error:', fallbackErr);
+              console.error("Fallback insert err:", fallbackErr);
             }
           }
         }
-      } catch (dbErr) {
-        console.error("Supabase DB error:", dbErr);
+      } catch (insertErr) {
+        console.error("Database insert error:", insertErr);
       }
     }
 
-    // Generate QR code pointing to official ticket verification reveal
-    const ticketUrl = `${BASE_URL}/ticket/${ticketId}?teamId=${teamId}&event=${encodeURIComponent(event.name)}&name=${encodeURIComponent(form.name)}${isTeam ? `&team=${encodeURIComponent(form.teamName || "")}` : ""}`;
-    const qrDataUrl = await QRCode.toDataURL(ticketUrl, {
-      width: 280,
-      margin: 2,
-      color: { dark: "#080808", light: "#ffffff" },
-    });
+    // 5. Generate QR Code token for ticket pass
+    const ticketUrl = `${BASE_URL}/ticket/${ticketId}?event=${encodeURIComponent(eventName)}&name=${encodeURIComponent(name)}&college=${encodeURIComponent(branch)}&year=2026`;
+    let qrDataUrl = "";
+    try {
+      qrDataUrl = await QRCode.toDataURL(ticketUrl, {
+        width: 280,
+        margin: 2,
+        color: { dark: "#080808", light: "#ffffff" },
+      });
+    } catch (qrErr) {
+      console.error("QR Code generation error:", qrErr);
+    }
 
-    // Build member list for email if team
-    const memberList = isTeam && form.members && form.members.length > 0
-      ? `<div style="margin-top:20px;padding:16px;background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:4px;">
-          <strong style="color:#ff4d4d;font-size:12px;font-family:monospace;text-transform:uppercase;letter-spacing:0.12em;">Enrolled Squad Operatives</strong>
-          <ul style="margin:10px 0 0;padding-left:18px;color:#F2EDE8;font-size:14px;line-height:1.6;">
-            ${form.members.map((m: { name: string; email?: string }) => `<li>${m.name} ${m.email ? `(${m.email})` : ""}</li>`).join("")}
-          </ul>
-        </div>`
-      : "";
-
-    // Send email via Resend if API key is provided
+    // 6. Send confirmation email via Resend if configured
     if (process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.includes("dummy") && !process.env.RESEND_API_KEY.includes("your_")) {
-      const emailRecipients = [form.email];
-      if (isTeam && Array.isArray(form.members)) {
-        form.members.forEach((m: { email: string }) => {
-          if (m.email && !emailRecipients.includes(m.email)) emailRecipients.push(m.email);
-        });
-      }
-
       const emailHtml = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>AMEYA '26 Accreditation Docket</title>
+  <title>AMEYA '26 Official Registration Confirmation</title>
 </head>
 <body style="margin:0;padding:0;background:#050505;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#F2EDE8;">
   <div style="max-width:620px;margin:0 auto;padding:40px 20px;">
-    <!-- Brand Kicker -->
     <div style="text-align:center;margin-bottom:30px;">
       <div style="color:#E51D25;font-family:monospace;font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;">
         ● IEI SAME // DEPARTMENT OF MECHANICAL ENGINEERING
       </div>
-      <h1 style="color:#FFFFFF;font-size:32px;font-weight:800;margin:10px 0 6px;letter-spacing:-0.02em;">
+      <h1 style="color:#FFFFFF;font-size:32px;font-weight:800;margin:10px 0 6px;">
         AMEYA &apos;26
       </h1>
       <p style="color:#96908B;font-size:13px;margin:0;">
-        October 04–05, 2026 · Vasireddy Venkatadri Institute of Technology (VVIIT), Nambur
+        October 04–05, 2026 · Vasireddy Venkatadri Institute of Technology, Nambur
       </p>
     </div>
 
-    <!-- Ticket Card -->
-    <div style="background:#0C0C0C;border:1px solid rgba(255,255,255,0.1);border-top:3px solid #E51D25;border-radius:4px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,0.8);">
+    <div style="background:#0C0C0C;border:1px solid rgba(255,255,255,0.1);border-top:3px solid #E51D25;border-radius:4px;overflow:hidden;">
       <div style="padding:24px 28px;border-bottom:1px solid rgba(255,255,255,0.08);background:#101010;">
-        <span style="color:#96908B;font-family:monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;">ACCREDITATION CONFIRMED</span>
-        <h2 style="color:#FFFFFF;font-size:22px;font-weight:700;margin:6px 0 0;">${event.name}</h2>
+        <span style="color:#E51D25;font-family:monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;">OFFICIAL REGISTRATION CONFIRMED</span>
+        <h2 style="color:#FFFFFF;font-size:22px;font-weight:700;margin:6px 0 0;">${eventName}</h2>
+        <span style="color:#96908B;font-family:monospace;font-size:12px;">DAY 0${day} // ${category.toUpperCase()} (SOLO)</span>
       </div>
 
       <div style="padding:28px;">
         <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
           <tr>
-            <td style="padding:8px 0;color:#605B56;font-family:monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;">${isVisitor ? "VISITOR" : "DELEGATE"}</td>
-            <td style="padding:8px 0;color:#FFFFFF;font-size:14px;font-weight:600;text-align:right;">${form.name}</td>
-          </tr>
-          ${isTeam ? `<tr>
-            <td style="padding:8px 0;color:#605B56;font-family:monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;">TEAM MONIKER</td>
-            <td style="padding:8px 0;color:#FFFFFF;font-size:14px;font-weight:600;text-align:right;">${form.teamName || "Squad"}</td>
-          </tr>` : ""}
-          <tr>
-            <td style="padding:8px 0;color:#605B56;font-family:monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;">COLLEGE / AFFILIATION</td>
-            <td style="padding:8px 0;color:#FFFFFF;font-size:14px;font-weight:600;text-align:right;">${form.college} (${form.year})</td>
+            <td style="padding:8px 0;color:#605B56;font-family:monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;">PARTICIPANT</td>
+            <td style="padding:8px 0;color:#FFFFFF;font-size:14px;font-weight:600;text-align:right;">${name}</td>
           </tr>
           <tr>
-            <td style="padding:8px 0;color:#605B56;font-family:monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;">TICKET TOKEN</td>
+            <td style="padding:8px 0;color:#605B56;font-family:monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;">BRANCH</td>
+            <td style="padding:8px 0;color:#FFFFFF;font-size:14px;font-weight:600;text-align:right;">${branch}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 0;color:#605B56;font-family:monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;">ROLL NUMBER</td>
+            <td style="padding:8px 0;color:#FFFFFF;font-size:14px;font-weight:600;text-align:right;">${collegeRollNumber}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 0;color:#605B56;font-family:monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;">REGISTRATION ID</td>
             <td style="padding:8px 0;color:#E51D25;font-family:monospace;font-size:15px;font-weight:700;text-align:right;">${ticketId}</td>
           </tr>
         </table>
 
-        ${memberList}
-
-        <!-- QR Code Block -->
+        ${qrDataUrl ? `
         <div style="margin-top:28px;padding-top:24px;border-top:1px dashed rgba(255,255,255,0.12);text-align:center;">
           <div style="background:#FFFFFF;display:inline-block;padding:12px;border-radius:4px;">
             <img src="${qrDataUrl}" alt="Check-in QR" width="160" height="160" style="display:block;" />
           </div>
           <p style="color:#96908B;font-family:monospace;font-size:11px;letter-spacing:0.1em;margin:12px 0 0;text-transform:uppercase;">
-            Scan at VVITU Campus Gate for Physical Clearance
+            Present at Access Gates for Validation
           </p>
-        </div>
+        </div>` : ""}
       </div>
     </div>
 
-    <!-- Footer Help -->
     <p style="color:#605B56;font-size:12px;text-align:center;margin-top:30px;">
       AMEYA &apos;26 Operations Desk · Email: ieisame@vvit.net · Nambur, Guntur, AP
     </p>
@@ -274,15 +310,23 @@ export async function POST(req: NextRequest) {
 
       await resend.emails.send({
         from: process.env.RESEND_FROM_EMAIL || "AMEYA '26 <onboarding@resend.dev>",
-        to: emailRecipients,
-        subject: `🎟️ AMEYA '26 Accreditation Dossier — ${event.name}`,
+        to: [email],
+        subject: `🎟️ AMEYA '26 Registration Confirmed — ${eventName}`,
         html: emailHtml,
       }).catch((e) => console.error("Resend dispatch error:", e));
     }
 
-    return NextResponse.json({ ticketId, teamId, targetTable }, { status: 200 });
-  } catch (err) {
+    return NextResponse.json({
+      success: true,
+      ticketId,
+      eventName,
+      participantName: name,
+      day,
+      category,
+    }, { status: 200 });
+
+  } catch (err: any) {
     console.error("Registration route error:", err);
-    return NextResponse.json({ error: "Registration transmission failed" }, { status: 500 });
+    return NextResponse.json({ error: "Registration transmission failed. Please try again." }, { status: 500 });
   }
 }

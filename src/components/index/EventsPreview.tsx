@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Trophy, Clock, MapPin, Users, Flame, ShieldAlert, Cpu } from "lucide-react";
+import { ArrowRight, User, Calendar, ShieldCheck } from "lucide-react";
 import styles from "./EventsPreview.module.css";
 
 interface EventsPreviewProps {
@@ -14,52 +14,42 @@ interface SecondaryArena {
   number: string;
   name: string;
   category: string;
+  day: string;
   desc: string;
-  prizes: string;
-  time: string;
-  venue: string;
 }
 
 const secondaryArenas: SecondaryArena[] = [
   {
-    id: "roborumble",
+    id: "assemble-disassemble",
     number: "02",
-    name: "Robo Rumble Combat",
-    category: "COMBAT ROBOTICS",
-    desc: "Full-contact armored robotics warfare in an enclosed polycarbonate cage.",
-    prizes: "₹20,000",
-    time: "Day 2 // 14:00",
-    venue: "Arena 1 // Polycarbonate Pit",
+    name: "Assemble & Disassemble",
+    category: "TECHNICAL // DAY 1",
+    day: "Day 1",
+    desc: "Hands-on mechanical challenge testing component identification and rapid kinematic assembly sequencing.",
   },
   {
-    id: "cadclash",
+    id: "rc-car-challenge",
     number: "03",
-    name: "CAD Clash Speed Sprint",
-    category: "DIGITAL PROTOTYPING",
-    desc: "On-the-spot 3D parametric modeling against the clock in SolidWorks / Fusion.",
-    prizes: "₹8,000",
-    time: "Day 1 // 11:00",
-    venue: "Simulation Lab // Tech Towers",
+    name: "RC Car Challenge",
+    category: "NON-TECHNICAL // DAY 1",
+    day: "Day 1",
+    desc: "High-octane radio-controlled obstacle track navigation testing steering precision, acceleration, and reflex.",
   },
   {
-    id: "techmanuscript",
+    id: "engineering-drawing",
     number: "04",
-    name: "Tech Manuscript Defense",
-    category: "RESEARCH SYMPOSIUM",
-    desc: "Defend pioneering mechanical engineering papers before an expert academic jury.",
-    prizes: "₹10,000",
-    time: "Day 1 // 10:00",
-    venue: "Seminar Hall A // Main Block",
+    name: "Engineering Drawing",
+    category: "TECHNICAL // DAY 2",
+    day: "Day 2",
+    desc: "Fundamental engineering graphics and drafting challenge emphasizing orthographic projection and dimensional tolerances.",
   },
   {
-    id: "gearhunt",
+    id: "treasure-hunt",
     number: "05",
-    name: "Gear Hunt Conundrum",
-    category: "MECHANICAL HUNT",
-    desc: "Campus-wide algorithmic puzzle solving deciphering complex mechanism clues.",
-    prizes: "₹6,000",
-    time: "Day 2 // 11:30",
-    venue: "Central Campus Lawn",
+    name: "Treasure Hunt",
+    category: "NON-TECHNICAL // DAY 2",
+    day: "Day 2",
+    desc: "Campus-wide scavenger pursuit deciphering cryptic mechanical clues, logical riddles, and campus landmarks.",
   },
 ];
 
@@ -74,7 +64,7 @@ export default function EventsPreview({ onRegisterClick }: EventsPreviewProps) {
         <div className={styles.header}>
           <div className={styles.kicker}>
             <span className={styles.kickerDot} />
-            CHAPTER_05 // HIGH-TORQUE ARENAS
+            CHAPTER_05 // OFFICIAL COMPETITION ARENAS
           </div>
 
           <div className={styles.titleRow}>
@@ -83,13 +73,13 @@ export default function EventsPreview({ onRegisterClick }: EventsPreviewProps) {
               &amp; LINEUP
             </h2>
             <p className={styles.headerSub}>
-              Engineered for high torque, autonomous logic, and pure kinetic ambition.
-              From 24-hour rapid hardware prototyping to 30kg combat robot warfare.
+              Engineered for high precision, manual dexterity, and analytical acumen.
+              8 official championship competitions across 2 days. All events are solo challenges.
             </p>
           </div>
         </div>
 
-        {/* Featured Arena 01: HACKSPRINT 24H (Occupies ~65% visual attention) */}
+        {/* Featured Arena 01: AUTOCAD */}
         <div
           className={`${styles.featuredCard} ${heroCardHovered ? styles.featuredActive : ""}`}
           onMouseEnter={() => setHeroCardHovered(true)}
@@ -102,50 +92,45 @@ export default function EventsPreview({ onRegisterClick }: EventsPreviewProps) {
 
           <div className={styles.badgeRow}>
             <span className={styles.heroNumber}>01</span>
-            <span className={styles.heroTag}>FEATURED ARENA // 24-HOUR HARDWARE MARATHON</span>
+            <span className={styles.heroTag}>FEATURED ARENA // TECHNICAL COMPETITION</span>
           </div>
 
           <div className={styles.heroGrid}>
             {/* Left Content */}
             <div className={styles.heroContentLeft}>
-              <h3 className={styles.heroTitle}>HACKSPRINT 24H</h3>
-              <p className={styles.heroSlogan}>&ldquo;BUILD. BREAK. REBUILD.&rdquo;</p>
+              <h3 className={styles.heroTitle}>AUTOCAD</h3>
+              <p className={styles.heroSlogan}>&ldquo;PRECISION GEOMETRY UNDER TIME CONSTRAINTS.&rdquo;</p>
               <p className={styles.heroDesc}>
-                An intensive 24-hour sprint in hardware prototyping, embedded microcontrollers, and kinetic mechanisms.
-                Crews receive raw materials and challenge briefs to engineer working electromechanical prototypes
-                before the final clock expires.
+                A timed computer-aided design showdown testing parametric modeling, drafting standard accuracy,
+                and technical drawing precision. Individual participants model complex geometric assemblies against the clock.
               </p>
 
               <div className={styles.specGrid}>
                 <div className={styles.specItem}>
-                  <Clock size={13} className={styles.specIcon} />
-                  <span>24 Hours Non-Stop</span>
+                  <Calendar size={13} className={styles.specIcon} />
+                  <span>Day 1 // Technical</span>
                 </div>
                 <div className={styles.specItem}>
-                  <MapPin size={13} className={styles.specIcon} />
-                  <span>Arena 3 // Simulation Lab</span>
-                </div>
-                <div className={styles.specItem}>
-                  <Users size={13} className={styles.specIcon} />
-                  <span>3?"4 Engineers / Crew</span>
+                  <User size={13} className={styles.specIcon} />
+                  <span>Individual (Solo Entry)</span>
                 </div>
                 <div className={styles.specItemHighlight}>
-                  <Trophy size={13} color="#E51D25" />
-                  <span>₹15,000 Cash Pool</span>
+                  <ShieldCheck size={13} color="#E51D25" />
+                  <span>Official Conclave Arena</span>
                 </div>
               </div>
 
               <div className={styles.heroActions}>
                 <button
                   type="button"
-                  onClick={() => onRegisterClick("HackSprint")}
+                  onClick={() => onRegisterClick("AutoCAD")}
                   className={styles.primaryRegisterBtn}
                 >
-                  <span>REGISTER FOR HACKSPRINT</span>
+                  <span>REGISTER FOR AUTOCAD</span>
                   <ArrowRight size={14} />
                 </button>
                 <Link href="/events" className={styles.ghostLink}>
-                  <span>Full Rulebook &amp; Rubric</span>
+                  <span>Explore All Arenas</span>
                 </Link>
               </div>
             </div>
@@ -160,13 +145,13 @@ export default function EventsPreview({ onRegisterClick }: EventsPreviewProps) {
                 </div>
 
                 <div className={styles.schematicText}>
-                  <span>ARENA_PROTOCOL // 24H_SPRINT</span>
-                  <span>CHASSIS: EMBEDDED_STM32</span>
-                  <span>TOLERANCE: 0.05 MM</span>
-                  <span>CADRE: HARDWARE_CHAMPIONSHIP</span>
+                  <span>ARENA_PROTOCOL // AUTOCAD_2026</span>
+                  <span>FORMAT: SOLO_OPERATIVE</span>
+                  <span>CATEGORY: TECHNICAL_DESIGN</span>
+                  <span>STATUS: REGISTRATION_ARMED</span>
                 </div>
 
-                <div className={styles.watermark}>HACK // 24H</div>
+                <div className={styles.watermark}>CAD // D1</div>
                 <div className={styles.activeLaserRay} />
               </div>
             </div>
@@ -176,8 +161,8 @@ export default function EventsPreview({ onRegisterClick }: EventsPreviewProps) {
         {/* Secondary Arenas: Mechanical Accordion Grid */}
         <div className={styles.accordionSection}>
           <div className={styles.accordionHeader}>
-            <span className={styles.accordionLabel}>SECONDARY ARENAS // SELECT TO EXPAND</span>
-            <span className={styles.accordionCount}>04 EVENTS ACTIVE</span>
+            <span className={styles.accordionLabel}>ADDITIONAL ARENAS // SELECT TO EXPAND</span>
+            <span className={styles.accordionCount}>04 EVENTS HIGHLIGHTED</span>
           </div>
 
           <div className={styles.accordionContainer}>
@@ -207,12 +192,12 @@ export default function EventsPreview({ onRegisterClick }: EventsPreviewProps) {
 
                   <div className={styles.accMeta}>
                     <div className={styles.accMetaRow}>
-                      <span className={styles.accMetaLabel}>POOL:</span>
-                      <span className={styles.accMetaHighlight}>{arena.prizes}</span>
+                      <span className={styles.accMetaLabel}>SCHEDULE:</span>
+                      <span className={styles.accMetaHighlight}>{arena.day}</span>
                     </div>
                     <div className={styles.accMetaRow}>
-                      <span className={styles.accMetaLabel}>TIMING:</span>
-                      <span className={styles.accMetaVal}>{arena.time}</span>
+                      <span className={styles.accMetaLabel}>MODE:</span>
+                      <span className={styles.accMetaVal}>Solo Entry</span>
                     </div>
                   </div>
 
@@ -233,7 +218,7 @@ export default function EventsPreview({ onRegisterClick }: EventsPreviewProps) {
         {/* Bottom All Arenas Link */}
         <div className={styles.bottomLinkRow}>
           <Link href="/events" className={styles.exploreAllLink}>
-            <span>View All 10 Championship Arenas &amp; Full Rulebooks</span>
+            <span>View All 8 Official Conclave Events</span>
             <ArrowRight size={14} />
           </Link>
         </div>

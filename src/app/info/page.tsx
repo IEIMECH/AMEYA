@@ -18,7 +18,7 @@ export default function InfoPage() {
     "Carry a valid institutional college identity card for security clearance at the main gate.",
     "Present your digital ticket QR code or registration ID at the Mechanical Department registration desk.",
     "Badging desk opens at 08:00 AM. Keynote address commences promptly at 09:15 AM in the Main Auditorium.",
-    "Participants in HackSprint and Robo Rumble must report 45 minutes prior for hardware safety inspection.",
+    "Participants in RC Car Challenge and Assemble & Disassemble must report 30 minutes prior for technical inspection.",
     "High-speed campus Wi-Fi access credentials will be provided upon badge verification.",
     "Complimentary lunch and refreshment passes included for all registered arena participants.",
     "Decisions of faculty adjudicators and technical judges are definitive and irrevocable.",

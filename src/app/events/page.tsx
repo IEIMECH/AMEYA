@@ -8,15 +8,22 @@ import type { Event } from "@/data/events";
 import { ShieldAlert } from "lucide-react";
 import styles from "./page.module.css";
 
+type FilterType = "ALL" | "DAY 1" | "DAY 2" | "TECHNICAL" | "NON-TECHNICAL";
+
+const FILTERS: FilterType[] = ["ALL", "DAY 1", "DAY 2", "TECHNICAL", "NON-TECHNICAL"];
+
 export default function EventsCatalogPage() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const [activeCategory, setActiveCategory] = useState<string>("All");
+  const [activeFilter, setActiveFilter] = useState<FilterType>("ALL");
 
-  const categories = ["All", "Prototyping", "Robotics", "Design", "Research", "Mechatronics", "Challenge"];
-
-  const filteredEvents = activeCategory === "All"
-    ? events
-    : events.filter((e) => e.category === activeCategory);
+  const filteredEvents = events.filter((e) => {
+    if (activeFilter === "ALL") return true;
+    if (activeFilter === "DAY 1") return e.day === 1;
+    if (activeFilter === "DAY 2") return e.day === 2;
+    if (activeFilter === "TECHNICAL") return e.category.toLowerCase() === "technical";
+    if (activeFilter === "NON-TECHNICAL") return e.category.toLowerCase() === "non-technical";
+    return true;
+  });
 
   return (
     <div className={styles.pageWrapper}>
@@ -27,45 +34,45 @@ export default function EventsCatalogPage() {
       <div className={styles.navProtectionGlow} aria-hidden="true" />
 
       {/* Ghost Industrial Watermark */}
-      <div className={styles.ghostWatermark} aria-hidden="true">COMPETITIONS</div>
+      <div className={styles.ghostWatermark} aria-hidden="true">AMEYA 2026</div>
 
       <div className={`container ${styles.contentContainer}`}>
-        {/* Header */}
+        {/* Header Area */}
         <header className={styles.headerArea}>
           <div className={styles.headerBackdrop} aria-hidden="true" />
           <div className={styles.sectionLabel}>
             <ShieldAlert size={13} className={styles.sectionIcon} />
-            <span>TECHNICAL ARENAS // AMEYA 2026</span>
+            <span>OFFICIAL CONCLAVE EVENTS // AMEYA 2026</span>
           </div>
           <h1 className={styles.title}>
-            Event <span className={styles.gradientText}>Arenas &amp; Lineup</span>
+            Conclave <span className={styles.gradientText}>Arenas &amp; Lineup</span>
           </h1>
           <p className={styles.subtitle}>
-            [SYS // INDEX]: Explore high-precision CAD modeling, autonomous robot battles, 24H prototyping, and research symposia.
+            8 Championship Arenas across 2 days. All events are individual (solo) challenges. Select an arena below to register.
           </p>
 
           {/* Filter Pills with Technical Indicators */}
-          <nav className={styles.filtersWrapper} aria-label="Event category filters">
-            {categories.map((cat) => {
-              const isActive = activeCategory === cat;
+          <nav className={styles.filtersWrapper} aria-label="Event category and day filters">
+            {FILTERS.map((filter) => {
+              const isActive = activeFilter === filter;
               return (
                 <button
                   suppressHydrationWarning
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
+                  key={filter}
+                  onClick={() => setActiveFilter(filter)}
                   className={`${styles.filterBtn} ${isActive ? styles.filterBtnActive : ""}`}
                   aria-pressed={isActive}
                 >
                   {isActive && <span className={styles.filterDot} aria-hidden="true">•</span>}
-                  <span>{cat}</span>
+                  <span>{filter}</span>
                 </button>
               );
             })}
           </nav>
         </header>
 
-        {/* Event Cards Grid with Smooth Transition on Category Switch */}
-        <div key={activeCategory} className={styles.eventsGrid}>
+        {/* Event Cards Grid with Smooth Transition on Filter Switch */}
+        <div key={activeFilter} className={styles.eventsGrid}>
           {filteredEvents.map((event, idx) => (
             <EventCard
               key={event.id}

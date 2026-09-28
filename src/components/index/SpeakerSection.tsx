@@ -213,8 +213,8 @@ export default function SpeakerSection() {
                   <div className={styles.footerNote}>
                     DEPARTMENT OF MECHANICAL ENGINEERING // PLENARY HALL
                   </div>
-                  <Link href="/agenda" className={styles.agendaButton}>
-                    <span>View Conclave Agenda</span>
+                  <Link href="/events" className={styles.eventsButton}>
+                    <span>Explore Conclave Arenas</span>
                     <ArrowRight size={14} />
                   </Link>
                 </div>

@@ -17,11 +17,6 @@ export default function MobileStickyCTA() {
     label = "REGISTER FOR ARENAS";
     href = "/events#arenas";
     sub = "₹50,000 PRIZE POOL";
-  } else if (pathname === "/agenda") {
-    label = "VIEW CONCLAVE ARENAS";
-    href = "/events";
-    sub = "OCTOBER 04–05, 2026";
-  } else if (pathname === "/venue") {
     label = "VIEW ARENA SCHEDULE";
     href = "/agenda";
     sub = "CAMPUS TIMETABLE";

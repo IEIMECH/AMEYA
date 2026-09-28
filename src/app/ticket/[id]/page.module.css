@@ -319,7 +319,7 @@
   color: var(--text-muted, #605B56);
 }
 
-.agendaLink {
+.eventsLink {
   color: var(--text-secondary, #96908B);
   text-decoration: none;
   font-weight: 600;
@@ -330,12 +330,12 @@
   margin-top: 0.5rem;
 }
 
-.agendaLink:hover {
+.eventsLink:hover {
   color: var(--crimson-core, #E51D25);
   transform: translateX(2px);
 }
 
-.agendaLink:focus-visible {
+.eventsLink:focus-visible {
   outline: 2px solid var(--crimson-core, #E51D25);
   outline-offset: 2px;
 }

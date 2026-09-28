@@ -9,8 +9,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: [
         "/",
         "/events",
-        "/agenda",
-        "/venue",
+                "/venue",
         "/team",
         "/team/explore",
         "/about",

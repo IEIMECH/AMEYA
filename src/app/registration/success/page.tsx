@@ -68,7 +68,7 @@ export default function RegistrationSuccessPage() {
             <span>VIEW EVENT ARENAS</span>
             <ArrowRight size={14} />
           </Link>
-          <Link href="/agenda" className={styles.secondaryBtn}>
+          <Link href="/events" className={styles.secondaryBtn}>
             <Calendar size={14} />
             <span>CONCLAVE SCHEDULE</span>
           </Link>

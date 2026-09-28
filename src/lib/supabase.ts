@@ -4,21 +4,18 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 
-export interface Member {
-  name: string;
-  email: string;
-  phone?: string;
-}
-
-export interface BaseRegistrationRecord {
+export interface ParticipantRegistrationRecord {
   id?: string;
+  registration_id: string;
   ticket_id: string;
-  team_id: string;
-  leader_name: string;
-  leader_email: string;
-  leader_phone: string;
-  college: string;
-  year: string;
+  event_id: string;
+  event_name: string;
+  participant_name: string;
+  branch: string;
+  college_roll_number: string;
+  email: string;
+  phone: string;
+  college_id_card_url: string;
   payment_status?: string;
   verified_at?: string | null;
   verified_by?: string | null;
@@ -36,30 +33,25 @@ export interface InquiryRecord {
   created_at?: string;
 }
 
-// Maps each event ID to its dedicated Supabase database table
+// Maps each official AMEYA '26 event ID to its dedicated Supabase database table
 export function getEventTableName(eventId: string): string {
   switch (eventId) {
-    case "hackathon":
-      return "reg_hacksprint";
-    case "paper-presentation":
-      return "reg_tech_manuscript";
-    case "cad-design":
-      return "reg_cad_clash";
-    case "robo-race":
-      return "reg_robo_rumble";
-    case "circuit-debug":
-      return "reg_circuit_breaker";
-    case "quiz":
-      return "reg_mech_brainiac";
+    case "autocad":
+      return "reg_autocad";
+    case "assemble-disassemble":
+      return "reg_assemble_disassemble";
+    case "rc-car-challenge":
+      return "reg_rc_car_challenge";
+    case "picto":
+      return "reg_picto";
+    case "engineering-drawing":
+      return "reg_engineering_drawing";
+    case "identify-tools":
+      return "reg_identify_tools";
     case "treasure-hunt":
-      return "reg_gear_hunt";
-    case "photography":
-      return "reg_industrial_lens";
-    case "debate":
-      return "reg_iron_tongue";
-    case "visitor-pass":
-    case "visitor":
-      return "fest_visitors";
+      return "reg_treasure_hunt";
+    case "nuts-and-bolts-speed-race":
+      return "reg_nuts_bolts_speed_race";
     default:
       return "registrations";
   }

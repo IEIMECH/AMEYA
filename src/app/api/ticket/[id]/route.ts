@@ -3,16 +3,14 @@ import { supabaseAdmin, isDatabaseConfigured } from "@/lib/supabase";
 
 const EVENT_TABLES = [
   "all_registrations",
-  "reg_hacksprint",
-  "reg_tech_manuscript",
-  "reg_cad_clash",
-  "reg_robo_rumble",
-  "reg_circuit_breaker",
-  "reg_mech_brainiac",
-  "reg_gear_hunt",
-  "reg_industrial_lens",
-  "reg_iron_tongue",
-  "fest_visitors",
+  "reg_autocad",
+  "reg_assemble_disassemble",
+  "reg_rc_car_challenge",
+  "reg_picto",
+  "reg_engineering_drawing",
+  "reg_identify_tools",
+  "reg_treasure_hunt",
+  "reg_nuts_bolts_speed_race",
   "registrations"
 ];
 

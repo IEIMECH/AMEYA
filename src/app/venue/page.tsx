@@ -10,10 +10,10 @@ export const metadata = {
 export default function VenuePage() {
   const halls = [
     { name: "Main Auditorium (Central)", events: "Keynotes, Inauguration, Valedictory", capacity: 800, floor: "Ground Floor, Admin Block", id: "01" },
-    { name: "Robotics Arena A", events: "Robo Rumble, Autonomous Rover Run", capacity: 350, floor: "Ground Floor, Mechanical Workshop Block", id: "02" },
-    { name: "CSE Quantum Lab", events: "CodeNova 24H HackSprint", capacity: 120, floor: "2nd Floor, Technology Towers", id: "03" },
-    { name: "Advanced CAD / CAM Studio", events: "CAD Clash Speed Modeling", capacity: 80, floor: "1st Floor, Design Block", id: "04" },
-    { name: "Seminar Hall A", events: "Tech Manuscript Paper Presentation", capacity: 200, floor: "Ground Floor, Main Block", id: "05" },
+    { name: "Kinetic Track Arena", events: "RC Car Challenge, Nuts & Bolts Speed Race", capacity: 350, floor: "Ground Floor, Mechanical Workshop Block", id: "02" },
+    { name: "Computer Simulation Lab", events: "AutoCAD Competition", capacity: 120, floor: "2nd Floor, Technology Towers", id: "03" },
+    { name: "Design & Drafting Studio", events: "Engineering Drawing Competition", capacity: 80, floor: "1st Floor, Design Block", id: "04" },
+    { name: "Mechanical Machine Shop", events: "Assemble & Disassemble, Identify the Tools", capacity: 200, floor: "Ground Floor, Workshop Block", id: "05" },
     { name: "Makerspace & Demo Arena", events: "Live Demo Showcase, Prototype Exhibits", capacity: 400, floor: "Central Open Courtyard", id: "06" },
   ];
 

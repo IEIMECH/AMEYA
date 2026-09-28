@@ -267,8 +267,8 @@ export default function TicketPage({
 
           <div className={styles.footer}>
             <p style={{ margin: "0 0 6px 0" }}>IEI SAME STUDENT CHAPTER • VVITU NAMBUR</p>
-            <Link href="/agenda" className={styles.agendaLink}>
-              <span>Access Conclave Agenda</span>
+            <Link href="/events" className={styles.eventsLink}>
+              <span>Explore Official Arenas</span>
               <ArrowRight size={12} />
             </Link>
           </div>
