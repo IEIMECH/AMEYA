@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: center;
   padding: 6rem 1.5rem 8rem;
-  background: var(--machined-dark, #050505);
+  background: transparent;
 }
 
 .wrapper {
@@ -122,7 +122,7 @@
 }
 
 .nextStepsBox {
-  background: var(--machined-dark, #050505);
+  background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.06);
   padding: 1.25rem 1.5rem;
   border-radius: 3px;

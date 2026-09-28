@@ -356,3 +356,10 @@ button {
     transform: translateX(-150%);
   }
 }
+
+
+/* Ensure page content renders above background video */
+main {
+  position: relative;
+  z-index: 1;
+}

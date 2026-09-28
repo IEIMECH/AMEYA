@@ -5,6 +5,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import MobileStickyCTA from "@/components/common/MobileStickyCTA";
 import CookieConsent from "@/components/common/CookieConsent";
+import MotionBackground from "@/components/common/MotionBackground";
 
 const syne = Syne({
   subsets: ["latin"],
@@ -100,6 +101,7 @@ export default function RootLayout({
     >
       <body suppressHydrationWarning>
         <Nav />
+        <MotionBackground />
         <main>{children}</main>
         <MobileStickyCTA />
         <CookieConsent />

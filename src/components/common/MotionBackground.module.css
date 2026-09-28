@@ -1,0 +1,49 @@
+/* Motion Background Video - Infinite Looping Canvas (Audio-free) */
+.videoBackgroundWrapper {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background-color: #080808;
+}
+
+.videoElement {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* Cinematic Dark Overlay: Preserves text contrast while letting kinetic motion shine through */
+.videoOverlay {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(
+      ellipse at 50% 30%,
+      rgba(8, 8, 8, 0.40) 0%,
+      rgba(8, 8, 8, 0.68) 60%,
+      rgba(8, 8, 8, 0.88) 100%
+    ),
+    linear-gradient(to bottom, rgba(8, 8, 8, 0.45) 0%, rgba(8, 8, 8, 0.75) 100%);
+  pointer-events: none;
+}
+
+/* Subtle carbon matrix texture to unify with AMEYA aesthetic */
+.gridOverlay {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.04) 1px, transparent 0);
+  background-size: 40px 40px;
+  pointer-events: none;
+  opacity: 0.45;
+}
