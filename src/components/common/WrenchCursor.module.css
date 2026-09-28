@@ -1,4 +1,4 @@
-/* Precision Mechanical Wrench Cursor System - Refined Mechanical Tool */
+/* Precision Mechanical Wrench Cursor System - 1:1 Real-time Precision */
 .cursorContainer {
   position: fixed;
   top: 0;
@@ -7,7 +7,7 @@
   pointer-events: none;
   contain: layout style size;
   opacity: 0;
-  transition: opacity 0.16s ease-out;
+  transition: opacity 0.12s ease-out;
   will-change: transform, opacity;
 }
 
@@ -25,29 +25,16 @@
   transform-origin: 4px 2px; /* Active jaw tip alignment */
   will-change: transform;
   filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.85));
-  transition: filter 0.22s ease;
+  transition: filter 0.12s ease;
 }
 
 /* Red Precision Indicator Dot */
 .redIndicator {
   transform-origin: 7.4px 7.4px;
-  transition: filter 0.2s ease;
+  transition: filter 0.12s ease;
 }
 
-/* Faint Ghost Trail Micro-dots (only active during brisk velocity) */
-.trailDot {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  border-radius: 50%;
-  background: rgba(229, 29, 37, 0.40);
-  box-shadow: 0 0 2px rgba(229, 29, 37, 0.25);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.08s ease;
-}
-
-/* Subtle Physical Engagement on Interactive Hover (No crosshair, No HUD) */
+/* Subtle Physical Engagement on Interactive Hover (Fast 100-150ms response) */
 .cursorContainer[data-state="button"] .wrenchAssembly {
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.95)) brightness(1.12);
 }
@@ -83,8 +70,5 @@
   }
   .wrenchAssembly {
     transition: none;
-  }
-  .trailDot {
-    display: none !important;
   }
 }
