@@ -68,7 +68,7 @@ export default function PhotoWall() {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
 
   return (
-    <section className={styles.section} id="highlights">
+    <section className={styles.section} id="experience">
       <div className={styles.innerContainer}>
         {/* Section Header */}
         <div className={styles.header}>

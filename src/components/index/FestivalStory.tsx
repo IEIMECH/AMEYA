@@ -64,7 +64,7 @@ export default function FestivalStory() {
   }, [hasCounted]);
 
   return (
-    <section ref={sectionRef} className={styles.section} id="story">
+    <section ref={sectionRef} className={styles.section} id="intro">
       <div className={styles.innerContainer}>
         {/* Asymmetrical Editorial Header Layout */}
         <div className={styles.editorialGrid}>
