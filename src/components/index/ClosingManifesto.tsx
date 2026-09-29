@@ -30,7 +30,7 @@ export default function ClosingManifesto() {
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: "some" }}
-            transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ type: "spring", bounce: 0, duration: 0.45 }}
           >
             <span className={styles.redDot} />
             <span>AMEYA &apos;26 // MECHANICAL ENGINEERING</span>
@@ -43,7 +43,7 @@ export default function ClosingManifesto() {
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: "some" }}
-              transition={{ duration: 0.75, delay: shouldReduceMotion ? 0 : 0.1, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ type: "spring", bounce: 0, duration: 0.5, delay: shouldReduceMotion ? 0 : 0.08 }}
             >
               WHERE ENGINEERS
             </motion.div>
@@ -52,7 +52,7 @@ export default function ClosingManifesto() {
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: "some" }}
-              transition={{ duration: 0.75, delay: shouldReduceMotion ? 0 : 0.22, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ type: "spring", bounce: 0, duration: 0.5, delay: shouldReduceMotion ? 0 : 0.16 }}
             >
               DARE TO
             </motion.div>
@@ -61,7 +61,7 @@ export default function ClosingManifesto() {
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30, scale: shouldReduceMotion ? 1 : 0.97 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, amount: "some" }}
-              transition={{ duration: 0.85, delay: shouldReduceMotion ? 0 : 0.36, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ type: "spring", bounce: 0, duration: 0.55, delay: shouldReduceMotion ? 0 : 0.24 }}
             >
               DREAM.
             </motion.div>
@@ -73,7 +73,7 @@ export default function ClosingManifesto() {
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: "some" }}
-            transition={{ duration: 0.7, delay: shouldReduceMotion ? 0 : 0.48, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ type: "spring", bounce: 0, duration: 0.45, delay: shouldReduceMotion ? 0 : 0.32 }}
           >
             <div className={styles.axisLine} />
             <div className={styles.metaRow}>

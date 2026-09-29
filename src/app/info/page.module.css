@@ -1,5 +1,6 @@
+/* Apple Design Info Page CSS */
 .page {
-  padding-top: calc(var(--nav-height) + 3.5rem);
+  padding-top: calc(var(--nav-height, 4.5rem) + 3.5rem);
   padding-bottom: 6rem;
   background: transparent;
   min-height: 100vh;
@@ -14,60 +15,73 @@
 
 .header h1 {
   font-family: var(--font-display);
-  font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+  font-size: clamp(2.4rem, 4.8vw, 4rem);
+  font-weight: 800;
+  line-height: var(--leading-display, 1.05);
+  letter-spacing: var(--tracking-display, -0.025em);
   margin-bottom: 1rem;
   color: #ffffff;
-  font-weight: 800;
 }
 
 .sub {
-  color: #888888;
-  font-size: 0.95rem;
+  color: var(--text-secondary, #96908B);
+  font-size: 1.02rem;
   max-width: 650px;
   margin: 0 auto;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
+  line-height: var(--leading-body, 1.62);
+  letter-spacing: var(--tracking-body, -0.005em);
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.75rem;
-  margin-bottom: 3rem;
+  margin-bottom: 3.5rem;
 }
 
 .specCard {
   position: relative;
-  padding: 1.75rem;
+  padding: 1.85rem;
   background: #111111;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 4px;
-  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  border-top: var(--material-specular, 1px solid rgba(255, 255, 255, 0.16));
+  backdrop-filter: var(--material-blur, blur(16px));
+  -webkit-backdrop-filter: var(--material-blur, blur(16px));
+  border-radius: 8px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.75);
+  transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
 }
 
 .specCard:hover {
   border-color: rgba(229, 29, 37, 0.4);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.85), 0 0 24px rgba(229, 29, 37, 0.15);
+}
+
+.specCard:active {
+  transform: scale(0.98) !important;
+  transition: transform 100ms ease-out !important;
 }
 
 .specCard:hover .specIconBox {
   border-color: var(--crimson-core, #E51D25);
   background: rgba(229, 29, 37, 0.16);
-  box-shadow: 0 0 10px rgba(229, 29, 37, 0.35);
+  box-shadow: 0 0 12px rgba(229, 29, 37, 0.4);
 }
 
 .crosshairTL {
   position: absolute;
-  top: 2px;
-  left: 4px;
+  top: 4px;
+  left: 6px;
   color: rgba(255, 255, 255, 0.3);
   font-family: var(--font-mono);
   font-size: 9px;
 }
 .crosshairTR {
   position: absolute;
-  top: 2px;
-  right: 4px;
+  top: 4px;
+  right: 6px;
   color: rgba(255, 255, 255, 0.3);
   font-family: var(--font-mono);
   font-size: 9px;
@@ -81,14 +95,15 @@
 }
 
 .specIconBox {
-  width: 32px;
-  height: 32px;
-  border-radius: 3px;
-  background: rgba(230, 29, 29, 0.08);
-  border: 1px solid rgba(230, 29, 29, 0.3);
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  background: rgba(229, 29, 37, 0.08);
+  border: 1px solid rgba(229, 29, 37, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s ease;
 }
 
 .specLabel {
@@ -97,33 +112,43 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: #ff3b3b;
+  font-weight: 700;
 }
 
 .specMain {
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   font-weight: 800;
+  letter-spacing: var(--tracking-heading, -0.015em);
   color: #ffffff;
   margin-bottom: 0.35rem;
 }
 
 .specSub {
-  font-size: 0.85rem;
-  color: #888888;
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  color: var(--text-secondary, #96908B);
+  letter-spacing: -0.005em;
 }
 
 .travelCard, .rulesCard {
   position: relative;
-  padding: 2.75rem;
+  padding: 3rem;
   background: #111111;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 4px;
-  margin-bottom: 3rem;
+  border-top: var(--material-specular, 1px solid rgba(255, 255, 255, 0.16));
+  backdrop-filter: var(--material-blur, blur(20px));
+  -webkit-backdrop-filter: var(--material-blur, blur(20px));
+  border-radius: 10px;
+  margin-bottom: 3.5rem;
+  box-shadow: var(--material-shadow);
 }
 
 .cardHeader h2 {
   font-family: var(--font-display);
-  font-size: 1.7rem;
+  font-size: 1.8rem;
+  letter-spacing: var(--tracking-heading, -0.018em);
+  line-height: var(--leading-heading, 1.15);
   color: #ffffff;
   font-weight: 800;
   margin-bottom: 0.5rem;
@@ -137,16 +162,16 @@
 }
 
 .transitItem {
-  padding: 1.4rem;
-  border-radius: 3px;
+  padding: 1.5rem;
+  border-radius: 6px;
   background: rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  transition: border-color var(--transition), transform var(--transition);
 }
 
 .transitItem:hover {
   border-color: rgba(229, 29, 37, 0.35);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
 }
 
 .transitHead {
@@ -161,13 +186,16 @@
   font-size: 0.95rem;
   font-weight: 700;
   color: #ffffff;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .transitItem p {
-  font-size: 0.88rem;
-  color: #888888;
-  line-height: 1.65;
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  color: var(--text-secondary, #96908B);
+  line-height: 1.62;
+  letter-spacing: -0.005em;
 }
 
 .ruleList {
@@ -182,15 +210,17 @@
   display: flex;
   align-items: flex-start;
   gap: 0.85rem;
-  padding: 1rem 1.25rem;
+  padding: 1.1rem 1.35rem;
   background: rgba(0, 0, 0, 0.4);
-  border-radius: 3px;
+  border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.04);
   border-left: 3px solid rgba(229, 29, 37, 0.4);
-  font-size: 0.92rem;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
   color: var(--text-secondary, #96908B);
-  line-height: 1.6;
-  transition: background-color 0.2s ease, border-left-color 0.2s ease, color 0.2s ease;
+  line-height: 1.62;
+  letter-spacing: -0.005em;
+  transition: background-color var(--transition), border-left-color var(--transition), color var(--transition);
 }
 
 .ruleItem:hover {

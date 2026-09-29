@@ -74,9 +74,10 @@
 }
 
 .leadParagraph {
-  font-family: var(--font-mono);
-  font-size: clamp(0.92rem, 1.1vw, 1.02rem);
-  line-height: 1.75;
+  font-family: var(--font-sans);
+  font-size: clamp(0.98rem, 1.15vw, 1.08rem);
+  line-height: var(--leading-body, 1.65);
+  letter-spacing: var(--tracking-body, -0.005em);
   color: var(--text-secondary, #96908B);
   margin: 0;
 }
@@ -94,10 +95,11 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  font-family: var(--font-mono);
-  font-size: 0.88rem;
-  line-height: 1.7;
-  color: #8A8580;
+  font-family: var(--font-sans);
+  font-size: 0.94rem;
+  line-height: var(--leading-body, 1.65);
+  letter-spacing: var(--tracking-body, -0.005em);
+  color: #A39E99;
   border-left: 2px solid rgba(229, 29, 37, 0.4);
   padding-left: 1.25rem;
   animation: fadeInDossier 0.3s ease both;
@@ -138,6 +140,16 @@
   background: rgba(229, 29, 37, 0.12);
   border-color: rgba(229, 29, 37, 0.5);
   color: #ffffff;
+}
+
+.toggleBtn:active {
+  transform: scale(0.97) !important;
+  transition: transform 100ms ease-out !important;
+}
+
+.aboutLink:active {
+  transform: scale(0.97) !important;
+  transition: transform 100ms ease-out !important;
 }
 
 .aboutLink {
@@ -202,18 +214,27 @@
   position: relative;
   background: var(--machined-surface, #101010);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 4px;
+  border-top: var(--material-specular, 1px solid rgba(255, 255, 255, 0.12));
+  backdrop-filter: var(--material-blur, blur(16px));
+  -webkit-backdrop-filter: var(--material-blur, blur(16px));
+  border-radius: 6px;
   padding: 1.85rem 1.6rem;
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  transition: border-color 0.25s ease, transform 0.25s ease;
+  box-shadow: 0 12px 32px -6px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
 }
 
 .statCard:hover {
   border-color: rgba(229, 29, 37, 0.4);
-  transform: translateY(-3px);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 48px -8px rgba(0, 0, 0, 0.85), 0 0 24px rgba(229, 29, 37, 0.15);
+}
+
+.statCard:active {
+  transform: scale(0.98) !important;
+  transition: transform 100ms ease-out !important;
 }
 
 .cornerCrossTL {

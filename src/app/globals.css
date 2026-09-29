@@ -14,9 +14,9 @@ img,
 
 :root {
   /* ==========================================================================
-     UNIFIED SYSTEM: Machined Crimson, Carbon & Cold Steel
+     UNIFIED SYSTEM: Apple-Grade Machined Crimson, Carbon & Cold Steel
      ========================================================================== */
-  /* Master Redesign Guide Palette: 4-Level Dark Depth & Warm Editorial Text */
+  /* Palette: 4-Level Dark Depth & Warm Editorial Text */
   --machined-dark: #050505;          /* Level 1: Main background */
   --machined-elevated: #0B0B0B;      /* Level 2: Elevated sections */
   --machined-surface: #101010;       /* Level 3: Card / Container */
@@ -38,7 +38,7 @@ img,
   --text-secondary: #96908B;        /* Muted warm grey */
   --text-muted: #605B56;
 
-  /* Backward Compatibility Bindings mapped to Crimson & Cold Steel */
+  /* Backward Compatibility Bindings */
   --brass-primary: var(--crimson-core);
   --brass-warm: var(--crimson-glow);
   --brass-muted: var(--crimson-muted);
@@ -56,7 +56,7 @@ img,
   --border-glow: var(--machined-border-hover);
   --accent-gold: var(--crimson-core);
 
-  /* Typography */
+  /* Typography: Optical Sizing & Size-Specific Tracking (Apple WWDC 2020 Standard) */
   --font-display: var(--font-display), "Syne", "Playfair Display", serif;
   --font-sans: var(--font-sans), "Plus Jakarta Sans", sans-serif;
   --font-mono: var(--font-mono), "Space Mono", monospace;
@@ -65,14 +65,48 @@ img,
   --font-heading: var(--font-display);
   --font-body: var(--font-sans);
 
+  /* Size-Specific Tracking Tokens */
+  --tracking-display: -0.025em;     /* Negative tracking for large display to avoid visual gaps */
+  --tracking-heading: -0.018em;     /* Snug headings */
+  --tracking-subheading: -0.01em;
+  --tracking-body: -0.005em;        /* Comfortable reading near 0 */
+  --tracking-caps: 0.05em;          /* Positive tracking for all-caps kickers & tags */
+
+  /* Leading Tokens (Inversely proportional to size) */
+  --leading-display: 1.02;          /* Tight leading on large display */
+  --leading-heading: 1.15;          /* Crisp section headings */
+  --leading-subheading: 1.35;
+  --leading-body: 1.62;             /* Comfortable editorial body copy */
+
+  /* Spacing: 8pt Grid System */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+  --space-7: 64px;
+  --space-8: 96px;
+  --space-9: 128px;
+
+  /* Apple-Style Translucent Material Tokens */
+  --material-chrome: rgba(14, 14, 15, 0.72);
+  --material-blur: blur(20px) saturate(180%);
+  --material-border: rgba(255, 255, 255, 0.08);
+  --material-specular: 1px solid rgba(255, 255, 255, 0.14);
+  --material-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.06);
+
+  /* Motion & Spring Tokens */
+  --spring-snappy: cubic-bezier(0.16, 1, 0.3, 1);
+  --spring-settle: cubic-bezier(0.25, 1, 0.5, 1);
+  --transition: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+
   /* Radii */
   --radius-sm: 0.35rem;
   --radius-md: 0.6rem;
   --radius-lg: 0.85rem;
   --radius-xl: 1.25rem;
-
-  --transition: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-slow: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 *,
@@ -87,6 +121,7 @@ html {
   scroll-behavior: smooth;
   overflow-x: hidden;
   background-color: #080808;
+  font-optical-sizing: auto;
 }
 
 body {
@@ -99,9 +134,11 @@ body {
   background-attachment: fixed;
   color: #ffffff;
   font-family: var(--font-sans);
-  line-height: 1.6;
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-body);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Custom Crimson Machine Scrollbar */
@@ -124,7 +161,7 @@ body {
   color: #ffffff;
 }
 
-/* Headings */
+/* Headings: Optical Sizing & Hierarchy */
 h1,
 h2,
 h3,
@@ -132,10 +169,15 @@ h4,
 h5,
 h6 {
   font-family: var(--font-display);
-  line-height: 1.15;
+  line-height: var(--leading-heading);
   font-weight: 800;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--tracking-heading);
   color: #ffffff;
+}
+
+h1 {
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-display);
 }
 
 a {
@@ -153,6 +195,17 @@ button {
   font-family: var(--font-sans);
 }
 
+/* Tactile Response: Kill Latency on pointer-down (Apple WWDC 2018 Fluid Interfaces) */
+button:active,
+.btn-primary:active,
+.btn-outline:active,
+a.btn-primary:active,
+a.btn-outline:active,
+[role="button"]:active {
+  transform: scale(0.97) !important;
+  transition: transform 100ms ease-out !important;
+}
+
 /* Utilities */
 .container {
   width: 100%;
@@ -161,7 +214,7 @@ button {
   padding-inline: clamp(1rem, 4vw, 2.5rem);
 }
 
-/* Monospace Eyebrow / Kicker */
+/* Eyebrow / Kicker Badge */
 .section-label {
   display: inline-flex;
   align-items: center;
@@ -169,7 +222,7 @@ button {
   font-family: var(--font-mono);
   font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.25em;
+  letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
   color: #ff3b3b;
   background: rgba(230, 29, 29, 0.08);
@@ -178,6 +231,7 @@ button {
   border-radius: 4px;
   margin-bottom: 1.25rem;
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .gradient-text {
@@ -187,24 +241,25 @@ button {
   background-clip: text;
 }
 
-/* Carbon & Cold Steel Glass Card */
+/* Carbon & Cold Steel Glass Card: Subtle Top Specular & Layered Shadows */
 .glass-card {
   position: relative;
   background: #111111;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  border-top: var(--material-specular);
+  backdrop-filter: var(--material-blur);
+  -webkit-backdrop-filter: var(--material-blur);
   border-radius: var(--radius-lg);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
-  transition: border-color var(--transition), box-shadow var(--transition);
+  box-shadow: var(--material-shadow);
+  transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
 }
 
 .glass-card:hover {
   border-color: rgba(230, 29, 29, 0.4);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 30px rgba(230, 29, 29, 0.12);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85), 0 0 30px rgba(230, 29, 29, 0.12);
 }
 
-/* Machined Crimson Primary Button */
+/* Primary Button */
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -220,8 +275,10 @@ button {
   padding: 0.75rem 1.75rem;
   border-radius: 4px;
   border: 1px solid rgba(255, 59, 59, 0.5);
-  box-shadow: 0 0 20px rgba(230, 29, 29, 0.35);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(230, 29, 29, 0.35);
   backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   transition: all var(--transition);
 }
 
@@ -371,7 +428,6 @@ button {
   }
 }
 
-
 /* Ensure page content renders above background video */
 main {
   position: relative;
@@ -384,5 +440,47 @@ main {
   *::before,
   *::after {
     cursor: none !important;
+  }
+}
+
+/* ==========================================================================
+   Apple Design Accessibility: Reduced Motion, Reduced Transparency, Contrast
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .glass-card,
+  button,
+  .btn-primary,
+  .btn-outline {
+    transform: none !important;
+    transition: opacity 200ms ease !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass-card,
+  nav,
+  header,
+  .section-label {
+    background: #111111 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .glass-card,
+  .btn-outline {
+    border: 2px solid #ffffff !important;
+  }
+  .text-secondary {
+    color: #c7c2bc !important;
   }
 }

@@ -1,3 +1,4 @@
+/* Apple Design Nav System */
 .header {
   position: fixed;
   top: 0;
@@ -5,17 +6,17 @@
   right: 0;
   z-index: 100;
   padding: 1.25rem 3rem;
-  transition: padding 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              background-color 0.25s ease,
-              border-color 0.25s ease,
-              box-shadow 0.25s ease;
+  transition: padding 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.35s ease,
+              border-color 0.35s ease,
+              box-shadow 0.35s ease;
 }
 
 .header.scrolled {
   padding: 0.85rem 3rem;
-  background: rgba(8, 8, 8, 0.94);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(8, 8, 8, 0.82);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
 }
@@ -40,6 +41,11 @@
   outline: none;
 }
 
+.logo:active {
+  transform: scale(0.97) !important;
+  transition: transform 100ms ease-out !important;
+}
+
 .logo:focus-visible {
   outline: 2px solid var(--crimson-core, #E51D25);
   outline-offset: 4px;
@@ -58,7 +64,7 @@
 .logoText {
   font-size: 1.5rem;
   font-weight: 800;
-  letter-spacing: 0.12em;
+  letter-spacing: -0.015em;
   color: #ffffff;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
 }
@@ -67,7 +73,7 @@
   font-family: var(--font-mono);
   font-size: 0.85rem;
   color: var(--crimson-core, #E51D25);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   margin-left: 2px;
 }
 
@@ -75,18 +81,19 @@
   transform: translateY(-1px);
 }
 
-/* Desktop Smoked Glass Pill Navigation */
+/* Desktop Smoked Glass Pill Navigation: Apple Floating Chrome */
 .navItemsContainer {
   position: relative;
   display: flex;
   align-items: center;
   gap: 0.25rem;
   padding: 0.3rem 0.4rem;
-  background: rgba(14, 14, 15, 0.7);
+  background: rgba(14, 14, 15, 0.72);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 9999px;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
 }
 
@@ -96,15 +103,15 @@
   align-items: center;
   justify-content: center;
   gap: 0.35rem;
-  padding: 0.45rem 1.05rem;
+  padding: 0.45rem 1.1rem;
   text-decoration: none;
   font-family: var(--font-mono);
-  font-size: 0.74rem;
+  font-size: 0.73rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-secondary, #96908B);
-  border-radius: 6px;
+  border-radius: 9999px;
   user-select: none;
   transition: color 0.18s ease;
   background: transparent;
@@ -115,6 +122,11 @@
 
 .navItem:hover {
   color: #F2EDE8;
+}
+
+.navItem:active {
+  transform: scale(0.96) !important;
+  transition: transform 100ms ease-out !important;
 }
 
 .navItem:focus-visible {
@@ -140,7 +152,7 @@
 .activePill {
   position: absolute;
   inset: 0;
-  border-radius: 6px;
+  border-radius: 9999px;
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -158,8 +170,8 @@
   content: "";
   position: absolute;
   bottom: 0px;
-  left: 20%;
-  right: 20%;
+  left: 25%;
+  right: 25%;
   height: 1.5px;
   background: linear-gradient(90deg, transparent, rgba(229, 29, 37, 0.9), transparent);
   border-radius: 1px;
@@ -174,11 +186,16 @@
   height: 44px;
   background: rgba(17, 17, 17, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   backdrop-filter: blur(12px);
   outline: none;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.15s ease;
+}
+
+.mobileMenuBtn:active {
+  transform: scale(0.94) !important;
+  transition: transform 100ms ease-out !important;
 }
 
 .mobileMenuBtn:focus-visible {
@@ -191,7 +208,7 @@
   background: rgba(24, 24, 24, 0.95);
 }
 
-/* Mobile Drawer */
+/* Mobile Drawer: Apple-Style Translucent Sheet */
 .mobileDrawer {
   display: flex;
   flex-direction: column;
@@ -199,24 +216,27 @@
   top: calc(var(--nav-height, 4rem) + 0.5rem);
   left: 1.25rem;
   right: 1.25rem;
-  background: rgba(12, 12, 12, 0.98);
-  backdrop-filter: blur(24px);
+  background: rgba(12, 12, 12, 0.92);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.95);
-  animation: drawerSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-origin: top center;
+  animation: drawerSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
   z-index: 101;
 }
 
 @keyframes drawerSlide {
   from {
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateY(-10px) scale(0.98);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -245,7 +265,7 @@
   justify-content: space-between;
   padding: 0.85rem 1rem;
   min-height: 44px;
-  border-radius: 4px;
+  border-radius: 8px;
   color: var(--text-secondary, #96908B);
   font-family: var(--font-mono);
   font-size: 0.9rem;
@@ -256,6 +276,11 @@
   border: 1px solid transparent;
   transition: all 0.2s ease;
   outline: none;
+}
+
+.mobileNavLink:active {
+  transform: scale(0.97) !important;
+  transition: transform 100ms ease-out !important;
 }
 
 .mobileNavLink:focus-visible {

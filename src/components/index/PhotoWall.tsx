@@ -89,7 +89,7 @@ export default function PhotoWall() {
           initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: "some" }}
-          transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ type: "spring", bounce: 0, duration: 0.45 }}
         >
           <div className={styles.kicker}>
             <span className={styles.kickerDot} />
@@ -156,13 +156,15 @@ export default function PhotoWall() {
                         scale: 1.035,
                         y: item.offsetY - 6,
                         rotate: 0,
-                        transition: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
+                        transition: { type: "spring", bounce: 0, duration: 0.3 },
                       }
                 }
+                whileTap={{ scale: 0.98 }}
                 transition={{
-                  duration: 0.65,
-                  delay: shouldReduceMotion ? 0 : 0.12 + idx * 0.08,
-                  ease: [0.16, 1, 0.3, 1],
+                  type: "spring",
+                  bounce: 0,
+                  duration: 0.5,
+                  delay: shouldReduceMotion ? 0 : 0.08 + idx * 0.05,
                 }}
                 onMouseEnter={() => setHoveredId(item.id)}
                 onMouseLeave={() => setHoveredId(null)}
@@ -203,10 +205,10 @@ export default function PhotoWall() {
           >
             <motion.div
               className={styles.lightboxCard}
-              initial={{ scale: 0.94, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.96, opacity: 0 }}
-              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+              initial={{ scale: 0.94, opacity: 0, y: 16 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.94, opacity: 0, y: 16 }}
+              transition={{ type: "spring", bounce: 0, duration: 0.35 }}
               onClick={(e) => e.stopPropagation()}
             >
               <button

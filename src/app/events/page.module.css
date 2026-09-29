@@ -128,8 +128,9 @@
   font-size: 1.05rem;
   max-width: 680px;
   margin: 0 auto;
-  font-family: var(--font-mono);
-  line-height: 1.6;
+  font-family: var(--font-sans);
+  line-height: var(--leading-body, 1.62);
+  letter-spacing: var(--tracking-body, -0.005em);
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.85);
 }
 
@@ -147,7 +148,7 @@
   align-items: center;
   gap: 0.4rem;
   padding: 0.5rem 1.2rem;
-  border-radius: 3px;
+  border-radius: 9999px;
   font-family: var(--font-mono);
   font-size: 0.78rem;
   letter-spacing: 0.12em;
@@ -167,6 +168,11 @@
   background: rgba(26, 26, 30, 0.95);
   color: var(--text-primary, #F2EDE8);
   border-color: rgba(255, 255, 255, 0.22);
+}
+
+.filterBtn:active {
+  transform: scale(0.96) !important;
+  transition: transform 100ms ease-out !important;
 }
 
 .filterBtn:focus-visible {

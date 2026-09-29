@@ -1,4 +1,4 @@
-﻿import { MapPin, Navigation, Compass, Bus, Train, Plane, ShieldAlert, Activity } from "lucide-react";
+import { MapPin, Navigation, Compass, Bus, Train, Plane, ShieldAlert, Activity } from "lucide-react";
 import Venue3DViewer from "@/components/venue/Venue3DViewer";
 import styles from "./page.module.css";
 
@@ -18,148 +18,104 @@ export default function VenuePage() {
   ];
 
   return (
-    <div className={styles.venuePage} style={{ background: "transparent", minHeight: "100vh", position: "relative", overflow: "hidden" }}>
-      {/* Ghost Industrial Watermark */}
-      
-
+    <div className={styles.page}>
       <div className="container" style={{ position: "relative", zIndex: 1 }}>
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
+        <header className={styles.header}>
           <div className="section-label">
             <ShieldAlert size={13} />
             SPATIAL TELEMETRY // VVITU NAMBUR
           </div>
-          <h1 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2.2rem, 4.5vw, 3.8rem)", fontWeight: 800, color: "#ffffff", margin: "0.5rem 0 1rem" }}>
+          <h1 className={styles.title}>
             Venue &amp; <span className="gradient-text">Interactive 3D Map</span>
           </h1>
-          <p style={{ color: "#888888", fontSize: "0.95rem", maxWidth: "650px", margin: "0 auto", fontFamily: "var(--font-mono)" }}>
+          <p className={styles.sub}>
             Explore the VVITU Nambur campus in 3D, find workshop locations, and check event venues.
           </p>
-        </div>
+        </header>
 
         {/* 3D Model Explorer */}
         <Venue3DViewer />
 
         {/* Arenas & Halls */}
-        <div style={{ marginBottom: "4rem" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "1.75rem" }}>
-            <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.8rem", fontWeight: 800, color: "#ffffff", margin: 0 }}>
+        <section style={{ marginBottom: "4.5rem" }} aria-labelledby="arenas-halls-title">
+          <div className={styles.sectionDivider}>
+            <h2 id="arenas-halls-title" className={styles.sectionTitle}>
               Event Locations &amp; Facilities
             </h2>
-            <div style={{ flex: 1, height: "1px", background: "rgba(255, 255, 255, 0.08)" }} />
+            <div className={styles.dividerLine} aria-hidden="true" />
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
+          <div className={styles.hallsGrid}>
             {halls.map((h, i) => (
-              <div
-                key={i}
-                className="glass-card"
-                style={{
-                  position: "relative",
-                  padding: "1.65rem",
-                  borderRadius: "4px",
-                  background: "#111111",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
-                  boxShadow: "0 12px 30px rgba(0, 0, 0, 0.85)",
-                }}
-              >
-                <span style={{ position: "absolute", top: 2, left: 4, color: "rgba(255,255,255,0.3)", fontFamily: "var(--font-mono)", fontSize: 9 }}>+</span>
-                <span style={{ position: "absolute", top: 2, right: 4, color: "rgba(255,255,255,0.3)", fontFamily: "var(--font-mono)", fontSize: 9 }}>+</span>
+              <article key={i} className={styles.hallCard}>
+                <span className={styles.crosshairTL} aria-hidden="true">+</span>
+                <span className={styles.crosshairTR} aria-hidden="true">+</span>
 
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
+                <div className={styles.hallMeta}>
                   <div>
-                    <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.65rem", color: "#666666", letterSpacing: "0.1em" }}>
-                      VENUE // {h.id}
-                    </div>
-                    <h3 style={{ margin: "2px 0 0 0", fontSize: "1.15rem", fontWeight: 800, fontFamily: "var(--font-display)", color: "#ffffff" }}>
-                      {h.name}
-                    </h3>
+                    <div className={styles.hallId}>VENUE // {h.id}</div>
+                    <h3 className={styles.hallName}>{h.name}</h3>
                   </div>
-                  <span
-                    style={{
-                      fontFamily: "var(--font-mono)",
-                      fontSize: "0.68rem",
-                      color: "#ff3b3b",
-                      background: "rgba(230, 29, 29, 0.08)",
-                      border: "1px solid rgba(230, 29, 29, 0.3)",
-                      padding: "2px 8px",
-                      borderRadius: "2px",
-                      fontWeight: 700,
-                    }}
-                  >
-                    CAP: {h.capacity}
-                  </span>
+                  <span className={styles.hallCapacity}>CAP: {h.capacity}</span>
                 </div>
-                <p style={{ margin: "0 0 8px 0", fontSize: "0.85rem", color: "#e61d1d", fontWeight: 700, fontFamily: "var(--font-mono)" }}>
-                  {h.events}
+                <p className={styles.hallEvents}>{h.events}</p>
+                <p className={styles.hallFloor}>
+                  <MapPin size={13} color="var(--crimson-core, #E51D25)" />
+                  <span>{h.floor}</span>
                 </p>
-                <p style={{ margin: 0, fontSize: "0.8rem", color: "#888888", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <MapPin size={12} color="#e61d1d" />
-                  {h.floor}
-                </p>
-              </div>
+              </article>
             ))}
           </div>
-        </div>
+        </section>
 
         {/* Directions & Travel Guide */}
-        <div
-          className="glass-card"
-          style={{
-            position: "relative",
-            padding: "2.75rem",
-            borderRadius: "4px",
-            background: "#111111",
-            border: "1px solid rgba(230, 29, 29, 0.35)",
-            marginBottom: "4rem",
-            boxShadow: "0 20px 50px rgba(0, 0, 0, 0.9)",
-          }}
-        >
-          <span style={{ position: "absolute", top: 4, left: 6, color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-mono)", fontSize: 10 }}>+</span>
-          <span style={{ position: "absolute", top: 4, right: 6, color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-mono)", fontSize: 10 }}>+</span>
+        <section className={styles.travelCard} aria-labelledby="travel-guide-title">
+          <span className={styles.crosshairTL} aria-hidden="true">+</span>
+          <span className={styles.crosshairTR} aria-hidden="true">+</span>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "1rem" }}>
-            <Bus size={22} color="#e61d1d" />
-            <h3 style={{ margin: 0, fontFamily: "var(--font-display)", fontSize: "1.5rem", fontWeight: 800, color: "#ffffff" }}>
+          <div className={styles.travelHead}>
+            <Bus size={22} color="var(--crimson-core, #E51D25)" />
+            <h3 id="travel-guide-title" className={styles.travelTitle}>
               How to Reach VVITU Campus
             </h3>
           </div>
-          <p style={{ color: "#888888", lineHeight: 1.7, fontSize: "0.95rem", marginBottom: "2rem" }}>
+          <p className={styles.travelDesc}>
             Vasireddy Venkatadri Institute of Technology (VVITU) is located directly along the Guntur – Vijayawada NH-16 highway in Nambur, Andhra Pradesh.
           </p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "20px" }}>
-            <div style={{ background: "rgba(0,0,0,0.5)", padding: "1.4rem", borderRadius: "3px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-                <Train size={16} color="#e61d1d" />
-                <h4 style={{ color: "#ff3b3b", margin: 0, fontSize: "0.95rem", fontFamily: "var(--font-mono)", textTransform: "uppercase" }}>By Train</h4>
+          <div className={styles.transitGrid}>
+            <div className={styles.transitItem}>
+              <div className={styles.transitItemHead}>
+                <Train size={16} color="var(--crimson-core, #E51D25)" />
+                <h4 className={styles.transitItemTitle}>By Train</h4>
               </div>
-              <p style={{ margin: 0, fontSize: "0.85rem", color: "#888888", lineHeight: 1.6 }}>
+              <p className={styles.transitItemDesc}>
                 Guntur Junction (12 km) &amp; Vijayawada Junction (24 km). Direct college express shuttles run every 30 mins from stations.
               </p>
             </div>
 
-            <div style={{ background: "rgba(0,0,0,0.5)", padding: "1.4rem", borderRadius: "3px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-                <Bus size={16} color="#e61d1d" />
-                <h4 style={{ color: "#ff3b3b", margin: 0, fontSize: "0.95rem", fontFamily: "var(--font-mono)", textTransform: "uppercase" }}>By Bus</h4>
+            <div className={styles.transitItem}>
+              <div className={styles.transitItemHead}>
+                <Bus size={16} color="var(--crimson-core, #E51D25)" />
+                <h4 className={styles.transitItemTitle}>By Bus</h4>
               </div>
-              <p style={{ margin: 0, fontSize: "0.85rem", color: "#888888", lineHeight: 1.6 }}>
+              <p className={styles.transitItemDesc}>
                 APSRTC buses running between Vijayawada and Guntur stop directly at Nambur VVIT Bus Stop.
               </p>
             </div>
 
-            <div style={{ background: "rgba(0,0,0,0.5)", padding: "1.4rem", borderRadius: "3px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-                <Plane size={16} color="#e61d1d" />
-                <h4 style={{ color: "#ff3b3b", margin: 0, fontSize: "0.95rem", fontFamily: "var(--font-mono)", textTransform: "uppercase" }}>By Flight</h4>
+            <div className={styles.transitItem}>
+              <div className={styles.transitItemHead}>
+                <Plane size={16} color="var(--crimson-core, #E51D25)" />
+                <h4 className={styles.transitItemTitle}>By Flight</h4>
               </div>
-              <p style={{ margin: 0, fontSize: "0.85rem", color: "#888888", lineHeight: 1.6 }}>
+              <p className={styles.transitItemDesc}>
                 Vijayawada International Airport (Gannavaram - 42 km). Taxis and ride-shares available on arrival.
               </p>
             </div>
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );

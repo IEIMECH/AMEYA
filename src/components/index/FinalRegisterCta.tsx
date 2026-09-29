@@ -39,7 +39,7 @@ export default function FinalRegisterCta({ onRegisterClick }: FinalRegisterCtaPr
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: "some" }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ type: "spring", bounce: 0, duration: 0.45 }}
             >
               <Sparkles size={12} className={styles.tagIcon} />
               <span>REGISTRATION OPEN</span>
@@ -52,7 +52,7 @@ export default function FinalRegisterCta({ onRegisterClick }: FinalRegisterCtaPr
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 22 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: "some" }}
-              transition={{ duration: 0.65, delay: shouldReduceMotion ? 0 : 0.08, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ type: "spring", bounce: 0, duration: 0.45, delay: shouldReduceMotion ? 0 : 0.06 }}
             >
               READY TO COMPETE AT <br />
               <span className={styles.headlineHighlight}>AMEYA &apos;26?</span>
@@ -63,7 +63,7 @@ export default function FinalRegisterCta({ onRegisterClick }: FinalRegisterCtaPr
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: "some" }}
-              transition={{ duration: 0.65, delay: shouldReduceMotion ? 0 : 0.16, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ type: "spring", bounce: 0, duration: 0.45, delay: shouldReduceMotion ? 0 : 0.12 }}
             >
               Secure your spot across 8 technical and non-technical solo challenges.
               Showcase your skills, earn merit certificates, and compete with the best.
@@ -76,7 +76,7 @@ export default function FinalRegisterCta({ onRegisterClick }: FinalRegisterCtaPr
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: "some" }}
-            transition={{ duration: 0.65, delay: shouldReduceMotion ? 0 : 0.26, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ type: "spring", bounce: 0, duration: 0.45, delay: shouldReduceMotion ? 0 : 0.16 }}
           >
             <button
               type="button"

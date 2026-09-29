@@ -69,7 +69,7 @@ export default function FestivalStory() {
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: "some" }}
-            transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ type: "spring", bounce: 0, duration: 0.45 }}
           >
             <div className={styles.kicker}>
               <span className={styles.kickerDot} />
@@ -89,7 +89,7 @@ export default function FestivalStory() {
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: "some" }}
-            transition={{ duration: 0.65, delay: shouldReduceMotion ? 0 : 0.1, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ type: "spring", bounce: 0, duration: 0.45, delay: shouldReduceMotion ? 0 : 0.08 }}
           >
             <p className={styles.leadParagraph}>
               It is a proving ground where theoretical mechanics meets physical reality.
@@ -136,7 +136,7 @@ export default function FestivalStory() {
           aria-hidden="true"
           initial={{ opacity: 0, scaleX: shouldReduceMotion ? 1 : 0 }}
           animate={isInView ? { opacity: 1, scaleX: 1 } : { opacity: 0, scaleX: shouldReduceMotion ? 1 : 0 }}
-          transition={{ duration: 0.6, delay: shouldReduceMotion ? 0 : 0.16, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ type: "spring", bounce: 0, duration: 0.45, delay: shouldReduceMotion ? 0 : 0.12 }}
           style={{ transformOrigin: "left center" }}
         >
           <span className={styles.datumCrossLeft}>+</span>

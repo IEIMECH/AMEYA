@@ -20,8 +20,10 @@
   right: 0;
   bottom: 0;
   width: min(500px, 94vw);
-  background: #0d0d0d;
-  border-left: 1px solid rgba(230, 29, 29, 0.35);
+  background: rgba(13, 13, 13, 0.94);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 
     -12px 0 45px rgba(0, 0, 0, 0.9),
     -2px 0 20px rgba(230, 29, 29, 0.15),
@@ -111,6 +113,11 @@
   color: #ffffff;
   transform: rotate(90deg);
   box-shadow: 0 0 12px rgba(230, 29, 29, 0.35);
+}
+
+.closeBtn:active {
+  transform: scale(0.92) !important;
+  transition: transform 100ms ease-out !important;
 }
 
 /* Body */

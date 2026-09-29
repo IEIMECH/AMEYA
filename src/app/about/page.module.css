@@ -1,5 +1,6 @@
+/* Apple Design About Page CSS */
 .page {
-  padding-top: calc(var(--nav-height) + 3.5rem);
+  padding-top: calc(var(--nav-height, 4.5rem) + 3.5rem);
   padding-bottom: 6rem;
   background: transparent;
   min-height: 100vh;
@@ -14,18 +15,22 @@
 
 .header h1 {
   font-family: var(--font-display);
-  font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+  font-size: clamp(2.4rem, 4.8vw, 4rem);
+  line-height: var(--leading-display, 1.05);
+  letter-spacing: var(--tracking-display, -0.025em);
   margin-bottom: 1rem;
   color: #ffffff;
   font-weight: 800;
 }
 
 .sub {
-  color: #888888;
-  font-size: 0.95rem;
-  max-width: 650px;
+  color: var(--text-secondary, #96908B);
+  font-size: 1.05rem;
+  max-width: 680px;
   margin: 0 auto;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
+  line-height: var(--leading-body, 1.62);
+  letter-spacing: var(--tracking-body, -0.005em);
 }
 
 .content {
@@ -34,19 +39,29 @@
   gap: 2.5rem;
 }
 
+/* Apple Translucent Glass Card System */
 .mainCard {
   position: relative;
   padding: 3rem;
   background: #111111;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 4px;
-  transition: border-color 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;
+  border-top: var(--material-specular, 1px solid rgba(255, 255, 255, 0.16));
+  backdrop-filter: var(--material-blur, blur(20px));
+  -webkit-backdrop-filter: var(--material-blur, blur(20px));
+  border-radius: 10px;
+  box-shadow: var(--material-shadow, 0 16px 40px -10px rgba(0, 0, 0, 0.8));
+  transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
 }
 
 .mainCard:hover {
-  border-color: rgba(255, 255, 255, 0.16);
-  transform: translateY(-2px);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
+  border-color: rgba(229, 29, 37, 0.35);
+  transform: translateY(-4px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85), 0 0 25px rgba(229, 29, 37, 0.12);
+}
+
+.mainCard:active {
+  transform: scale(0.99) !important;
+  transition: transform 100ms ease-out !important;
 }
 
 .mainCard:hover .hudCorner {
@@ -55,16 +70,16 @@
 
 .crosshairTL {
   position: absolute;
-  top: 2px;
-  left: 4px;
+  top: 4px;
+  left: 6px;
   color: rgba(255, 255, 255, 0.3);
   font-family: var(--font-mono);
   font-size: 9px;
 }
 .crosshairTR {
   position: absolute;
-  top: 2px;
-  right: 4px;
+  top: 4px;
+  right: 6px;
   color: rgba(255, 255, 255, 0.3);
   font-family: var(--font-mono);
   font-size: 9px;
@@ -83,20 +98,29 @@
 
 .mainCard h2 {
   font-family: var(--font-display);
-  font-size: 1.6rem;
+  font-size: 1.8rem;
+  letter-spacing: var(--tracking-heading, -0.018em);
+  line-height: var(--leading-heading, 1.15);
   margin-bottom: 1.25rem;
   color: #ffffff;
 }
 
 .mainCard p {
-  color: #888888;
-  line-height: 1.85;
-  margin-bottom: 1rem;
-  font-size: 1rem;
+  font-family: var(--font-sans);
+  color: var(--text-secondary, #96908B);
+  line-height: var(--leading-body, 1.65);
+  letter-spacing: var(--tracking-body, -0.005em);
+  margin-bottom: 1.25rem;
+  font-size: 1.02rem;
 }
 
 .mainCard strong {
-  color: #ff3b3b;
+  color: var(--steel-bright, #F2EDE8);
+}
+
+.mainCard em {
+  color: var(--crimson-core, #E51D25);
+  font-style: normal;
 }
 
 .twoCol {
@@ -110,14 +134,23 @@
   padding: 2.25rem;
   background: #111111;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 4px;
-  transition: border-color 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;
+  border-top: var(--material-specular, 1px solid rgba(255, 255, 255, 0.14));
+  backdrop-filter: var(--material-blur, blur(20px));
+  -webkit-backdrop-filter: var(--material-blur, blur(20px));
+  border-radius: 10px;
+  box-shadow: var(--material-shadow, 0 16px 40px -10px rgba(0, 0, 0, 0.8));
+  transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
 }
 
 .infoCard:hover {
-  border-color: rgba(255, 255, 255, 0.16);
-  transform: translateY(-2px);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
+  border-color: rgba(229, 29, 37, 0.35);
+  transform: translateY(-4px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85), 0 0 25px rgba(229, 29, 37, 0.12);
+}
+
+.infoCard:active {
+  transform: scale(0.99) !important;
+  transition: transform 100ms ease-out !important;
 }
 
 .infoCard:hover .hudCorner {
@@ -126,25 +159,29 @@
 
 .infoCard h3 {
   font-family: var(--font-display);
-  font-size: 1.3rem;
+  font-size: 1.35rem;
+  letter-spacing: var(--tracking-heading, -0.018em);
   margin-bottom: 1rem;
   color: #ffffff;
 }
 
 .infoCard p {
-  color: #888888;
-  line-height: 1.8;
-  margin-bottom: 0.85rem;
-  font-size: 0.95rem;
+  font-family: var(--font-sans);
+  color: var(--text-secondary, #96908B);
+  line-height: var(--leading-body, 1.65);
+  letter-spacing: var(--tracking-body, -0.005em);
+  margin-bottom: 1rem;
+  font-size: 0.98rem;
 }
 
 .infoCard strong {
-  color: #d8d8d8;
+  color: var(--steel-bright, #F2EDE8);
 }
 
 .centeredH2 {
   font-family: var(--font-display);
-  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-size: clamp(2rem, 3.2vw, 2.6rem);
+  letter-spacing: var(--tracking-heading, -0.018em);
   color: #ffffff;
   font-weight: 800;
   margin-top: 0.4rem;
@@ -158,28 +195,37 @@
 
 .pillar {
   position: relative;
-  padding: 2rem 1.5rem;
+  padding: 2.25rem 1.6rem;
   background: #111111;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 4px;
+  border-top: var(--material-specular, 1px solid rgba(255, 255, 255, 0.14));
+  backdrop-filter: var(--material-blur, blur(16px));
+  -webkit-backdrop-filter: var(--material-blur, blur(16px));
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: 0.8rem;
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
 }
 
 .pillar:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
   border-color: rgba(229, 29, 37, 0.35);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.8), 0 0 20px rgba(229, 29, 37, 0.12);
+}
+
+.pillar:active {
+  transform: scale(0.98) !important;
+  transition: transform 100ms ease-out !important;
 }
 
 .pillarIcon {
   width: 3.5rem;
   height: 3.5rem;
-  border-radius: 3px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -193,13 +239,14 @@
   background: rgba(229, 29, 37, 0.16);
   border-color: var(--crimson-core, #E51D25);
   color: #FFFFFF;
-  box-shadow: 0 0 14px rgba(229, 29, 37, 0.35);
+  box-shadow: 0 0 16px rgba(229, 29, 37, 0.4);
 }
 
 .pillar h4 {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 800;
+  letter-spacing: var(--tracking-heading, -0.015em);
   color: var(--text-primary, #F2EDE8);
   transition: color 0.2s ease;
 }
@@ -209,14 +256,16 @@
 }
 
 .pillar p {
-  font-size: 0.82rem;
-  color: var(--text-muted, #605B56);
-  line-height: 1.6;
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  color: var(--text-secondary, #96908B);
+  line-height: 1.62;
+  letter-spacing: -0.005em;
   transition: color 0.2s ease;
 }
 
 .pillar:hover p {
-  color: var(--text-secondary, #96908B);
+  color: #c7c2bc;
 }
 
 .statsCard {
@@ -226,7 +275,10 @@
   gap: 2rem;
   background: #111111;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 4px;
+  border-top: var(--material-specular, 1px solid rgba(255, 255, 255, 0.14));
+  border-radius: 8px;
+  backdrop-filter: var(--material-blur, blur(16px));
+  box-shadow: var(--material-shadow);
 }
 
 .statItem {
@@ -237,16 +289,17 @@
 }
 
 .statNum {
-  font-size: 2.6rem;
+  font-size: 2.8rem;
   font-weight: 900;
   font-family: var(--font-display);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
 }
 
 .statLabel {
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  color: #888888;
+  color: var(--text-secondary, #96908B);
   text-transform: uppercase;
   letter-spacing: 0.15em;
   text-align: center;

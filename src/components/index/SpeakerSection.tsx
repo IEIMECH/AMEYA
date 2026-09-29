@@ -92,7 +92,7 @@ export default function SpeakerSection() {
           initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: "some" }}
-          transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ type: "spring", bounce: 0, duration: 0.45 }}
         >
           <div className={styles.kicker}>
             <span className={styles.kickerDot} />
@@ -117,18 +117,19 @@ export default function SpeakerSection() {
             initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: "some" }}
-            transition={{ duration: 0.65, delay: shouldReduceMotion ? 0 : 0.15, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ type: "spring", bounce: 0, duration: 0.45, delay: shouldReduceMotion ? 0 : 0.08 }}
           >
             {speakers.map((sp, idx) => {
               const isActive = idx === activeIdx;
               return (
-                <button
+                <motion.button
                   key={sp.id}
                   type="button"
                   role="tab"
                   aria-selected={isActive}
                   className={`${styles.speakerListItem} ${isActive ? styles.itemActive : ""}`}
                   onClick={() => setActiveIdx(idx)}
+                  whileTap={{ scale: 0.98 }}
                 >
                   <span className={styles.speakerIndex}>0{idx + 1}</span>
                   <div className={styles.itemContent}>
@@ -136,8 +137,14 @@ export default function SpeakerSection() {
                     <div className={styles.itemName}>{sp.name}</div>
                     <div className={styles.itemRole}>{sp.role}</div>
                   </div>
-                  {isActive && <div className={styles.activePillIndicator} />}
-                </button>
+                  {isActive && (
+                    <motion.div
+                      layoutId="speakerActiveIndicator"
+                      className={styles.activePillIndicator}
+                      transition={{ type: "spring", bounce: 0, duration: 0.35 }}
+                    />
+                  )}
+                </motion.button>
               );
             })}
           </motion.div>
@@ -148,7 +155,7 @@ export default function SpeakerSection() {
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
             whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: "some" }}
-            transition={{ duration: 0.65, delay: shouldReduceMotion ? 0 : 0.22, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ type: "spring", bounce: 0, duration: 0.45, delay: shouldReduceMotion ? 0 : 0.12 }}
           >
             <span className={styles.cornerMarkerTL}>+</span>
             <span className={styles.cornerMarkerTR}>+</span>
@@ -161,7 +168,7 @@ export default function SpeakerSection() {
                 initial={{ opacity: 0, x: shouldReduceMotion ? 0 : 12 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: shouldReduceMotion ? 0 : -12 }}
-                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ type: "spring", bounce: 0, duration: 0.35 }}
                 className={styles.dossierInner}
               >
                 {/* Clean Status Header */}
@@ -189,9 +196,10 @@ export default function SpeakerSection() {
                       y: 0,
                     }}
                     transition={{
-                      duration: 0.32,
-                      delay: shouldReduceMotion ? 0 : 0.05,
-                      ease: [0.16, 1, 0.3, 1],
+                      type: "spring",
+                      bounce: 0,
+                      duration: 0.35,
+                      delay: shouldReduceMotion ? 0 : 0.04,
                     }}
                   >
                     <Image
@@ -214,7 +222,7 @@ export default function SpeakerSection() {
                     className={styles.identityDetails}
                     initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: shouldReduceMotion ? 0 : 0.08, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ type: "spring", bounce: 0, duration: 0.35, delay: shouldReduceMotion ? 0 : 0.06 }}
                   >
                     <div className={styles.specGroup}>
                       <span className={styles.specLabel}>NAME</span>
@@ -246,7 +254,7 @@ export default function SpeakerSection() {
                   className={styles.topicSection}
                   initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: shouldReduceMotion ? 0 : 0.12, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ type: "spring", bounce: 0, duration: 0.35, delay: shouldReduceMotion ? 0 : 0.08 }}
                 >
                   <div className={styles.topicHeaderLabel}>KEYNOTE ADDRESS</div>
                   <h4 className={styles.topicTitle}>{activeSpeaker.topic}</h4>

@@ -70,7 +70,7 @@ export default function SponsorSection() {
           initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 18 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: "some" }}
-          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ type: "spring", bounce: 0, duration: 0.45 }}
         >
           <div className={styles.metaRow}>
             <span className={styles.metaCategory}>PARTNERS &amp; SUPPORTERS</span>
@@ -98,10 +98,12 @@ export default function SponsorSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: "some" }}
               transition={{
-                duration: 0.55,
-                delay: shouldReduceMotion ? 0 : 0.08 + idx * 0.06,
-                ease: [0.16, 1, 0.3, 1],
+                type: "spring",
+                bounce: 0,
+                duration: 0.45,
+                delay: shouldReduceMotion ? 0 : 0.06 + idx * 0.05,
               }}
+              whileTap={{ scale: 0.98 }}
             >
               {/* Category Stamp */}
               <div className={styles.categoryLabel}>{partner.category}</div>

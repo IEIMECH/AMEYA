@@ -98,7 +98,7 @@ export default function Nav() {
             className={styles.activePill}
             transition={{
               type: "spring",
-              bounce: 0.15,
+              bounce: 0,
               duration: 0.35,
             }}
             enableHover
