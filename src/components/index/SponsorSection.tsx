@@ -1,8 +1,7 @@
-﻿"use client";
+"use client";
 
-import { useRef } from "react";
 import Image from "next/image";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import styles from "./SponsorSection.module.css";
 
 interface SponsorItem {
@@ -60,19 +59,18 @@ const exhibitionPartners: SponsorItem[] = [
 ];
 
 export default function SponsorSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section ref={sectionRef} className={styles.section} id="sponsors" aria-labelledby="sponsors-heading">
+    <section className={styles.section} id="sponsors" aria-labelledby="sponsors-heading">
       <div className={styles.container}>
-        {/* Section Header with Staggered Entrance */}
+        {/* Section Header: Permanently Visible, Immediate Entrance */}
         <motion.header
           className={styles.header}
-          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 22 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 22 }}
-          transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: "some" }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
         >
           <div className={styles.metaRow}>
             <span className={styles.metaCategory}>PARTNERS &amp; SUPPORTERS</span>
@@ -86,7 +84,7 @@ export default function SponsorSection() {
           </p>
         </motion.header>
 
-        {/* Logo Exhibition Grid with Subtle Stagger */}
+        {/* Logo Exhibition Grid with Self-Triggering Stagger */}
         <div className={styles.exhibitionGrid}>
           {exhibitionPartners.map((partner, idx) => (
             <motion.a
@@ -96,11 +94,12 @@ export default function SponsorSection() {
               rel="noopener noreferrer"
               className={styles.exhibitionPedestal}
               aria-label={`${partner.name} - ${partner.category}`}
-              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: "some" }}
               transition={{
-                duration: 0.6,
-                delay: shouldReduceMotion ? 0 : 0.15 + idx * 0.08,
+                duration: 0.55,
+                delay: shouldReduceMotion ? 0 : 0.08 + idx * 0.06,
                 ease: [0.16, 1, 0.3, 1],
               }}
             >

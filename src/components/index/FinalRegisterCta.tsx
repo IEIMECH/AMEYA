@@ -11,7 +11,7 @@ interface FinalRegisterCtaProps {
 
 export default function FinalRegisterCta({ onRegisterClick }: FinalRegisterCtaProps) {
   const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.25 });
+  const isInView = useInView(sectionRef, { once: true, amount: "some" });
   const shouldReduceMotion = useReducedMotion();
 
   return (
@@ -37,7 +37,8 @@ export default function FinalRegisterCta({ onRegisterClick }: FinalRegisterCtaPr
             <motion.div
               className={styles.telemetryTag}
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: "some" }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             >
               <Sparkles size={12} className={styles.tagIcon} />
@@ -49,7 +50,8 @@ export default function FinalRegisterCta({ onRegisterClick }: FinalRegisterCtaPr
             <motion.h2
               className={styles.headline}
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 22 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 22 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: "some" }}
               transition={{ duration: 0.65, delay: shouldReduceMotion ? 0 : 0.08, ease: [0.16, 1, 0.3, 1] }}
             >
               READY TO COMPETE AT <br />
@@ -59,7 +61,8 @@ export default function FinalRegisterCta({ onRegisterClick }: FinalRegisterCtaPr
             <motion.p
               className={styles.subtext}
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: "some" }}
               transition={{ duration: 0.65, delay: shouldReduceMotion ? 0 : 0.16, ease: [0.16, 1, 0.3, 1] }}
             >
               Secure your spot across 8 technical and non-technical solo challenges.
@@ -71,7 +74,8 @@ export default function FinalRegisterCta({ onRegisterClick }: FinalRegisterCtaPr
           <motion.div
             className={styles.actionCol}
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: "some" }}
             transition={{ duration: 0.65, delay: shouldReduceMotion ? 0 : 0.26, ease: [0.16, 1, 0.3, 1] }}
           >
             <button

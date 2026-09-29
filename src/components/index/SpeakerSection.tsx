@@ -80,7 +80,7 @@ export default function SpeakerSection() {
   const [activeIdx, setActiveIdx] = useState(0);
   const activeSpeaker = speakers[activeIdx];
   const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
+  const isInView = useInView(sectionRef, { once: true, amount: "some" });
   const shouldReduceMotion = useReducedMotion();
 
   return (
@@ -90,7 +90,8 @@ export default function SpeakerSection() {
         <motion.div
           className={styles.header}
           initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: "some" }}
           transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
         >
           <div className={styles.kicker}>
@@ -114,7 +115,8 @@ export default function SpeakerSection() {
             role="tablist"
             aria-label="Guests and Speakers List"
             initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -20 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: shouldReduceMotion ? 0 : -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: "some" }}
             transition={{ duration: 0.65, delay: shouldReduceMotion ? 0 : 0.15, ease: [0.16, 1, 0.3, 1] }}
           >
             {speakers.map((sp, idx) => {
@@ -144,7 +146,8 @@ export default function SpeakerSection() {
           <motion.div
             className={styles.dossierSheet}
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: "some" }}
             transition={{ duration: 0.65, delay: shouldReduceMotion ? 0 : 0.22, ease: [0.16, 1, 0.3, 1] }}
           >
             <span className={styles.cornerMarkerTL}>+</span>

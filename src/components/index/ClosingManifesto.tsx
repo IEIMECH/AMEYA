@@ -6,7 +6,7 @@ import styles from "./ClosingManifesto.module.css";
 
 export default function ClosingManifesto() {
   const containerRef = useRef<HTMLElement>(null);
-  const isInView = useInView(containerRef, { once: true, amount: 0.2 });
+  const isInView = useInView(containerRef, { once: true, amount: "some" });
   const shouldReduceMotion = useReducedMotion();
 
   return (
@@ -28,7 +28,8 @@ export default function ClosingManifesto() {
           <motion.div
             className={styles.chapterBadge}
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: "some" }}
             transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
           >
             <span className={styles.redDot} />
@@ -40,7 +41,8 @@ export default function ClosingManifesto() {
             <motion.div
               className={styles.line}
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: "some" }}
               transition={{ duration: 0.75, delay: shouldReduceMotion ? 0 : 0.1, ease: [0.16, 1, 0.3, 1] }}
             >
               WHERE ENGINEERS
@@ -48,7 +50,8 @@ export default function ClosingManifesto() {
             <motion.div
               className={`${styles.line} ${styles.lineIndented}`}
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: "some" }}
               transition={{ duration: 0.75, delay: shouldReduceMotion ? 0 : 0.22, ease: [0.16, 1, 0.3, 1] }}
             >
               DARE TO
@@ -56,11 +59,8 @@ export default function ClosingManifesto() {
             <motion.div
               className={`${styles.line} ${styles.lineIndented}`}
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30, scale: shouldReduceMotion ? 1 : 0.97 }}
-              animate={
-                isInView
-                  ? { opacity: 1, y: 0, scale: 1 }
-                  : { opacity: 0, y: shouldReduceMotion ? 0 : 30, scale: shouldReduceMotion ? 1 : 0.97 }
-              }
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: "some" }}
               transition={{ duration: 0.85, delay: shouldReduceMotion ? 0 : 0.36, ease: [0.16, 1, 0.3, 1] }}
             >
               DREAM.
@@ -71,7 +71,8 @@ export default function ClosingManifesto() {
           <motion.div
             className={styles.coordinateBlock}
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: "some" }}
             transition={{ duration: 0.7, delay: shouldReduceMotion ? 0 : 0.48, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className={styles.axisLine} />

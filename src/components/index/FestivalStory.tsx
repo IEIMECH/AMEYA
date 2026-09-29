@@ -26,7 +26,7 @@ export default function FestivalStory() {
   const [hasCounted, setHasCounted] = useState(false);
   const [counts, setCounts] = useState<number[]>([0, 0, 0, 0]);
   const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
+  const isInView = useInView(sectionRef, { once: true, amount: "some" });
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
@@ -67,7 +67,8 @@ export default function FestivalStory() {
           <motion.div
             className={styles.headlineColumn}
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: "some" }}
             transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className={styles.kicker}>
@@ -86,7 +87,8 @@ export default function FestivalStory() {
           <motion.div
             className={styles.copyColumn}
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: "some" }}
             transition={{ duration: 0.65, delay: shouldReduceMotion ? 0 : 0.1, ease: [0.16, 1, 0.3, 1] }}
           >
             <p className={styles.leadParagraph}>

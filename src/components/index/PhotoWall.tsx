@@ -58,7 +58,7 @@ export default function PhotoWall() {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
   const [activePhoto, setActivePhoto] = useState<PhotoItem | null>(null);
   const containerRef = useRef<HTMLElement>(null);
-  const isInView = useInView(containerRef, { once: true, amount: 0.2 });
+  const isInView = useInView(containerRef, { once: true, amount: "some" });
   const shouldReduceMotion = useReducedMotion();
 
   // Escape key & scroll-lock listener for lightbox
@@ -87,7 +87,8 @@ export default function PhotoWall() {
         <motion.div
           className={styles.header}
           initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: "some" }}
           transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
         >
           <div className={styles.kicker}>
