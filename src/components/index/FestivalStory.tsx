@@ -18,7 +18,7 @@ const statsData: StatItem[] = [
   { target: 5, suffix: "+", label: "NATIONAL EDITIONS", sub: "LEGACY OF EXCELLENCE" },
   { target: 1200, suffix: "+", label: "PARTICIPANT ENGINEERS", sub: "ACROSS 40+ INSTITUTES" },
   { target: 8, suffix: "", label: "COMPETITION EVENTS", sub: "TECHNICAL & HANDS-ON CHALLENGES" },
-  { target: 150, suffix: "K+", prefix: "₹", label: "TOTAL PRIZE POOL", sub: "MERIT & AWARDS" },
+  { target: 50, suffix: "K+", prefix: "₹", label: "TOTAL PRIZE POOL", sub: "MERIT & AWARDS" },
 ];
 
 export default function FestivalStory() {
@@ -33,8 +33,13 @@ export default function FestivalStory() {
     if (!isInView || hasCounted) return;
     setHasCounted(true);
 
+    if (shouldReduceMotion) {
+      setCounts(statsData.map((s) => s.target));
+      return;
+    }
+
     const startTime = performance.now();
-    const duration = 1600;
+    const duration = 1000;
 
     const tick = (now: number) => {
       const elapsed = now - startTime;
@@ -51,7 +56,7 @@ export default function FestivalStory() {
     };
 
     requestAnimationFrame(tick);
-  }, [isInView, hasCounted]);
+  }, [isInView, hasCounted, shouldReduceMotion]);
 
   return (
     <section ref={sectionRef} className={styles.section} id="intro">
@@ -61,8 +66,8 @@ export default function FestivalStory() {
           {/* Left Column: Monumental Headline */}
           <motion.div
             className={styles.headlineColumn}
-            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 22 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 22 }}
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
             transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className={styles.kicker}>
@@ -82,7 +87,7 @@ export default function FestivalStory() {
             className={styles.copyColumn}
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
-            transition={{ duration: 0.65, delay: shouldReduceMotion ? 0 : 0.12, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.65, delay: shouldReduceMotion ? 0 : 0.1, ease: [0.16, 1, 0.3, 1] }}
           >
             <p className={styles.leadParagraph}>
               It is a proving ground where theoretical mechanics meets physical reality.
@@ -129,7 +134,7 @@ export default function FestivalStory() {
           aria-hidden="true"
           initial={{ opacity: 0, scaleX: shouldReduceMotion ? 1 : 0 }}
           animate={isInView ? { opacity: 1, scaleX: 1 } : { opacity: 0, scaleX: shouldReduceMotion ? 1 : 0 }}
-          transition={{ duration: 0.7, delay: shouldReduceMotion ? 0 : 0.18, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.6, delay: shouldReduceMotion ? 0 : 0.16, ease: [0.16, 1, 0.3, 1] }}
           style={{ transformOrigin: "left center" }}
         >
           <span className={styles.datumCrossLeft}>+</span>
@@ -138,17 +143,25 @@ export default function FestivalStory() {
           <span className={styles.datumCrossRight}>+</span>
         </motion.div>
 
-        {/* Interactive Statistics Grid with Count-up & Staggered Reveal */}
+        {/* Interactive Statistics Grid with Subtle Scale & Once-only Count */}
         <div className={styles.statsGrid}>
           {statsData.map((stat, idx) => (
             <motion.div
               key={idx}
               className={styles.statCard}
-              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+              initial={{
+                opacity: 0,
+                y: shouldReduceMotion ? 0 : 20,
+                scale: shouldReduceMotion ? 1 : 0.96,
+              }}
+              animate={
+                isInView
+                  ? { opacity: 1, y: 0, scale: 1 }
+                  : { opacity: 0, y: shouldReduceMotion ? 0 : 20, scale: shouldReduceMotion ? 1 : 0.96 }
+              }
               transition={{
-                duration: 0.6,
-                delay: shouldReduceMotion ? 0 : 0.22 + idx * 0.08,
+                duration: 0.55,
+                delay: shouldReduceMotion ? 0 : 0.2 + idx * 0.08,
                 ease: [0.16, 1, 0.3, 1],
               }}
             >

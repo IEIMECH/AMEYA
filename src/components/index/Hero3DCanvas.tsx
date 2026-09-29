@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
@@ -483,8 +483,10 @@ export default function Hero3DCanvas() {
     const onPointerMove = (e: PointerEvent) => {
       const width = window.innerWidth || 1;
       const height = window.innerHeight || 1;
-      mouse.targetX = (e.clientX / width - 0.5) * 2;
-      mouse.targetY = -(e.clientY / height - 0.5) * 2;
+      const isTouchOrMobile = e.pointerType === "touch" || width < 768;
+      const damp = isTouchOrMobile ? 0.15 : 1.0;
+      mouse.targetX = (e.clientX / width - 0.5) * 2 * damp;
+      mouse.targetY = -(e.clientY / height - 0.5) * 2 * damp;
 
       const isAccelerating = gearState === "ACCELERATING";
       const over = checkPointerOverGear(e.clientX, e.clientY, isAccelerating);

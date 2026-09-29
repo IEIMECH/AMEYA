@@ -1,4 +1,4 @@
-.ctaSection {
+﻿.ctaSection {
   position: relative;
   width: 100%;
   padding: 5.5rem 5vw;
@@ -145,15 +145,24 @@
   font-weight: 800;
   letter-spacing: 0.2em;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.22s ease,
+              border-color 0.22s ease,
+              box-shadow 0.22s ease;
   box-shadow: 0 4px 20px rgba(229, 29, 37, 0.35);
+  user-select: none;
 }
 
 .registerButton:hover {
-  background: #C4141B;
-  border-color: #C4141B;
-  box-shadow: 0 8px 30px rgba(229, 29, 37, 0.55);
-  transform: translateY(-2px);
+  background: #f0242c;
+  border-color: #f0242c;
+  box-shadow: 0 8px 32px rgba(229, 29, 37, 0.55), 0 0 20px rgba(229, 29, 37, 0.35);
+  transform: translateY(-2px) scale(1.03);
+}
+
+.registerButton:active {
+  transform: scale(0.98);
+  transition: transform 0.08s ease;
 }
 
 .btnText {

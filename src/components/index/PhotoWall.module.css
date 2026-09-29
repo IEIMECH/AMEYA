@@ -1,4 +1,4 @@
-.section {
+﻿.section {
   position: relative;
   z-index: 3;
   padding: 8rem 5vw 9rem;
@@ -11,7 +11,7 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 4rem;
+  gap: 3.5rem;
 }
 
 .header {
@@ -59,7 +59,7 @@
   max-width: 640px;
 }
 
-/* Editorial Filmstrip Track */
+/* Pure Visual Filmstrip Track */
 .filmstripTrack {
   display: flex;
   align-items: center;
@@ -67,83 +67,84 @@
   gap: 1.75rem;
   flex-wrap: wrap;
   position: relative;
-  padding: 2rem 0;
+  padding: 2.5rem 0;
 }
 
+/* Tactile Photo Card: Photo is the Hero */
 .photoCard {
   position: relative;
-  background: var(--machined-surface, #101010);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #0d0d0d;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 4px;
-  padding: 0.85rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.75);
+  padding: 6px;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.85);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.35s ease,
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
               border-color 0.25s ease,
               z-index 0.1s ease;
   user-select: none;
   cursor: pointer;
   z-index: 1;
+  outline: none;
+}
+
+.photoCard:focus-visible {
+  border-color: var(--crimson-core, #E51D25);
+  box-shadow: 0 0 0 2px rgba(229, 29, 37, 0.4), 0 20px 50px rgba(0, 0, 0, 0.9);
 }
 
 .primaryCard {
-  width: 380px;
-  border-color: rgba(255, 255, 255, 0.14);
+  width: 360px;
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .primaryCard .imageWrapper {
-  height: 290px;
+  height: 270px;
 }
 
 .secondaryCard {
-  width: 235px;
+  width: 230px;
 }
 
 .secondaryCard .imageWrapper {
-  height: 200px;
+  height: 190px;
 }
 
 .cardHovered {
-  border-color: rgba(229, 29, 37, 0.65);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9), 0 0 25px rgba(229, 29, 37, 0.25);
+  border-color: rgba(229, 29, 37, 0.75);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.95), 0 0 28px rgba(229, 29, 37, 0.3);
   z-index: 10;
 }
 
 .cardNeighbor {
-  opacity: 0.85;
+  opacity: 0.88;
 }
 
-.cardHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+/* Corner Crosshair Markers */
+.crosshairTL {
+  position: absolute;
+  top: 10px;
+  left: 10px;
   font-family: var(--font-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.12em;
-  color: var(--text-muted, #605B56);
+  font-size: 0.7rem;
+  line-height: 1;
+  color: rgba(229, 29, 37, 0.85);
+  pointer-events: none;
+  z-index: 2;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
 }
 
-.frameTag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  color: var(--text-secondary, #96908B);
-  font-weight: 700;
-}
-
-.recDot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--crimson-core, #E51D25);
-}
-
-.coordStamp {
-  font-size: 0.58rem;
-  color: var(--text-muted, #605B56);
+.crosshairBR {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.45);
+  pointer-events: none;
+  z-index: 2;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
 }
 
 .imageWrapper {
@@ -155,7 +156,6 @@
   border-radius: 2px;
   overflow: hidden;
   background: #080808;
-  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .imageElement {
@@ -163,68 +163,89 @@
   user-select: none;
   -webkit-user-select: none;
   -webkit-user-drag: none;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
-  filter: contrast(1.05) brightness(0.95);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
+  filter: contrast(1.04) brightness(0.96);
 }
 
 .cardHovered .imageElement {
-  transform: scale(1.04);
-  filter: contrast(1.1) brightness(1.02);
+  transform: scale(1.035);
+  filter: contrast(1.08) brightness(1.02);
 }
 
 .lensOverlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.5) 100%);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.35) 100%);
   pointer-events: none;
 }
 
-.crosshairTL {
-  position: absolute;
-  top: 4px;
-  left: 6px;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: rgba(229, 29, 37, 0.6);
-  pointer-events: none;
-}
-
-.crosshairBR {
-  position: absolute;
-  bottom: 4px;
-  right: 6px;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: rgba(255, 255, 255, 0.3);
-  pointer-events: none;
-}
-
-.captionBlock {
+/* Lightbox Modal */
+.lightboxBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(5, 5, 5, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  padding: 0.25rem 0.1rem 0;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  cursor: pointer;
 }
 
-.categoryBadge {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  color: var(--crimson-core, #E51D25);
-  text-transform: uppercase;
-}
-
-.captionTitle {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--steel-bright, #F2EDE8);
-  margin: 0;
-  white-space: nowrap;
+.lightboxCard {
+  position: relative;
+  max-width: 92vw;
+  max-height: 88vh;
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 6px;
+  padding: 8px;
+  box-shadow: 0 35px 90px rgba(0, 0, 0, 0.98), 0 0 45px rgba(229, 29, 37, 0.22);
+  cursor: default;
   overflow: hidden;
-  text-overflow: ellipsis;
+}
+
+.lightboxCloseBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  background: rgba(18, 18, 18, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.lightboxCloseBtn:hover {
+  background: var(--crimson-core, #E51D25);
+  border-color: var(--crimson-core, #E51D25);
+  transform: scale(1.08);
+}
+
+.lightboxImageWrapper {
+  position: relative;
+  width: clamp(280px, 82vw, 1080px);
+  height: clamp(220px, 74vh, 700px);
+  border-radius: 3px;
+  overflow: hidden;
+  background: #050505;
+}
+
+.lightboxImage {
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
 }
 
 @media (max-width: 900px) {
@@ -239,5 +260,18 @@
     width: 100%;
     max-width: 360px;
     transform: none !important;
+  }
+  .primaryCard .imageWrapper {
+    height: 230px;
+  }
+  .secondaryCard .imageWrapper {
+    height: 200px;
+  }
+  .lightboxCard {
+    padding: 6px;
+  }
+  .lightboxImageWrapper {
+    width: 90vw;
+    height: 60vh;
   }
 }

@@ -67,8 +67,24 @@ export default function Home() {
 
       <section className={styles.heroSection} id="hero" aria-label="AMEYA Hero">
         <div className={styles.heroGrid}>
-          {/* Main Left Content Block */}
+          {/* Main Left Content Block - Unobstructed Headline Dominance */}
           <div className={styles.leftHeroBlock}>
+            {/* Sleek Integrated Countdown Ticker (Extracted naturally) */}
+            <div className={styles.heroCountdownTicker} suppressHydrationWarning>
+              <span className={styles.pulseDot} />
+              <span className={styles.tickerLabel}>AMEYA &apos;26 COUNTDOWN</span>
+              <span className={styles.tickerDivider}>/</span>
+              <span className={styles.tickerValue}>
+                T-MINUS{" "}
+                {mounted
+                  ? `${String(timeLeft.days).padStart(2, "0")}D : ${String(timeLeft.hours).padStart(2, "0")}H : ${String(timeLeft.minutes).padStart(2, "0")}M : ${String(timeLeft.seconds).padStart(2, "0")}S`
+                  : "08D : 11H : 31M : 40S"}
+              </span>
+              <span className={styles.tickerDivider}>/</span>
+              <span className={styles.tickerDate}>OCT 04–05</span>
+            </div>
+
+            {/* Monumental Headline */}
             <h1 className={styles.editorialTitle}>
               <span className={styles.titleLineWhere}>WHERE</span>
               <span className={styles.titleLineEngineers}>ENGINEERS</span>
@@ -91,29 +107,10 @@ export default function Home() {
               </Link>
             </div>
           </div>
-
-          {/* Bottom Right Clean Metadata Block */}
-          <div className={styles.bottomMetaBlock}>
-            <div className={styles.metaDept}>
-              DEPARTMENT OF MECHANICAL ENGINEERING
-            </div>
-            <div className={styles.metaCollege}>
-              VVITU // NAMBUR, GUNTUR
-            </div>
-            <div className={styles.metaDate}>
-              2026 // OCTOBER 04 &ndash; 05
-            </div>
-            <div className={styles.metaCountdown} suppressHydrationWarning>
-              T-MINUS{" "}
-              {mounted
-                ? `${String(timeLeft.days).padStart(2, "0")}D : ${String(timeLeft.hours).padStart(2, "0")}H : ${String(timeLeft.minutes).padStart(2, "0")}M : ${String(timeLeft.seconds).padStart(2, "0")}S`
-                : "08D : 11H : 31M : 40S"}
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* Clean Divider Line */}
+      {/* Clean 1px Laser Track */}
       <SectionTransition variant="orbit-travel" />
 
       {/* ============================================================ */}
@@ -121,15 +118,15 @@ export default function Home() {
       {/* ============================================================ */}
       <FestivalStory />
 
-      {/* Clean Divider Line */}
+      {/* Clean 1px Laser Track */}
       <SectionTransition variant="telemetry-slide" />
 
       {/* ============================================================ */}
-      {/* 03. MEMORIES FROM LAST YEAR: Highlights & Photo Gallery     */}
+      {/* 03. MEMORIES FROM LAST YEAR: Visual Memory Wall             */}
       {/* ============================================================ */}
       <PhotoWall />
 
-      {/* Clean Divider Line */}
+      {/* Clean 1px Laser Track */}
       <SectionTransition variant="central-dossier" />
 
       {/* ============================================================ */}
@@ -137,7 +134,7 @@ export default function Home() {
       {/* ============================================================ */}
       <SpeakerSection />
 
-      {/* Clean Divider Line */}
+      {/* Clean 1px Laser Track */}
       <SectionTransition variant="laser-expand" />
 
       {/* ============================================================ */}
@@ -145,7 +142,7 @@ export default function Home() {
       {/* ============================================================ */}
       <FinalRegisterCta onRegisterClick={() => handleOpenRegister()} />
 
-      {/* Clean Divider Line */}
+      {/* Clean 1px Laser Track */}
       <SectionTransition variant="spacious-axis" />
 
       {/* ============================================================ */}
@@ -153,7 +150,7 @@ export default function Home() {
       {/* ============================================================ */}
       <SponsorSection />
 
-      {/* Clean Divider Line */}
+      {/* Clean 1px Laser Track */}
       <SectionTransition variant="terminal-horizon" />
 
       {/* ============================================================ */}

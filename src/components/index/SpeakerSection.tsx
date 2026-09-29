@@ -89,8 +89,8 @@ export default function SpeakerSection() {
         {/* Section Header with Staggered Entrance */}
         <motion.div
           className={styles.header}
-          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 22 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 22 }}
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
           transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
         >
           <div className={styles.kicker}>
@@ -155,10 +155,10 @@ export default function SpeakerSection() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeSpeaker.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                initial={{ opacity: 0, x: shouldReduceMotion ? 0 : 12 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: shouldReduceMotion ? 0 : -12 }}
+                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
                 className={styles.dossierInner}
               >
                 {/* Clean Status Header */}
@@ -172,8 +172,25 @@ export default function SpeakerSection() {
 
                 {/* Speaker Identity Row */}
                 <div className={styles.speakerBioRow}>
-                  {/* Portrait */}
-                  <div className={styles.portraitWrapper}>
+                  {/* Portrait with Cinematic Entrance */}
+                  <motion.div
+                    className={styles.portraitWrapper}
+                    initial={{
+                      opacity: 0,
+                      scale: shouldReduceMotion ? 1 : 0.96,
+                      y: shouldReduceMotion ? 0 : 16,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      scale: 1,
+                      y: 0,
+                    }}
+                    transition={{
+                      duration: 0.32,
+                      delay: shouldReduceMotion ? 0 : 0.05,
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
+                  >
                     <Image
                       src={activeSpeaker.image}
                       alt={`Photo of speaker ${activeSpeaker.name}`}
@@ -187,10 +204,15 @@ export default function SpeakerSection() {
                     <div className={styles.portraitOverlay} />
                     <div className={styles.photoCrosshairTL}>+</div>
                     <div className={styles.photoCrosshairBR}>+</div>
-                  </div>
+                  </motion.div>
 
                   {/* Metadata Specs */}
-                  <div className={styles.identityDetails}>
+                  <motion.div
+                    className={styles.identityDetails}
+                    initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: shouldReduceMotion ? 0 : 0.08, ease: [0.16, 1, 0.3, 1] }}
+                  >
                     <div className={styles.specGroup}>
                       <span className={styles.specLabel}>NAME</span>
                       <h3 className={styles.speakerName}>{activeSpeaker.name}</h3>
@@ -213,11 +235,16 @@ export default function SpeakerSection() {
                         <span className={styles.fieldValueHighlight}>{activeSpeaker.session}</span>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 </div>
 
                 {/* Keynote Topic & Quote */}
-                <div className={styles.topicSection}>
+                <motion.div
+                  className={styles.topicSection}
+                  initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: shouldReduceMotion ? 0 : 0.12, ease: [0.16, 1, 0.3, 1] }}
+                >
                   <div className={styles.topicHeaderLabel}>KEYNOTE ADDRESS</div>
                   <h4 className={styles.topicTitle}>{activeSpeaker.topic}</h4>
 
@@ -226,7 +253,7 @@ export default function SpeakerSection() {
                   </blockquote>
 
                   <p className={styles.topicDesc}>{activeSpeaker.desc}</p>
-                </div>
+                </motion.div>
 
                 {/* Footer Action */}
                 <div className={styles.dossierFooter}>

@@ -1,85 +1,79 @@
 ﻿"use client";
 
 import { useRef } from "react";
-import { motion, useInView, useReducedMotion, type Variants } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import styles from "./ClosingManifesto.module.css";
 
 export default function ClosingManifesto() {
   const containerRef = useRef<HTMLElement>(null);
-  const isInView = useInView(containerRef, { once: true, margin: "-10% 0px" });
+  const isInView = useInView(containerRef, { once: true, amount: 0.2 });
   const shouldReduceMotion = useReducedMotion();
-
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: shouldReduceMotion ? 0 : 0.28,
-        delayChildren: 0.15,
-      },
-    },
-  };
-
-  const lineVariants: Variants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 36 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.85,
-        ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
-      },
-    },
-  };
-
-  const dreamVariants: Variants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 36, scale: 0.98 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.95,
-        ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
-      },
-    },
-  };
 
   return (
     <section ref={containerRef} className={styles.section} id="manifesto" aria-label="Closing Manifesto">
-      {/* Background Architectural Atmosphere */}
-      <div className={styles.ambientGradients} aria-hidden="true" />
+      {/* Background Architectural Atmosphere with Opacity Reveal */}
+      <motion.div
+        className={styles.ambientGradients}
+        aria-hidden="true"
+        initial={{ opacity: 0 }}
+        animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: 1.0, ease: "easeOut" }}
+      />
       <div className={styles.gridOverlay} aria-hidden="true" />
 
       <div className={styles.container}>
         {/* Terminal Title Sequence */}
-        <motion.div
-          className={styles.titleSequence}
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-        >
+        <div className={styles.titleSequence}>
           {/* Top Telemetry Stamp */}
-          <motion.div variants={lineVariants} className={styles.chapterBadge}>
+          <motion.div
+            className={styles.chapterBadge}
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+            transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+          >
             <span className={styles.redDot} />
-            <span>AMEYA '26 // MECHANICAL ENGINEERING</span>
+            <span>AMEYA &apos;26 // MECHANICAL ENGINEERING</span>
           </motion.div>
 
-          {/* Staggered Title Sequence */}
+          {/* Staggered Cinematic Title Sequence */}
           <div className={styles.manifestoTypography}>
-            <motion.div variants={lineVariants} className={styles.line}>
+            <motion.div
+              className={styles.line}
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
+              transition={{ duration: 0.75, delay: shouldReduceMotion ? 0 : 0.1, ease: [0.16, 1, 0.3, 1] }}
+            >
               WHERE ENGINEERS
             </motion.div>
-            <motion.div variants={lineVariants} className={`${styles.line} ${styles.lineIndented}`}>
+            <motion.div
+              className={`${styles.line} ${styles.lineIndented}`}
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
+              transition={{ duration: 0.75, delay: shouldReduceMotion ? 0 : 0.22, ease: [0.16, 1, 0.3, 1] }}
+            >
               DARE TO
             </motion.div>
-            <motion.div variants={dreamVariants} className={`${styles.line} ${styles.lineDream}`}>
+            <motion.div
+              className={`${styles.line} ${styles.lineIndented}`}
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30, scale: shouldReduceMotion ? 1 : 0.97 }}
+              animate={
+                isInView
+                  ? { opacity: 1, y: 0, scale: 1 }
+                  : { opacity: 0, y: shouldReduceMotion ? 0 : 30, scale: shouldReduceMotion ? 1 : 0.97 }
+              }
+              transition={{ duration: 0.85, delay: shouldReduceMotion ? 0 : 0.36, ease: [0.16, 1, 0.3, 1] }}
+            >
               DREAM.
             </motion.div>
           </div>
 
           {/* Technical Coordinate & Department Notation Line */}
-          <motion.div variants={lineVariants} className={styles.coordinateBlock}>
+          <motion.div
+            className={styles.coordinateBlock}
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+            transition={{ duration: 0.7, delay: shouldReduceMotion ? 0 : 0.48, ease: [0.16, 1, 0.3, 1] }}
+          >
             <div className={styles.axisLine} />
             <div className={styles.metaRow}>
               <div className={styles.metaColLeft}>
@@ -88,11 +82,11 @@ export default function ClosingManifesto() {
               </div>
               <div className={styles.metaColRight}>
                 <span className={styles.metaLabel}>LOCATION</span>
-                <span className={styles.metaValue}>16.347° N, 80.526° E // VVITU NAMBUR</span>
+                <span className={styles.metaValue}>16.347&deg; N, 80.526&deg; E // VVITU NAMBUR</span>
               </div>
             </div>
           </motion.div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
