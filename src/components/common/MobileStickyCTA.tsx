@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -37,7 +37,7 @@ export default function MobileStickyCTA() {
           <span className={styles.indicatorDot} />
           <div className={styles.textStack}>
             <span className={styles.actionSub}>{sub}</span>
-            <span className={styles.actionTitle}>AMEYA &apos;26 CONCLAVE</span>
+            <span className={styles.actionTitle}>AMEYA &apos;26 FEST</span>
           </div>
         </div>
 

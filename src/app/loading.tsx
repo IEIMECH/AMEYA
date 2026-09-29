@@ -1,4 +1,4 @@
-import styles from "./loading.module.css";
+﻿import styles from "./loading.module.css";
 
 export default function Loading() {
   return (
@@ -13,7 +13,7 @@ export default function Loading() {
           <div className={styles.progressFill} />
         </div>
         <div className={styles.metaStatus}>
-          <span>SYNCING CONCLAVE DATA</span>
+          <span>LOADING AMEYA '26</span>
           <span>NODE: VVITU_APEX</span>
         </div>
       </div>

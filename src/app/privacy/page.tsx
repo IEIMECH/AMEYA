@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import styles from "./page.module.css";
 
 export const metadata = {
@@ -75,7 +75,7 @@ export default function PrivacyPage() {
             <div className={styles.sectionContent}>
               <h2>Data Retention &amp; Erasure</h2>
               <p>
-                Accreditation data is retained for 90 days post-conclave for verification of merit certificates and cash prize disbursement.
+                Accreditation data is retained for 90 days post-event for verification of merit certificates and cash prize disbursement.
                 Delegates may request complete erasure of contact records by transmitting a request to <code>ieisame@vvitu.edu.in</code>.
               </p>
             </div>

@@ -1,6 +1,8 @@
-"use client";
+﻿"use client";
 
-import { ArrowRight, Terminal } from "lucide-react";
+import { useRef } from "react";
+import { ArrowRight, Sparkles } from "lucide-react";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import styles from "./FinalRegisterCta.module.css";
 
 interface FinalRegisterCtaProps {
@@ -8,58 +10,89 @@ interface FinalRegisterCtaProps {
 }
 
 export default function FinalRegisterCta({ onRegisterClick }: FinalRegisterCtaProps) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { once: true, amount: 0.25 });
+  const shouldReduceMotion = useReducedMotion();
+
   return (
-    <section className={styles.ctaSection} aria-label="Final Registration Callout">
+    <section ref={sectionRef} className={styles.ctaSection} aria-label="Registration Callout">
       {/* Background Kinetic Laser Axis */}
       <div className={styles.laserAxisContainer} aria-hidden="true">
-        <div className={styles.laserBeam} />
+        <motion.div
+          className={styles.laserBeam}
+          initial={{ scaleX: shouldReduceMotion ? 1 : 0, opacity: 0 }}
+          animate={isInView ? { scaleX: 1, opacity: 1 } : { scaleX: shouldReduceMotion ? 1 : 0, opacity: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          style={{ transformOrigin: "left center" }}
+        />
       </div>
 
-      {/* Background Architectural Grid Marks */}
+      {/* Background Grid Marks */}
       <div className={styles.bgOverlay} aria-hidden="true" />
 
       <div className={styles.container}>
         <div className={styles.stripInner}>
           {/* Left Text Block */}
           <div className={styles.textCol}>
-            <div className={styles.telemetryTag}>
-              <Terminal size={12} className={styles.tagIcon} />
-              <span>CHAPTER 07 // FINAL CONVERSION SEQUENCE</span>
+            <motion.div
+              className={styles.telemetryTag}
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <Sparkles size={12} className={styles.tagIcon} />
+              <span>REGISTRATION OPEN</span>
               <span className={styles.dotSeparator}>•</span>
-              <span className={styles.statusActive}>SYSTEM READY</span>
-            </div>
+              <span className={styles.statusActive}>OCTOBER 04–05, 2026</span>
+            </motion.div>
 
-            <h2 className={styles.headline}>
-              READY TO ENTER <br />
-              <span className={styles.headlineHighlight}>THE MACHINE?</span>
-            </h2>
+            <motion.h2
+              className={styles.headline}
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 22 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 22 }}
+              transition={{ duration: 0.65, delay: shouldReduceMotion ? 0 : 0.08, ease: [0.16, 1, 0.3, 1] }}
+            >
+              READY TO COMPETE AT <br />
+              <span className={styles.headlineHighlight}>AMEYA &apos;26?</span>
+            </motion.h2>
 
-            <p className={styles.subtext}>
-              Secure your place at AMEYA &apos;26. Two intense days of combat robotics, rapid fabrication, and engineering breakthroughs.
-            </p>
+            <motion.p
+              className={styles.subtext}
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+              transition={{ duration: 0.65, delay: shouldReduceMotion ? 0 : 0.16, ease: [0.16, 1, 0.3, 1] }}
+            >
+              Secure your spot across 8 technical and non-technical solo challenges.
+              Showcase your skills, earn merit certificates, and compete with the best.
+            </motion.p>
           </div>
 
-          {/* Right Action Block: Distinct conversion button */}
-          <div className={styles.actionCol}>
+          {/* Right Action Block */}
+          <motion.div
+            className={styles.actionCol}
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+            transition={{ duration: 0.65, delay: shouldReduceMotion ? 0 : 0.26, ease: [0.16, 1, 0.3, 1] }}
+          >
             <button
               type="button"
               onClick={onRegisterClick}
               className={styles.registerButton}
               id="final-cta-register-btn"
-              aria-label="Register for AMEYA 2026 Conclave"
+              aria-label="Register for AMEYA 2026 Events"
             >
-              <span className={styles.btnText}>REGISTER</span>
+              <span className={styles.btnText}>REGISTER NOW</span>
               <span className={styles.btnArrowWrapper}>
                 <ArrowRight size={18} className={styles.arrowIcon} />
               </span>
             </button>
 
             <div className={styles.actionAnnotation}>
-              <span>ENTRY CLOSES IN 6 DAYS</span>
+              <span>8 SOLO COMPETITIONS</span>
               <span className={styles.sep}>//</span>
-              <span>SLOTS CAPPED</span>
+              <span>FREE REGISTRATION</span>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

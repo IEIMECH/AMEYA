@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { Check, Calendar, ArrowRight, ShieldCheck, Terminal, Compass } from "lucide-react";
 import styles from "./page.module.css";
 
@@ -20,7 +20,7 @@ export default function RegistrationSuccessPage() {
         <h1 className={styles.heading}>You&apos;re In.</h1>
 
         <p className={styles.subtext}>
-          Your delegate credentials have been verified and encrypted into the AMEYA &apos;26 conclave register.
+          Your delegate credentials have been verified and encrypted into the AMEYA &apos;26 official event register.
           An official confirmation dossier has been dispatched to your communications address.
         </p>
 
@@ -40,7 +40,7 @@ export default function RegistrationSuccessPage() {
               <span className={styles.dossierValueHighlight}>AMEYA-2026-REG-8492</span>
             </div>
             <div className={styles.dossierItem}>
-              <span className={styles.dossierKey}>CONCLAVE DATES</span>
+              <span className={styles.dossierKey}>EVENT DATES</span>
               <span className={styles.dossierValue}>OCTOBER 04–05, 2026</span>
             </div>
             <div className={styles.dossierItem}>
@@ -70,7 +70,7 @@ export default function RegistrationSuccessPage() {
           </Link>
           <Link href="/events" className={styles.secondaryBtn}>
             <Calendar size={14} />
-            <span>CONCLAVE SCHEDULE</span>
+            <span>EVENT SCHEDULE</span>
           </Link>
           <Link href="/" className={styles.tertiaryLink}>
             <span>BACK TO HOMEPAGE</span>

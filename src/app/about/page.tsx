@@ -1,4 +1,4 @@
-import styles from "./page.module.css";
+﻿import styles from "./page.module.css";
 import { Lightbulb, Target, Users, Award, ShieldAlert, Sparkles } from "lucide-react";
 
 export const metadata = {
@@ -10,7 +10,7 @@ export default function AboutPage() {
   return (
     <div className={styles.page}>
       {/* Ghost Industrial Watermark */}
-      <div className="ghost-watermark">HERITAGE</div>
+      
 
       <div className="container" style={{ position: "relative", zIndex: 1 }}>
         {/* Header */}
@@ -23,7 +23,7 @@ export default function AboutPage() {
             What is <span className="gradient-text">Ameya</span>?
           </h1>
           <p className={styles.sub}>
-            [GENESIS // RECORD]: The chronicle of VVITU&apos;s premier mechanical technical fest, founded under the aegis of IEI SAME.
+            The story of VVITU's flagship mechanical engineering fest, organized by the IEI SAME Student Chapter.
           </p>
         </div>
 
@@ -32,13 +32,13 @@ export default function AboutPage() {
           <div className={`glass-card ${styles.mainCard}`}>
             <span className={styles.crosshairTL}>+</span>
             <span className={styles.crosshairTR}>+</span>
-            <div className={styles.hudCorner}>SEC // NOMENCLATURE</div>
+            <div className={styles.hudCorner}>ABOUT THE NAME</div>
             <h2>The Name — Ameya (अमेय)</h2>
             <p>
               Derived from classical Sanskrit, <strong>Ameya</strong> translates to <em>immeasurable</em> or <em>boundless</em>. It embodies the limitless intellectual and creative potential of the mechanical engineer — from forging raw billet steel to architecting autonomous kinematics that transcend textbooks.
             </p>
             <p>
-              Since its inception, Ameya has stood as the pinnacle technical conclave of the Department of Mechanical Engineering at Vasireddy Venkatadri Institute of Technology (VVITU) — an authentic proving ground where theoretical mechanics meet physical realization.
+              Since its inception, Ameya has stood as the flagship technical fest of the Department of Mechanical Engineering at Vasireddy Venkatadri Institute of Technology (VVITU) — an authentic proving ground where theoretical mechanics meet physical realization.
             </p>
           </div>
 
@@ -47,20 +47,20 @@ export default function AboutPage() {
             <div className={`glass-card ${styles.infoCard}`}>
               <span className={styles.crosshairTL}>+</span>
               <span className={styles.crosshairTR}>+</span>
-              <div className={styles.hudCorner}>MECH // IEI SAME</div>
+              <div className={styles.hudCorner}>IEI SAME CHAPTER</div>
               <h3>What is IEI SAME?</h3>
               <p>
                 <strong>IEI SAME</strong> represents the <strong>Institution of Engineers India — Student Activity for Mechanical Engineers</strong>. It is the premier chartered technical student body of the Mechanical Engineering Department at VVITU Nambur, Andhra Pradesh.
               </p>
               <p>
-                Affiliated with the prestigious Institution of Engineers (India), IEI SAME bridges academic rigor with industrial reality through hands-on technical symposiums, robotic combat arenas, and national conclaves.
+                Affiliated with the prestigious Institution of Engineers (India), IEI SAME bridges academic rigor with industrial reality through hands-on technical symposiums, robotic combat arenas, and national symposiums.
               </p>
             </div>
 
             <div className={`glass-card ${styles.infoCard}`}>
               <span className={styles.crosshairTL}>+</span>
               <span className={styles.crosshairTR}>+</span>
-              <div className={styles.hudCorner}>CONCLAVE // GENESIS</div>
+              <div className={styles.hudCorner}>OUR VISION</div>
               <h3>Why This Fest?</h3>
               <p>
                 Ameya was forged from a singular conviction: that student engineers deserve an arena larger than the lecture hall. A crucible to stress-test designs, debate cutting-edge research, and celebrate the unyielding craft of precision engineering.
@@ -73,7 +73,7 @@ export default function AboutPage() {
 
           {/* Pillars of Engineering */}
           <div style={{ textAlign: "center", marginTop: "2rem", marginBottom: "1rem" }}>
-            <div className="section-label">CORE VALUES // DOCTRINE</div>
+            
             <h2 className={styles.centeredH2}>Our Core Pillars</h2>
           </div>
 
@@ -123,9 +123,9 @@ export default function AboutPage() {
           <div className={`glass-card ${styles.statsCard}`}>
             {[
               { num: "05+", label: "Consecutive Editions" },
-              { num: "1,200+", label: "Engineers Mobilized" },
+              { num: "1,200+", label: "Participant Engineers" },
               { num: "12+", label: "Technical Arenas" },
-              { num: "₹50K+", label: "Validated Prize Pool" },
+              { num: "₹50K+", label: "Total Prize Pool" },
             ].map((s, i) => (
               <div key={i} className={styles.statItem}>
                 <span className={`gradient-text ${styles.statNum}`}>{s.num}</span>

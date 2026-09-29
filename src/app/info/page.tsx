@@ -1,4 +1,4 @@
-import styles from "./page.module.css";
+﻿import styles from "./page.module.css";
 import { Calendar, Clock, MapPin, CheckCircle, Bus, Train, Car, ShieldAlert, ShieldCheck } from "lucide-react";
 
 export const metadata = {
@@ -20,14 +20,14 @@ export default function InfoPage() {
     "Badging desk opens at 08:00 AM. Keynote address commences promptly at 09:15 AM in the Main Auditorium.",
     "Participants in RC Car Challenge and Assemble & Disassemble must report 30 minutes prior for technical inspection.",
     "High-speed campus Wi-Fi access credentials will be provided upon badge verification.",
-    "Complimentary lunch and refreshment passes included for all registered arena participants.",
+    "Complimentary lunch and refreshment passes included for all registered participants.",
     "Decisions of faculty adjudicators and technical judges are definitive and irrevocable.",
   ];
 
   return (
     <div className={styles.page}>
       {/* Ghost Industrial Watermark */}
-      <div className="ghost-watermark">LOGISTICS</div>
+      
 
       <div className="container" style={{ position: "relative", zIndex: 1 }}>
         {/* Header */}
@@ -40,7 +40,7 @@ export default function InfoPage() {
             Event <span className="gradient-text">Information</span>
           </h1>
           <p className={styles.sub}>
-            [DIRECTIVE // CONCLAVE]: Essential operational guidelines, schedule parameters, and campus logistics for Ameya &apos;26.
+            Essential guidelines, schedule details, and campus logistics for AMEYA '26.
           </p>
         </div>
 
@@ -65,7 +65,7 @@ export default function InfoPage() {
           <span className={styles.crosshairTL}>+</span>
           <span className={styles.crosshairTR}>+</span>
           <div className={styles.cardHeader}>
-            <div className="section-label" style={{ marginBottom: "0.5rem" }}>TRANSIT PROTOCOL // ACCESS</div>
+            
             <h2>How to Reach VVITU Campus</h2>
             <p style={{ color: "#888888", fontSize: "0.95rem" }}>
               Vasireddy Venkatadri Institute of Technology is situated directly on the national arterial NH-16 connecting Vijayawada and Guntur.
@@ -110,8 +110,8 @@ export default function InfoPage() {
           <span className={styles.crosshairTL}>+</span>
           <span className={styles.crosshairTR}>+</span>
           <div className={styles.cardHeader}>
-            <div className="section-label" style={{ marginBottom: "0.5rem" }}>OFFICIAL CONDUCT // RULES</div>
-            <h2>General Conclave Regulations</h2>
+            
+            <h2>Rules &amp; Guidelines</h2>
           </div>
           <ul className={styles.ruleList}>
             {guides.map((g, i) => (

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { ArrowRight, User, Calendar, ShieldCheck } from "lucide-react";
 import type { Event } from "@/data/events";
@@ -54,7 +54,7 @@ export default function EventCard({ event, index = 0, onRegister }: Props) {
             <span className={styles.iconText}>{event.icon || "⚙️"}</span>
           </div>
           <div className={styles.titleArea}>
-            <span className={styles.kickerText}>CONCLAVE // ARENA 0{index + 1}</span>
+            <span className={styles.kickerText}>EVENT 0{index + 1}</span>
             <h3 className={styles.title}>{event.name}</h3>
             {event.tagline && <p className={styles.tagline}>{event.tagline}</p>}
           </div>
@@ -81,7 +81,7 @@ export default function EventCard({ event, index = 0, onRegister }: Props) {
         <div className={styles.footer}>
           <div className={styles.specBadge}>
             <ShieldCheck size={12} className={styles.shieldIcon} />
-            <span>IEI VALIDATED // MECH-26</span>
+            <span>IEI SAME // VVITU</span>
           </div>
 
           <button

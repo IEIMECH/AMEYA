@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRef } from "react";
 import { motion, useInView, useReducedMotion, type Variants } from "framer-motion";
@@ -62,7 +62,7 @@ export default function ClosingManifesto() {
           {/* Top Telemetry Stamp */}
           <motion.div variants={lineVariants} className={styles.chapterBadge}>
             <span className={styles.redDot} />
-            <span>CHAPTER 09 // CLOSING TITLE SEQUENCE</span>
+            <span>AMEYA '26 // MECHANICAL ENGINEERING</span>
           </motion.div>
 
           {/* Staggered Title Sequence */}
@@ -83,11 +83,11 @@ export default function ClosingManifesto() {
             <div className={styles.axisLine} />
             <div className={styles.metaRow}>
               <div className={styles.metaColLeft}>
-                <span className={styles.metaLabel}>CONCLAVE DATUM</span>
+                <span className={styles.metaLabel}>ORGANIZED BY</span>
                 <span className={styles.metaValue}>AMEYA &apos;26 // DEPARTMENT OF MECHANICAL ENGINEERING</span>
               </div>
               <div className={styles.metaColRight}>
-                <span className={styles.metaLabel}>COORDINATES</span>
+                <span className={styles.metaLabel}>LOCATION</span>
                 <span className={styles.metaValue}>16.347° N, 80.526° E // VVITU NAMBUR</span>
               </div>
             </div>

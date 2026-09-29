@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -7,8 +7,6 @@ import Hero3DCanvas from "@/components/index/Hero3DCanvas";
 import FestivalStory from "@/components/index/FestivalStory";
 import PhotoWall from "@/components/index/PhotoWall";
 import SpeakerSection from "@/components/index/SpeakerSection";
-import EventsPreview from "@/components/index/EventsPreview";
-import GetTicketsSection from "@/components/index/GetTicketsSection";
 import FinalRegisterCta from "@/components/index/FinalRegisterCta";
 import SponsorSection from "@/components/index/SponsorSection";
 import ClosingManifesto from "@/components/index/ClosingManifesto";
@@ -63,15 +61,14 @@ export default function Home() {
   return (
     <main className={styles.mainWrapper}>
       {/* ============================================================ */}
-      {/* CHAPTER 01 // MACHINE: Hero + Kinetic 3D Gear Assembly      */}
+      {/* 01. HERO: Kinetic 3D Gear Assembly & Editorial Headline     */}
       {/* ============================================================ */}
       <Hero3DCanvas />
 
-      <section className={styles.heroSection} id="hero" aria-label="Conclave Hero">
+      <section className={styles.heroSection} id="hero" aria-label="AMEYA Hero">
         <div className={styles.heroGrid}>
           {/* Main Left Content Block */}
           <div className={styles.leftHeroBlock}>
-            {/* Major Typographic Moment: Deliberate Editorial Stagger */}
             <h1 className={styles.editorialTitle}>
               <span className={styles.titleLineWhere}>WHERE</span>
               <span className={styles.titleLineEngineers}>ENGINEERS</span>
@@ -95,7 +92,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Bottom Right Clean Technical Metadata Block */}
+          {/* Bottom Right Clean Metadata Block */}
           <div className={styles.bottomMetaBlock}>
             <div className={styles.metaDept}>
               DEPARTMENT OF MECHANICAL ENGINEERING
@@ -116,115 +113,51 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TRANSITION 01 -> 02: Orbit Travel Line */}
-      <SectionTransition
-        sourceChapter="01 // MACHINE"
-        targetChapter="02 // IDEA"
-        coordinate="16.347°N 80.526°E"
-        axisLabel="ROTATIONAL_DATUM"
-        variant="orbit-travel"
-      />
+      {/* Clean Divider Line */}
+      <SectionTransition variant="orbit-travel" />
 
       {/* ============================================================ */}
-      {/* CHAPTER 02 // IDEA: Editorial Festival Statement & Counters  */}
+      {/* 02. ABOUT AMEYA: Editorial Statement & Live Counters        */}
       {/* ============================================================ */}
       <FestivalStory />
 
-      {/* TRANSITION 02 -> 03: Telemetry Slide Line */}
-      <SectionTransition
-        sourceChapter="02 // IDEA"
-        targetChapter="03 // PEOPLE"
-        coordinate="REEL_35MM // 24FPS"
-        axisLabel="HISTOGRAM_DATUM"
-        variant="telemetry-slide"
-      />
+      {/* Clean Divider Line */}
+      <SectionTransition variant="telemetry-slide" />
 
       {/* ============================================================ */}
-      {/* CHAPTER 03 // PEOPLE: Documentary Filmstrip & Moments       */}
+      {/* 03. MEMORIES FROM LAST YEAR: Highlights & Photo Gallery     */}
       {/* ============================================================ */}
       <PhotoWall />
 
-      {/* TRANSITION 03 -> 04: Central Dossier Line */}
-      <SectionTransition
-        sourceChapter="03 // PEOPLE"
-        targetChapter="04 // MINDS"
-        coordinate="DOSSIER_ARCHIVE // 2026"
-        axisLabel="CENTRAL_AXIS"
-        variant="central-dossier"
-      />
+      {/* Clean Divider Line */}
+      <SectionTransition variant="central-dossier" />
 
       {/* ============================================================ */}
-      {/* CHAPTER 04 // MINDS: Keynote & Guest Engineering Dossier    */}
+      {/* 04. GUESTS & SPEAKERS: Guest Profiles & Technical Keynotes   */}
       {/* ============================================================ */}
       <SpeakerSection />
 
-      {/* TRANSITION 04 -> 05: Blueprint Vector Datum Line */}
-      <SectionTransition
-        sourceChapter="04 // MINDS"
-        targetChapter="05 // CHALLENGE"
-        coordinate="ARENA_BLUEPRINTS // 10_LABS"
-        axisLabel="BLUEPRINT_VECTOR"
-        variant="blueprint-datum"
-      />
+      {/* Clean Divider Line */}
+      <SectionTransition variant="laser-expand" />
 
       {/* ============================================================ */}
-      {/* CHAPTER 05 // CHALLENGE: Arenas & Lineup Hierarchy           */}
-      {/* ============================================================ */}
-      <EventsPreview onRegisterClick={handleOpenRegister} />
-
-      {/* TRANSITION 05 -> 06: Pricing Calibration Line */}
-      <SectionTransition
-        sourceChapter="05 // CHALLENGE"
-        targetChapter="06 // ENTRY"
-        coordinate="TIER_CALIBRATION // 01_03"
-        axisLabel="CALIBRATION_AXIS"
-        variant="pricing-rise"
-      />
-
-      {/* ============================================================ */}
-      {/* CHAPTER 06 // ENTRY: Entry Passes & Access Decisions        */}
-      {/* ============================================================ */}
-      <GetTicketsSection onRegisterClick={handleOpenRegister} />
-
-      {/* TRANSITION 06 -> 07: Laser Expand Line */}
-      <SectionTransition
-        sourceChapter="06 // ENTRY"
-        targetChapter="07 // DECISION"
-        coordinate="MACHINE_GATE // PASS_OK"
-        axisLabel="CONVERSION_VECTOR"
-        variant="laser-expand"
-      />
-
-      {/* ============================================================ */}
-      {/* CHAPTER 07 // DECISION: Final Registration Conversion Strip */}
+      {/* 05. REGISTRATION: Call to Action Strip                      */}
       {/* ============================================================ */}
       <FinalRegisterCta onRegisterClick={() => handleOpenRegister()} />
 
-      {/* TRANSITION 07 -> 08: Spacious Alliance Axis */}
-      <SectionTransition
-        sourceChapter="07 // DECISION"
-        targetChapter="08 // SUPPORT"
-        coordinate="INDUSTRIAL_ALLIANCE"
-        axisLabel="ALLIANCE_DATUM"
-        variant="spacious-axis"
-      />
+      {/* Clean Divider Line */}
+      <SectionTransition variant="spacious-axis" />
 
       {/* ============================================================ */}
-      {/* CHAPTER 08 // SUPPORT: Sponsors & Technical Supporters      */}
+      {/* 06. SPONSORS: Industry Partners & Professional Chapters     */}
       {/* ============================================================ */}
       <SponsorSection />
 
-      {/* TRANSITION 08 -> 09: Terminal Horizon Line */}
-      <SectionTransition
-        sourceChapter="08 // SUPPORT"
-        targetChapter="09 // MANIFESTO"
-        coordinate="TERMINAL_HORIZON // VVITU"
-        axisLabel="TERMINAL_VECTOR"
-        variant="terminal-horizon"
-      />
+      {/* Clean Divider Line */}
+      <SectionTransition variant="terminal-horizon" />
 
       {/* ============================================================ */}
-      {/* CHAPTER 09 // MANIFESTO: Closing Title Sequence            */}
+      {/* 07. CLOSING: Manifesto & Department Credits                 */}
       {/* ============================================================ */}
       <ClosingManifesto />
 

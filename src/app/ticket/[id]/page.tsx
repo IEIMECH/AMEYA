@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, use } from "react";
 import { useSearchParams } from "next/navigation";
@@ -66,7 +66,7 @@ export default function TicketPage({
         } else {
           setTicket({
             ticket_id: ticketId,
-            event_name: "AMEYA '26 National Conclave",
+            event_name: "AMEYA '26 National Fest",
             leader_name: "Registered Delegate",
             college: "VVITU Guntur",
             year: "2026",
@@ -179,7 +179,7 @@ export default function TicketPage({
             </div>
 
             <div className={styles.detail}>
-              <span>CONCLAVE SCHEDULE</span>
+              <span>EVENT SCHEDULE</span>
               <strong>OCT 04–05, 2026 // VVITU CAMPUS</strong>
             </div>
 

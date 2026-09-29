@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -18,7 +18,7 @@ export default function Footer() {
       <footer className={styles.minimalFooter}>
         <div className={`container ${styles.minimalInner}`}>
           <p>© 2026 AMEYA • Department of Mechanical Engineering, VVITU.</p>
-          <Link href="/" className={styles.backHome} aria-label="Return to conclave homepage">
+          <Link href="/" className={styles.backHome} aria-label="Return to homepage">
             <span>Back to Home</span>
             <ArrowUp size={14} />
           </Link>
@@ -35,19 +35,19 @@ export default function Footer() {
         {/* Technical Sitemap Grid */}
         <div className={styles.sitemapGrid}>
           <div className={styles.linkGroup}>
-            <h4 className={styles.groupHeading}>CONCLAVE</h4>
+            <h4 className={styles.groupHeading}>NAVIGATION</h4>
             <ul className={styles.linkList}>
-              <li><Link href="/">Homepage</Link></li>
-              <li><Link href="/events">Official Arenas</Link></li>
-              <li><Link href="/venue">3D Campus Map</Link></li>
-              <li><Link href="/team">Engineering Cadre</Link></li>
-              <li><Link href="/about">About Ameya</Link></li>
-              <li><Link href="/info">Conclave Protocols</Link></li>
+              <li><Link href="/">Home</Link></li>
+              <li><Link href="/events">Events</Link></li>
+              <li><Link href="/venue">Venue</Link></li>
+              <li><Link href="/team">Team</Link></li>
+              <li><Link href="/about">About</Link></li>
+              <li><Link href="/info">Info</Link></li>
             </ul>
           </div>
 
           <div className={styles.linkGroup}>
-            <h4 className={styles.groupHeading}>ARENAS</h4>
+            <h4 className={styles.groupHeading}>EVENTS</h4>
             <ul className={styles.linkList}>
               <li><Link href="/events">AutoCAD (Day 1)</Link></li>
               <li><Link href="/events">Assemble &amp; Disassemble (Day 1)</Link></li>
@@ -85,7 +85,7 @@ export default function Footer() {
               Nambur, Guntur, Andhra Pradesh – 522508
             </p>
             <button type="button" onClick={scrollToTop} className={styles.scrollTopBtn} aria-label="Scroll back to top">
-              <span>ASCEND TO APEX</span>
+              <span>BACK TO TOP</span>
               <ArrowUp size={13} />
             </button>
           </div>

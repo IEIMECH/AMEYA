@@ -1,9 +1,9 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import styles from "./page.module.css";
 
 export const metadata = {
   title: "Terms & Conditions — AMEYA '26 | IEI SAME",
-  description: "Official conclave regulations, competition safety indemnification, ticket policies, and delegate code of conduct.",
+  description: "Official fest regulations, competition safety indemnification, ticket policies, and delegate code of conduct.",
 };
 
 export default function TermsPage() {
@@ -22,7 +22,7 @@ export default function TermsPage() {
           <section className={styles.sectionBlock}>
             <div className={styles.sectionNumber}>1.0</div>
             <div className={styles.sectionContent}>
-              <h2>Conclave Admission &amp; Credentials</h2>
+              <h2>Admission &amp; Credentials</h2>
               <p>
                 Admission to AMEYA &apos;26 requires verified registration through the official portal.
                 All delegates must present valid college identification upon entry. Badges are strictly non-transferable

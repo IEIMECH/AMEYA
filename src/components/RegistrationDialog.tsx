@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -254,7 +254,7 @@ export default function RegistrationDialog({ event: initialEvent, onClose }: Reg
             <div className={styles.eventBadge}>
               <span className={styles.statusDot} />
               <div className={styles.headMeta}>
-                <span className={styles.kicker}>OFFICIAL CONCLAVE REGISTRATION // SOLO</span>
+                <span className={styles.kicker}>OFFICIAL EVENT REGISTRATION // SOLO</span>
                 <h3 className={styles.eventName}>{currentEvent.name}</h3>
               </div>
             </div>
@@ -341,7 +341,7 @@ export default function RegistrationDialog({ event: initialEvent, onClose }: Reg
                 </div>
 
                 <p className={styles.successNotice}>
-                  Your registration has been securely committed to the conclave registry.
+                  Your registration has been securely committed to the event registry.
                 </p>
 
                 <div className={styles.successActions}>

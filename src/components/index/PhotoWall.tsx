@@ -1,7 +1,8 @@
-"use client";
+﻿"use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import styles from "./PhotoWall.module.css";
 
 interface PhotoItem {
@@ -9,7 +10,7 @@ interface PhotoItem {
   src: string;
   title: string;
   tag: string;
-  coords: string;
+  time: string;
   isPrimary?: boolean;
   angle: string;
   offsetY: number;
@@ -19,18 +20,18 @@ const photoArchive: PhotoItem[] = [
   {
     id: 1,
     src: "/img/Hero/photo-wall-1.webp",
-    title: "Keynote Plenary Session",
-    tag: "ACADEMIA // JURY",
-    coords: "AUD_01 // 10:15 IST",
+    title: "Keynote & Guest Lecture",
+    tag: "GUEST SESSIONS",
+    time: "DAY 1",
     angle: "-1.8deg",
     offsetY: 20,
   },
   {
     id: 2,
     src: "/img/Hero/photo-wall-2.webp",
-    title: "24H Prototyping Under Load",
-    tag: "FEATURED // PROVING GROUND",
-    coords: "LAB_3 // 03:42 IST",
+    title: "Hands-on Mechanical Build",
+    tag: "PROTOTYPING",
+    time: "DAY 1",
     isPrimary: true,
     angle: "0deg",
     offsetY: 0,
@@ -38,27 +39,27 @@ const photoArchive: PhotoItem[] = [
   {
     id: 3,
     src: "/img/Hero/photo-wall-3.webp",
-    title: "Auditorium Conclave Address",
-    tag: "DIGNITARY // DELEGATES",
-    coords: "HALL_A // 11:30 IST",
+    title: "Auditorium Ceremony",
+    tag: "MAIN STAGE",
+    time: "DAY 2",
     angle: "2.2deg",
     offsetY: 35,
   },
   {
     id: 4,
     src: "/img/Hero/photo-wall-4.webp",
-    title: "Kinetic Machine Telemetry",
-    tag: "ROBOTICS // ARENA 1",
-    coords: "PIT_BAY // 14:20 IST",
+    title: "Robotics Track Run",
+    tag: "ARENA ACTION",
+    time: "DAY 1",
     angle: "-2.5deg",
     offsetY: -15,
   },
   {
     id: 5,
     src: "/img/Hero/photo-wall-5.webp",
-    title: "Cross-College Collaboration",
-    tag: "COLLABORATION // TEAMS",
-    coords: "DECK_B // 16:50 IST",
+    title: "Student Team Collaboration",
+    tag: "TEAMS & SPIRIT",
+    time: "DAY 2",
     angle: "1.8deg",
     offsetY: 25,
   },
@@ -66,26 +67,34 @@ const photoArchive: PhotoItem[] = [
 
 export default function PhotoWall() {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const containerRef = useRef<HTMLElement>(null);
+  const isInView = useInView(containerRef, { once: true, amount: 0.2 });
+  const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section className={styles.section} id="experience">
+    <section ref={containerRef} className={styles.section} id="experience">
       <div className={styles.innerContainer}>
-        {/* Section Header */}
-        <div className={styles.header}>
+        {/* Section Header with Staggered Entrance */}
+        <motion.div
+          className={styles.header}
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 22 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 22 }}
+          transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+        >
           <div className={styles.kicker}>
             <span className={styles.kickerDot} />
-            CHAPTER_03 // DOCUMENTARY ARCHIVE
+            AMEYA &apos;25 HIGHLIGHTS
           </div>
           <h2 className={styles.title}>
-            The People, The Tension, The Breakthroughs
+            Memories from Last Year
           </h2>
           <p className={styles.subtext}>
-            Unscripted moments from the proving grounds &mdash; student engineers building, testing,
-            and pushing mechanical limits past the breaking point.
+            Unforgettable moments from last year&apos;s fest &mdash; student engineers designing, building,
+            and celebrating mechanical engineering excellence.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Editorial Filmstrip */}
+        {/* Editorial Photo Grid with Staggered Scale & Fade */}
         <div className={styles.filmstripTrack}>
           {photoArchive.map((item, idx) => {
             const isHovered = hoveredId === item.id;
@@ -94,33 +103,56 @@ export default function PhotoWall() {
               Math.abs(photoArchive.findIndex((p) => p.id === hoveredId) - idx) === 1;
 
             return (
-              <div
+              <motion.div
                 key={item.id}
                 className={`${styles.photoCard} ${item.isPrimary ? styles.primaryCard : styles.secondaryCard} ${
                   isHovered ? styles.cardHovered : ""
                 } ${isNeighbor ? styles.cardNeighbor : ""}`}
+                initial={{
+                  opacity: 0,
+                  y: shouldReduceMotion ? 0 : 24,
+                  scale: shouldReduceMotion ? 1 : 0.98,
+                }}
+                animate={
+                  isInView
+                    ? {
+                        opacity: 1,
+                        y: 0,
+                        scale: 1,
+                      }
+                    : {
+                        opacity: 0,
+                        y: shouldReduceMotion ? 0 : 24,
+                        scale: shouldReduceMotion ? 1 : 0.98,
+                      }
+                }
+                transition={{
+                  duration: 0.65,
+                  delay: shouldReduceMotion ? 0 : 0.15 + idx * 0.08,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
                 style={{
                   transform: isHovered
-                    ? "scale(1.05) translateY(-8px) rotate(0deg)"
+                    ? "scale(1.04) translateY(-6px) rotate(0deg)"
                     : `rotate(${item.angle}) translateY(${item.offsetY}px)`,
                 }}
                 onMouseEnter={() => setHoveredId(item.id)}
                 onMouseLeave={() => setHoveredId(null)}
               >
-                {/* Technical Corner Annotations */}
+                {/* Clean Corner Annotations */}
                 <div className={styles.cardHeader}>
                   <div className={styles.frameTag}>
                     <span className={styles.recDot} />
-                    <span>REC // 0{item.id}</span>
+                    <span>PHOTO 0{item.id}</span>
                   </div>
-                  <span className={styles.coordStamp}>{item.coords}</span>
+                  <span className={styles.coordStamp}>{item.time}</span>
                 </div>
 
                 {/* Photograph Viewport */}
                 <div className={styles.imageWrapper} onDragStart={(e) => e.preventDefault()}>
                   <Image
                     src={item.src}
-                    alt={`Documentary capture: ${item.title}`}
+                    alt={`Highlight photo: ${item.title}`}
                     fill
                     sizes={item.isPrimary ? "460px" : "260px"}
                     className={styles.imageElement}
@@ -137,7 +169,7 @@ export default function PhotoWall() {
                   <div className={styles.categoryBadge}>{item.tag}</div>
                   <h3 className={styles.captionTitle}>{item.title}</h3>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { events } from "@/data/events";
@@ -34,7 +34,7 @@ export default function EventsCatalogPage() {
       <div className={styles.navProtectionGlow} aria-hidden="true" />
 
       {/* Ghost Industrial Watermark */}
-      <div className={styles.ghostWatermark} aria-hidden="true">AMEYA 2026</div>
+      
 
       <div className={`container ${styles.contentContainer}`}>
         {/* Header Area */}

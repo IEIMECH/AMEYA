@@ -1,8 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import styles from "./FestivalStory.module.css";
 
 interface StatItem {
@@ -16,8 +17,8 @@ interface StatItem {
 const statsData: StatItem[] = [
   { target: 5, suffix: "+", label: "NATIONAL EDITIONS", sub: "LEGACY OF EXCELLENCE" },
   { target: 1200, suffix: "+", label: "PARTICIPANT ENGINEERS", sub: "ACROSS 40+ INSTITUTES" },
-  { target: 10, suffix: "+", label: "TECHNICAL ARENAS", sub: "HARDWARE & KINETIC LABS" },
-  { target: 150, suffix: "K+", prefix: "₹", label: "TOTAL PRIZE POOL", sub: "MERIT & CHAMPIONSHIPS" },
+  { target: 8, suffix: "", label: "COMPETITION EVENTS", sub: "TECHNICAL & HANDS-ON CHALLENGES" },
+  { target: 150, suffix: "K+", prefix: "₹", label: "TOTAL PRIZE POOL", sub: "MERIT & AWARDS" },
 ];
 
 export default function FestivalStory() {
@@ -25,43 +26,32 @@ export default function FestivalStory() {
   const [hasCounted, setHasCounted] = useState(false);
   const [counts, setCounts] = useState<number[]>([0, 0, 0, 0]);
   const sectionRef = useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
-    if (!sectionRef.current) return;
+    if (!isInView || hasCounted) return;
+    setHasCounted(true);
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [entry] = entries;
-        if (entry.isIntersecting && !hasCounted) {
-          setHasCounted(true);
+    const startTime = performance.now();
+    const duration = 1600;
 
-          const startTime = performance.now();
-          const duration = 1600; // 1.6s smooth count
+    const tick = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
 
-          const tick = (now: number) => {
-            const elapsed = now - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            // Ease out cubic
-            const ease = 1 - Math.pow(1 - progress, 3);
+      setCounts(statsData.map((s) => Math.floor(ease * s.target)));
 
-            setCounts(statsData.map((s) => Math.floor(ease * s.target)));
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        setCounts(statsData.map((s) => s.target));
+      }
+    };
 
-            if (progress < 1) {
-              requestAnimationFrame(tick);
-            } else {
-              setCounts(statsData.map((s) => s.target));
-            }
-          };
-
-          requestAnimationFrame(tick);
-        }
-      },
-      { threshold: 0.25 }
-    );
-
-    observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, [hasCounted]);
+    requestAnimationFrame(tick);
+  }, [isInView, hasCounted]);
 
   return (
     <section ref={sectionRef} className={styles.section} id="intro">
@@ -69,10 +59,15 @@ export default function FestivalStory() {
         {/* Asymmetrical Editorial Header Layout */}
         <div className={styles.editorialGrid}>
           {/* Left Column: Monumental Headline */}
-          <div className={styles.headlineColumn}>
+          <motion.div
+            className={styles.headlineColumn}
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 22 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 22 }}
+            transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+          >
             <div className={styles.kicker}>
               <span className={styles.kickerDot} />
-              CHAPTER_02 // CONCLAVE MANIFESTO
+              ABOUT AMEYA
             </div>
 
             <h2 className={styles.monumentalHeadline}>
@@ -80,26 +75,30 @@ export default function FestivalStory() {
               <span>JUST ANOTHER</span>
               <span className={styles.highlightText}>TECHNICAL FEST.</span>
             </h2>
-          </div>
+          </motion.div>
 
-          {/* Right Column: Editorial Dossier Paragraph */}
-          <div className={styles.copyColumn}>
+          {/* Right Column: Editorial Paragraph */}
+          <motion.div
+            className={styles.copyColumn}
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+            transition={{ duration: 0.65, delay: shouldReduceMotion ? 0 : 0.12, ease: [0.16, 1, 0.3, 1] }}
+          >
             <p className={styles.leadParagraph}>
-              It is a proving ground where theoretical mechanics meets raw kinetic torque.
+              It is a proving ground where theoretical mechanics meets physical reality.
               Founded under the Institution of Engineers India (SAME), the Sanskrit word <em>Ameya</em> translates
-              to <strong>&ldquo;immeasurable&rdquo;</strong> &mdash; because human ingenuity and technical ambition
-              cannot be constrained by standard industrial tolerances.
+              to <strong>&ldquo;immeasurable&rdquo;</strong> &mdash; honoring the limitless potential and creative ambition
+              of young engineers.
             </p>
 
             {showFullStory && (
               <div className={styles.expandedText}>
                 <p>
-                  Whether you are calculating the gear ratios of an 8,000 RPM spinning-disc combat robot,
-                  programming real-time telemetry on an embedded microcontroller under 24-hour hackathon pressure,
-                  or defending pioneering thermodynamics research before an academic jury &mdash; Ameya is your arena.
+                  Whether you are testing your modeling speed in AutoCAD, racing kinetic RC machines,
+                  troubleshooting mechanical assemblies against the clock, or identifying industrial tooling under pressure &mdash; Ameya is your stage.
                 </p>
                 <p>
-                  Two days. Ten high-stakes technical arenas. Over 1,200 visiting engineers from across 40+ institutions
+                  Two days. Eight official solo competitions. Hundreds of aspiring engineers from across institutions
                   converging at the Department of Mechanical Engineering, VVITU.
                 </p>
               </div>
@@ -112,33 +111,50 @@ export default function FestivalStory() {
                 onClick={() => setShowFullStory(!showFullStory)}
                 aria-expanded={showFullStory}
               >
-                <span>{showFullStory ? "COLLAPSE DOSSIER" : "READ COMPLETE MANIFESTO"}</span>
+                <span>{showFullStory ? "SHOW LESS" : "READ FULL STORY"}</span>
                 {showFullStory ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
               </button>
 
               <Link href="/about" className={styles.aboutLink}>
-                <span>About Council &amp; Legacy</span>
+                <span>About Ameya &amp; Legacy</span>
                 <ArrowRight size={13} />
               </Link>
             </div>
-          </div>
+          </motion.div>
         </div>
 
-        {/* 1px Technical Red Datum Divider */}
-        <div className={styles.datumDivider} aria-hidden="true">
+        {/* 1px Clean Crimson Datum Divider */}
+        <motion.div
+          className={styles.datumDivider}
+          aria-hidden="true"
+          initial={{ opacity: 0, scaleX: shouldReduceMotion ? 1 : 0 }}
+          animate={isInView ? { opacity: 1, scaleX: 1 } : { opacity: 0, scaleX: shouldReduceMotion ? 1 : 0 }}
+          transition={{ duration: 0.7, delay: shouldReduceMotion ? 0 : 0.18, ease: [0.16, 1, 0.3, 1] }}
+          style={{ transformOrigin: "left center" }}
+        >
           <span className={styles.datumCrossLeft}>+</span>
           <div className={styles.datumLine} />
-          <span className={styles.datumTag}>IMPACT_TELEMETRY // VERIFIED</span>
+          <span className={styles.datumTag}>BY THE NUMBERS</span>
           <span className={styles.datumCrossRight}>+</span>
-        </div>
+        </motion.div>
 
-        {/* Interactive Statistics Grid with Count-up & Engineering Markers */}
+        {/* Interactive Statistics Grid with Count-up & Staggered Reveal */}
         <div className={styles.statsGrid}>
           {statsData.map((stat, idx) => (
-            <div key={idx} className={styles.statCard}>
+            <motion.div
+              key={idx}
+              className={styles.statCard}
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+              transition={{
+                duration: 0.6,
+                delay: shouldReduceMotion ? 0 : 0.22 + idx * 0.08,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+            >
               <span className={styles.cornerCrossTL}>+</span>
               <span className={styles.cornerCrossBR}>+</span>
-              <div className={styles.statIndex}>0{idx + 1} // METRIC</div>
+              <div className={styles.statIndex}>0{idx + 1}</div>
 
               <div className={styles.numberWrapper}>
                 {stat.prefix && <span className={styles.statPrefix}>{stat.prefix}</span>}
@@ -150,7 +166,7 @@ export default function FestivalStory() {
 
               <div className={styles.statLabel}>{stat.label}</div>
               <div className={styles.statSub}>{stat.sub}</div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

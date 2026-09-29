@@ -1,4 +1,4 @@
-import { MapPin, Navigation, Compass, Bus, Train, Plane, ShieldAlert, Activity } from "lucide-react";
+﻿import { MapPin, Navigation, Compass, Bus, Train, Plane, ShieldAlert, Activity } from "lucide-react";
 import Venue3DViewer from "@/components/venue/Venue3DViewer";
 import styles from "./page.module.css";
 
@@ -20,7 +20,7 @@ export default function VenuePage() {
   return (
     <div className={styles.venuePage} style={{ background: "transparent", minHeight: "100vh", position: "relative", overflow: "hidden" }}>
       {/* Ghost Industrial Watermark */}
-      <div className="ghost-watermark">CAMPUS_3D</div>
+      
 
       <div className="container" style={{ position: "relative", zIndex: 1 }}>
         {/* Header */}
@@ -33,7 +33,7 @@ export default function VenuePage() {
             Venue &amp; <span className="gradient-text">Interactive 3D Map</span>
           </h1>
           <p style={{ color: "#888888", fontSize: "0.95rem", maxWidth: "650px", margin: "0 auto", fontFamily: "var(--font-mono)" }}>
-            [GEO // COORDINATES]: Explore the VVITU Nambur campus in full interactive 3D, inspect mechanical workshops, and navigate arenas.
+            Explore the VVITU Nambur campus in 3D, find workshop locations, and check event venues.
           </p>
         </div>
 
@@ -44,7 +44,7 @@ export default function VenuePage() {
         <div style={{ marginBottom: "4rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "1.75rem" }}>
             <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.8rem", fontWeight: 800, color: "#ffffff", margin: 0 }}>
-              Event Arenas &amp; Facilities
+              Event Locations &amp; Facilities
             </h2>
             <div style={{ flex: 1, height: "1px", background: "rgba(255, 255, 255, 0.08)" }} />
           </div>
@@ -69,7 +69,7 @@ export default function VenuePage() {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
                   <div>
                     <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.65rem", color: "#666666", letterSpacing: "0.1em" }}>
-                      ARENA // {h.id}
+                      VENUE // {h.id}
                     </div>
                     <h3 style={{ margin: "2px 0 0 0", fontSize: "1.15rem", fontWeight: 800, fontFamily: "var(--font-display)", color: "#ffffff" }}>
                       {h.name}
