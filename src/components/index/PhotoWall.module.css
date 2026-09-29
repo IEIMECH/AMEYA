@@ -1,7 +1,7 @@
-﻿.section {
+.section {
   position: relative;
   z-index: 3;
-  padding: 8rem 5vw 9rem;
+  padding: 7rem 5vw 8rem;
   background: var(--machined-dark, #050505);
   overflow: hidden;
 }
@@ -59,18 +59,19 @@
   max-width: 640px;
 }
 
-/* Pure Visual Filmstrip Track */
+/* Responsive Filmstrip Track: Fills the entire section harmoniously */
 .filmstripTrack {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1.75rem;
-  flex-wrap: wrap;
+  gap: clamp(1rem, 1.6vw, 1.85rem);
+  width: 100%;
   position: relative;
-  padding: 2.5rem 0;
+  padding: 3rem 0 2rem;
+  flex-wrap: nowrap;
 }
 
-/* Tactile Photo Card: Photo is the Hero */
+/* Tactile Photo Card: Substantial Editorial Proportions */
 .photoCard {
   position: relative;
   background: #0d0d0d;
@@ -93,21 +94,27 @@
   box-shadow: 0 0 0 2px rgba(229, 29, 37, 0.4), 0 20px 50px rgba(0, 0, 0, 0.9);
 }
 
+/* Primary Hero Photo: Prominently centered, fits section gracefully */
 .primaryCard {
-  width: 360px;
-  border-color: rgba(255, 255, 255, 0.15);
+  flex: 1.35;
+  max-width: 380px;
+  min-width: 250px;
+  border-color: rgba(255, 255, 255, 0.16);
 }
 
 .primaryCard .imageWrapper {
-  height: 270px;
+  height: clamp(300px, 26vw, 400px);
 }
 
+/* Secondary Photos: Balanced flankers filling width */
 .secondaryCard {
-  width: 230px;
+  flex: 1;
+  max-width: 270px;
+  min-width: 180px;
 }
 
 .secondaryCard .imageWrapper {
-  height: 190px;
+  height: clamp(240px, 21vw, 320px);
 }
 
 .cardHovered {
@@ -248,24 +255,42 @@
   -webkit-user-drag: none;
 }
 
-@media (max-width: 900px) {
+/* Tablet & Mobile Responsiveness */
+@media (max-width: 1100px) {
   .section {
-    padding: 6rem 1.25rem 7rem;
+    padding: 6rem 4vw 7rem;
   }
   .filmstripTrack {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.25rem;
+    padding: 1.5rem 0;
   }
   .primaryCard,
   .secondaryCard {
     width: 100%;
-    max-width: 360px;
+    max-width: none;
     transform: none !important;
   }
   .primaryCard .imageWrapper {
-    height: 230px;
+    height: 260px;
   }
   .secondaryCard .imageWrapper {
-    height: 200px;
+    height: 240px;
+  }
+}
+
+@media (max-width: 680px) {
+  .section {
+    padding: 5rem 1.25rem 6rem;
+  }
+  .filmstripTrack {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  .primaryCard .imageWrapper,
+  .secondaryCard .imageWrapper {
+    height: 230px;
   }
   .lightboxCard {
     padding: 6px;
