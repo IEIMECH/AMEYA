@@ -120,7 +120,7 @@ END:VCALENDAR`;
             <span className={styles.metaDivider}>/</span>
             <span className={styles.metaCategory}>ADMISSION & ACCESS TIERS</span>
             <span className={styles.metaDivider}>/</span>
-            <span className={styles.metaSpec}>OCTOBER 04–05, 2026</span>
+            <span className={styles.metaSpec}>OCTOBER 08–09, 2026</span>
           </div>
 
           <div className={styles.titleRow}>

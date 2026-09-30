@@ -45,7 +45,7 @@ export default function FinalRegisterCta({ onRegisterClick }: FinalRegisterCtaPr
               <Sparkles size={12} className={styles.tagIcon} />
               <span>REGISTRATION OPEN</span>
               <span className={styles.dotSeparator}>•</span>
-              <span className={styles.statusActive}>OCTOBER 04–05, 2026</span>
+              <span className={styles.statusActive}>OCTOBER 08–09, 2026</span>
             </motion.div>
 
             <motion.h2

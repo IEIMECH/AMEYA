@@ -52,7 +52,7 @@ export default function PrivacyPage() {
             <div className={styles.sectionContent}>
               <h2>Telemetry &amp; Event Badging</h2>
               <p>
-                During the two days of AMEYA &apos;26 (October 04–05, 2026), physical badge taps and RFID checkpoints are used
+                During the two days of AMEYA &apos;26 (October 08–09, 2026), physical badge taps and RFID checkpoints are used
                 exclusively for campus crowd telemetry, arena occupancy management, and verified certificate generation.
                 We do not sell, rent, or distribute delegate telemetry to third-party marketing brokers.
               </p>

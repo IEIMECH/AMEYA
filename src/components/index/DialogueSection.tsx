@@ -188,7 +188,7 @@ export default function DialogueSection() {
               }}
             >
               <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem", color: "#666666" }}>
-                OCTOBER 04–05, 2026 // VVITU NAMBUR
+                OCTOBER 08–09, 2026 // VVITU NAMBUR
               </span>
               <Link
                 href="/events"

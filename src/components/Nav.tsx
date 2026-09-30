@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import styles from "./Nav.module.css";
@@ -81,6 +82,14 @@ export default function Nav() {
       <header className={`${styles.floatingBar} ${scrolled ? styles.scrolled : ""}`}>
         {/* Brand / Logo */}
         <Link href="/" className={styles.logo} aria-label="AMEYA '26 Home">
+          <Image
+            src="/same-logo.png"
+            alt="SAME Logo"
+            width={24}
+            height={24}
+            className={styles.navLogoImg}
+            priority
+          />
           <span className={styles.logoAmeya}>AMEYA</span>
           <span className={styles.logoYear}>&apos;26</span>
         </Link>

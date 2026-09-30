@@ -63,17 +63,16 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
   icons: {
     icon: [
+      { url: "/same-logo.png", type: "image/png", sizes: "any" },
       { url: "/favicon.svg", type: "image/svg+xml", sizes: "any" },
-      { url: "/icon-192.svg", type: "image/svg+xml", sizes: "192x192" },
-      { url: "/icon-512.svg", type: "image/svg+xml", sizes: "512x512" },
     ],
     apple: [
-      { url: "/apple-touch-icon.svg", type: "image/svg+xml", sizes: "180x180" },
+      { url: "/same-logo.png", type: "image/png", sizes: "180x180" },
     ],
   },
   openGraph: {
     title: "AMEYA '26 — National Technical Conclave | IEI SAME",
-    description: "Where Engineers Dare to Dream. October 04–05, 2026 at VVIIT Nambur, Guntur.",
+    description: "Where Engineers Dare to Dream. October 08–09, 2026 at VVIIT Nambur, Guntur.",
     url: process.env.NEXT_PUBLIC_BASE_URL || "https://ameyafest.vercel.app",
     siteName: "AMEYA '26",
     locale: "en_US",

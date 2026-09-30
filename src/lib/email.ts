@@ -76,7 +76,7 @@ function buildEmailHtml(params: {
         AMEYA &apos;26
       </h1>
       <p style="color:#96908B;font-size:13px;margin:0;letter-spacing:0.02em;">
-        October 04–05, 2026 • Vasireddy Venkatadri Institute of Technology, Nambur
+        October 08–09, 2026 • Vasireddy Venkatadri Institute of Technology, Nambur
       </p>
     </div>
 

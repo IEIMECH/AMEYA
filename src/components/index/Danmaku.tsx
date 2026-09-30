@@ -13,7 +13,7 @@ const initialLines = [
   "Mechanical engineers assemble at VVITU! 🚀",
   "Treasure Hunt clue matrix deployed! 🧭",
   "Nuts & Bolts Speed Race: Rapid threading challenge! 🔩",
-  "October 4–5, 2026: Mark your engineering calendars!",
+  "October 8–9, 2026: Mark your engineering calendars!",
   "Official technical conclave by IEI SAME council! 🛡️",
 ];
 

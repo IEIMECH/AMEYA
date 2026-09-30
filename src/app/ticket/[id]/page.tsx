@@ -180,7 +180,7 @@ export default function TicketPage({
 
             <div className={styles.detail}>
               <span>EVENT SCHEDULE</span>
-              <strong>OCT 04–05, 2026 // VVITU CAMPUS</strong>
+              <strong>OCT 08–09, 2026 // VVITU CAMPUS</strong>
             </div>
 
             {ticket?.members && ticket.members.length > 0 && (

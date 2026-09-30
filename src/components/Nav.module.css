@@ -55,7 +55,7 @@
 /* Brand Logo: Clean typography, no heavy badge */
 .logo {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.15rem;
   text-decoration: none;
   font-family: var(--font-display);
@@ -255,4 +255,13 @@
   .floatingBar.scrolled {
     padding: 0.45rem 1.15rem;
   }
+}
+
+
+.navLogoImg {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  border-radius: 4px;
+  flex-shrink: 0;
 }

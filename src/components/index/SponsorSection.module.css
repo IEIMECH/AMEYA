@@ -1,7 +1,7 @@
 ﻿.section {
   position: relative;
   z-index: 3;
-  padding: 5rem 1.5rem;
+  padding: 7.5rem 1.5rem 5rem 1.5rem;
   background: var(--machined-dark, #050505);
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -184,6 +184,6 @@
   .section {
   position: relative;
   z-index: 3;
-  padding: 5rem 1.5rem;
+  padding: 7.5rem 1.5rem 5rem 1.5rem;
   }
 }

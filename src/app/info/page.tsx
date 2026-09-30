@@ -8,7 +8,7 @@ import styles from "./page.module.css";
 const railItems = [
   {
     title: "Dates",
-    main: "October 04–05, 2026",
+    main: "October 08–09, 2026",
     sub: "Friday & Saturday",
     icon: Calendar,
   },

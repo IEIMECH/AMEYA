@@ -41,7 +41,7 @@ export default function RegistrationSuccessPage() {
             </div>
             <div className={styles.dossierItem}>
               <span className={styles.dossierKey}>EVENT DATES</span>
-              <span className={styles.dossierValue}>OCTOBER 04–05, 2026</span>
+              <span className={styles.dossierValue}>OCTOBER 08–09, 2026</span>
             </div>
             <div className={styles.dossierItem}>
               <span className={styles.dossierKey}>CAMPUS VENUE</span>
@@ -56,7 +56,7 @@ export default function RegistrationSuccessPage() {
           <div className={styles.nextStepsBox}>
             <div className={styles.nextStepTitle}>OPERATIONAL PROTOCOL FOR DAY 01:</div>
             <p className={styles.nextStepText}>
-              Report to the Central Registration Desk at the Mechanical Engineering Foyer between 08:00 and 09:00 IST on October 04.
+              Report to the Central Registration Desk at the Mechanical Engineering Foyer between 08:00 and 09:00 IST on October 08.
               Present your Registration ID or College Identity Card to claim your physical NFC attendee badge and competition briefing pack.
             </p>
           </div>

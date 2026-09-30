@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SPEAKER SECTION: EDITORIAL TYPOGRAPHY & PORTRAIT CARD (MATCHING REFERENCE)
+   SPEAKER SECTION: EDITORIAL TYPOGRAPHY & PURE GUEST PHOTOCARD
    ========================================================================== */
 
 .section {
@@ -55,7 +55,7 @@
   display: grid;
   grid-template-columns: 1.35fr 1fr;
   gap: 3.5rem;
-  align-items: start;
+  align-items: center;
 }
 
 /* Left: Stack of Speaker Names */
@@ -63,7 +63,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.75rem;
-  padding-top: 1rem;
+  padding-top: 0.5rem;
 }
 
 .speakerRow {
@@ -140,116 +140,47 @@
   transform: none !important;
 }
 
-/* Right: Portrait Card */
+/* Right: Pure Portrait Card with In/Out Transitions */
 .portraitCardWrapper {
   width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .portraitCard {
+  width: 100%;
+  max-width: 440px;
+  height: 500px;
   background: var(--surface-elevated, #121212);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-top: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 20px;
+  border-radius: 24px;
   overflow: hidden;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85), 0 0 30px rgba(229, 29, 37, 0.08);
+  position: relative;
 }
 
 .photoContainer {
-  position: relative;
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: 420px;
-  background: #080808;
+  height: 100%;
 }
 
 .portraitImage {
   object-fit: cover;
+  border-radius: 24px;
 }
 
-.photoVignette {
+.subtleVignette {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     to bottom,
-    transparent 55%,
-    rgba(18, 18, 18, 0.95) 100%
+    transparent 65%,
+    rgba(0, 0, 0, 0.4) 100%
   );
   pointer-events: none;
-}
-
-.sessionBadge {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  padding: 0.35rem 0.85rem;
-  border-radius: 9999px;
-  background: rgba(10, 10, 10, 0.75);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
-  color: var(--accent);
-  font-weight: 700;
-}
-
-.cardDetails {
-  padding: 1.75rem 2rem 2rem 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-}
-
-.keynoteTag {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-.cardTopicTitle {
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: #FFFFFF;
-  line-height: 1.25;
-  margin: 0;
-}
-
-.cardQuote {
-  font-size: 0.92rem;
-  font-style: italic;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  border-left: 2px solid var(--accent);
-  padding-left: 1rem;
-  margin: 0.25rem 0 0.5rem 0;
-}
-
-.cardActionRow {
-  margin-top: 0.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.exploreArenasLink {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #FFFFFF;
-  text-decoration: none;
-  transition: color 0.18s ease, transform 0.18s ease;
-}
-
-.exploreArenasLink:hover {
-  color: var(--accent);
-  transform: translateX(3px);
 }
 
 @media (max-width: 1024px) {
@@ -261,8 +192,9 @@
     grid-template-columns: 140px 1fr;
     gap: 1.25rem;
   }
-  .photoContainer {
-    height: 380px;
+  .portraitCard {
+    max-width: 400px;
+    height: 460px;
   }
 }
 
@@ -282,10 +214,8 @@
   .nameButton {
     font-size: 2rem;
   }
-  .photoContainer {
-    height: 340px;
-  }
-  .cardDetails {
-    padding: 1.5rem;
+  .portraitCard {
+    max-width: 320px;
+    height: 400px;
   }
 }

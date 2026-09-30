@@ -9,7 +9,7 @@ export default function HeroCountdownTicker() {
 
   useEffect(() => {
     setMounted(true);
-    const festDate = new Date("2026-10-04T09:00:00+05:30").getTime();
+    const festDate = new Date("2026-10-08T09:00:00+05:30").getTime();
 
     const updateCountdown = () => {
       const now = new Date().getTime();
@@ -42,7 +42,7 @@ export default function HeroCountdownTicker() {
           : "08D : 11H : 31M : 40S"}
       </span>
       <span className={styles.tickerDivider}>/</span>
-      <span className={styles.tickerDate}>OCT 04–05</span>
+      <span className={styles.tickerDate}>OCT 08–09</span>
     </div>
   );
 }
