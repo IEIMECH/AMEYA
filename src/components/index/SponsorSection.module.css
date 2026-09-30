@@ -1,7 +1,7 @@
 ﻿.section {
   position: relative;
   z-index: 3;
-  padding: 8rem 5vw 9rem;
+  padding: 5rem 1.5rem;
   background: var(--machined-dark, #050505);
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -182,6 +182,8 @@
     grid-template-columns: 1fr;
   }
   .section {
-    padding: 6rem 1.25rem 7rem;
+  position: relative;
+  z-index: 3;
+  padding: 5rem 1.5rem;
   }
 }

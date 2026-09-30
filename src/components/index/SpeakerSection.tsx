@@ -1,10 +1,9 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { motion, AnimatePresence, useInView, useReducedMotion } from "framer-motion";
 import styles from "./SpeakerSection.module.css";
 
 interface Speaker {
@@ -62,7 +61,7 @@ const speakers: Speaker[] = [
     quote: "When you break Mach 1, physics demands absolute, uncompromising honesty from your materials.",
   },
   {
-    id: "4",
+    id: 4,
     code: "GUEST 04",
     name: "Vikram Singhania",
     role: "Founder & Chief Technology Officer",
@@ -74,15 +73,13 @@ const speakers: Speaker[] = [
     image: "/img/guest/speaker-4.webp",
     quote: "The future of engineering is not drawing lines on a screen — it is teaching algorithms the laws of stress and thermal yield.",
   },
-] as unknown as Speaker[];
+];
 
 export default function SpeakerSection() {
   const [activeIdx, setActiveIdx] = useState(0);
   const activeSpeaker = speakers[activeIdx];
-  const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLElement>(null);
   const [isRevealed, setIsRevealed] = useState(false);
-  const shouldReduceMotion = useReducedMotion();
 
   // Bulletproof one-time entrance reveal that NEVER reverts
   useEffect(() => {
@@ -112,7 +109,7 @@ export default function SpeakerSection() {
   }, [isRevealed]);
 
   return (
-    <section ref={sectionRef} className={styles.section} id="speakers">
+    <section className={styles.section} id="speakers">
       <div className={styles.innerContainer}>
         {/* Section Header: Animate once into view, permanently visible */}
         <header
@@ -125,112 +122,77 @@ export default function SpeakerSection() {
           </p>
         </header>
 
-        {/* 2-Column Guest Layout */}
-        <div className={styles.dossierGrid}>
-          {/* Left Column: Speaker Selector List */}
-          <div className={styles.speakerList} role="tablist" aria-label="Guests and Speakers List">
+        {/* Editorial Guest Showcase Layout matching Reference */}
+        <div className={styles.editorialShowcase}>
+          {/* Left Column: Big Typographic Stack of Speaker Names */}
+          <div className={styles.namesColumn} role="tablist" aria-label="Keynote Speakers">
             {speakers.map((sp, idx) => {
               const isActive = activeIdx === idx;
               return (
-                <button
+                <div
                   key={sp.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={isActive}
+                  className={`${styles.speakerRow} ${isActive ? styles.speakerRowActive : ""}`}
                   onClick={() => setActiveIdx(idx)}
-                  className={`${styles.speakerListItem} ${isActive ? styles.itemActive : ""}`}
                 >
-                  <div className={styles.thumbWrapper}>
-                    <Image
-                      src={sp.image}
-                      alt={sp.name}
-                      fill
-                      sizes="48px"
-                      className={styles.thumbImage}
-                      priority={idx === 0}
-                    />
+                  {/* Active Speaker Sub-headline/Role on Left (matching reference) */}
+                  <div className={styles.roleCol}>
+                    {isActive ? (
+                      <div className={styles.activeMetaBlock}>
+                        <span className={styles.activeRoleText}>{sp.role}</span>
+                        <span className={styles.activeAffiliationText}>{sp.affiliation}</span>
+                      </div>
+                    ) : (
+                      <span className={styles.inactivePlaceholder} aria-hidden="true" />
+                    )}
                   </div>
 
-                  <div className={styles.itemMeta}>
-                    <span className={styles.itemCode}>{sp.code}</span>
-                    <h3 className={styles.itemName}>{sp.name}</h3>
-                    <p className={styles.itemRole}>{sp.role}</p>
-                  </div>
-                </button>
+                  {/* Speaker Name in Bold Typographic Scale */}
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={isActive}
+                    className={`${styles.nameButton} ${isActive ? styles.nameButtonActive : ""}`}
+                  >
+                    {sp.name}
+                  </button>
+                </div>
               );
             })}
           </div>
 
-          {/* Right Column: Interactive Profile Surface with Crossfade + Directional Transition (Item 6) */}
-          <div className={styles.profileSurface}>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeSpeaker.id}
-                className={styles.profileInner}
-                initial={{ opacity: 0, x: shouldReduceMotion ? 0 : 14 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: shouldReduceMotion ? 0 : -14 }}
-                transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
-              >
-                {/* Profile Top Row: Photo + Bio Meta */}
-                <div className={styles.profileTopRow}>
-                  <div className={styles.portraitWrapper}>
-                    <Image
-                      src={activeSpeaker.image}
-                      alt={activeSpeaker.name}
-                      fill
-                      sizes="220px"
-                      className={styles.portraitImage}
-                      priority
-                    />
-                  </div>
-
-                  <div className={styles.identityDetails}>
-                    <span className={styles.codeTag}>{activeSpeaker.code}</span>
-                    <h3 className={styles.speakerName}>{activeSpeaker.name}</h3>
-                    <p className={styles.speakerRole}>{activeSpeaker.role}</p>
-
-                    <div className={styles.specGrid}>
-                      <div>
-                        <span className={styles.specLabel}>FIELD OF EXPERTISE</span>
-                        <span className={styles.specValue}>{activeSpeaker.field}</span>
-                      </div>
-                      <div>
-                        <span className={styles.specLabel}>AFFILIATION</span>
-                        <span className={styles.specValue}>{activeSpeaker.affiliation}</span>
-                      </div>
-                      <div>
-                        <span className={styles.specLabel}>SESSION TIMING</span>
-                        <span className={styles.specValueHighlight}>{activeSpeaker.session}</span>
-                      </div>
-                    </div>
-                  </div>
+          {/* Right Column: Prominent Portrait Card matching Reference */}
+          <div className={styles.portraitCardWrapper}>
+            <div className={styles.portraitCard}>
+              <div className={styles.photoContainer}>
+                <Image
+                  src={activeSpeaker.image}
+                  alt={activeSpeaker.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 460px"
+                  className={styles.portraitImage}
+                  priority
+                />
+                <div className={styles.photoVignette} />
+                <div className={styles.sessionBadge}>
+                  <span>{activeSpeaker.session}</span>
                 </div>
+              </div>
 
-                {/* Topic & Quote */}
-                <div className={styles.topicSection}>
-                  <div className={styles.topicHeaderLabel}>KEYNOTE ADDRESS TOPIC</div>
-                  <h4 className={styles.topicTitle}>{activeSpeaker.topic}</h4>
-
-                  <blockquote className={styles.quoteBlock}>
-                    &ldquo;{activeSpeaker.quote}&rdquo;
-                  </blockquote>
-
-                  <p className={styles.topicDesc}>{activeSpeaker.desc}</p>
-                </div>
-
-                {/* Footer Action */}
-                <div className={styles.dossierFooter}>
-                  <span className={styles.footerNote}>
-                    DEPARTMENT OF MECHANICAL ENGINEERING // MAIN AUDITORIUM
-                  </span>
-                  <Link href="/events" className={styles.eventsButton}>
+              {/* Card Topic & Details Below Photo */}
+              <div className={styles.cardDetails}>
+                <span className={styles.keynoteTag}>KEYNOTE ADDRESS</span>
+                <h3 className={styles.cardTopicTitle}>{activeSpeaker.topic}</h3>
+                <blockquote className={styles.cardQuote}>
+                  &ldquo;{activeSpeaker.quote}&rdquo;
+                </blockquote>
+                <div className={styles.cardActionRow}>
+                  <Link href="/events" className={styles.exploreArenasLink}>
                     <span>View Championship Arenas</span>
                     <ArrowRight size={13} />
                   </Link>
                 </div>
-              </motion.div>
-            </AnimatePresence>
+              </div>
+            </div>
           </div>
         </div>
       </div>

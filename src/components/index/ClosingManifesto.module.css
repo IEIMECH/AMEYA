@@ -1,7 +1,7 @@
 .section {
   position: relative;
   width: 100%;
-  padding: 8rem 5vw 6rem;
+  padding: 5rem 1.5rem;
   background: #050505;
   color: var(--text-primary, #F2EDE8);
   overflow: hidden;
@@ -142,7 +142,9 @@
 
 @media (max-width: 768px) {
   .section {
-    padding: 5rem 1.25rem 4rem;
+  position: relative;
+  width: 100%;
+  padding: 5rem 1.5rem;
   }
   .lineIndented {
     transform: none;

@@ -6,7 +6,7 @@ import { teamMembers } from "@/data/team";
 import styles from "./InteractiveTeamGallery.module.css";
 
 const TOTAL_MEMBERS = teamMembers.length; // 18
-const IDLE_DRIFT_SPEED = 30; // pixels per second (smooth, continuous idle motion)
+const IDLE_DRIFT_SPEED = 28; // pixels per second (smooth, continuous idle motion)
 
 function LinkedinIcon({ size = 16 }: { size?: number }) {
   return (
@@ -60,6 +60,7 @@ export default function InteractiveTeamGallery() {
   // Single authoritative source of truth for carousel position
   const currentXRef = useRef<number>(0);
   const isDraggingRef = useRef<boolean>(false);
+  const hasDraggedRef = useRef<boolean>(false);
   const dragStartXRef = useRef<number>(0);
   const carouselStartXRef = useRef<number>(0);
   const pointerHistoryRef = useRef<Array<{ x: number; time: number }>>([]);
@@ -169,8 +170,8 @@ export default function InteractiveTeamGallery() {
             current = wrapPosition(target);
             currentXRef.current = current;
             applyTrackX(current);
-            // Pause for 1.8 seconds after user drag/click snap so user can read dossier
-            pauseUntilRef.current = now + 1800;
+            // Pause after user drag/click snap so user can read dossier
+            pauseUntilRef.current = now + 5000;
             motionModeRef.current = "PAUSE";
           }
         } else if (motionModeRef.current === "PAUSE") {
@@ -216,7 +217,7 @@ export default function InteractiveTeamGallery() {
 
   // Pointer Down (Immediate interruptible grab: reads actual presentation value)
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    // 1. Immediately interrupt any motion mode
+    // 1. Interrupt motion
     motionModeRef.current = "PAUSE";
     pauseUntilRef.current = Infinity;
 
@@ -237,6 +238,7 @@ export default function InteractiveTeamGallery() {
     dragStartXRef.current = e.clientX;
     carouselStartXRef.current = currentX;
     isDraggingRef.current = true;
+    hasDraggedRef.current = false;
     setIsGrabbing(true);
 
     // 5. Initialize velocity tracking
@@ -248,6 +250,10 @@ export default function InteractiveTeamGallery() {
     if (!isDraggingRef.current) return;
 
     const delta = e.clientX - dragStartXRef.current;
+    if (Math.abs(delta) > 5) {
+      hasDraggedRef.current = true;
+    }
+
     let nextX = carouselStartXRef.current + delta;
 
     // Seamless continuous wrapping during long drag strokes
@@ -285,6 +291,11 @@ export default function InteractiveTeamGallery() {
       // Safe fallback
     }
 
+    if (!hasDraggedRef.current) {
+      // Was a tap/click, click handler handles it
+      return;
+    }
+
     // Calculate release velocity from recent history (px/ms)
     const history = pointerHistoryRef.current;
     let velocityPxPerMs = 0;
@@ -318,14 +329,24 @@ export default function InteractiveTeamGallery() {
     onPointerUp(e);
   };
 
-  // Direct card click to center
+  // When user clicks a card: immediately center it and display info
   const handleCardClick = (globalIdx: number) => {
-    if (isDraggingRef.current) return;
+    if (hasDraggedRef.current) return; // Ignore if user was actively dragging
     const spacing = cardSpacingRef.current;
     const targetX = -globalIdx * spacing;
+
+    // 1. Immediately update active member info
+    const normIdx = ((globalIdx % TOTAL_MEMBERS) + TOTAL_MEMBERS) % TOTAL_MEMBERS;
+    setActiveDataIndex(normIdx);
+    currentActiveIdxRef.current = normIdx;
+
+    // 2. Smoothly spring the clicked card to the exact center
     springTargetRef.current = targetX;
     springVelocityRef.current = 0;
     motionModeRef.current = "SPRING";
+
+    // 3. Pause auto-drift so user can comfortably inspect the card
+    pauseUntilRef.current = performance.now() + 6000;
   };
 
   const activeMember = teamMembers[activeDataIndex] || teamMembers[0];
@@ -349,7 +370,7 @@ export default function InteractiveTeamGallery() {
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerCancel}
-        aria-label="Interactive Team Carousel. Drag to browse officers, or watch continuous progression."
+        aria-label="Interactive Team Carousel. Click any card to center and inspect."
         role="region"
       >
         <div ref={trackRef} className={styles.track}>
@@ -384,31 +405,18 @@ export default function InteractiveTeamGallery() {
             );
           })}
         </div>
-
-        {/* Minimal Counter Metadata */}
-        <div className={styles.counterMeta} aria-live="polite">
-          <span className={styles.counterCurrent}>
-            {String(activeDataIndex + 1).padStart(2, "0")}
-          </span>
-          <span className={styles.counterDivider}>/</span>
-          <span className={styles.counterTotal}>
-            {String(TOTAL_MEMBERS).padStart(2, "0")}
-          </span>
-        </div>
       </div>
 
-      {/* 3. Detailed Profile Panel for Active Center Member (Completely independent in document flow) */}
+      {/* 3. Detailed Profile Panel for Active Center Member (No Level-1 2 3 4) */}
       <section className={styles.activeDetailSection} aria-label="Selected Officer Dossier">
         <div className={styles.detailContainer}>
-          {/* Structural Header Row: ID on Left, Level on Right */}
+          {/* Structural Header Row: ID on Left, Committee on Right (No Level Indicator) */}
           <div className={styles.detailMetaRow}>
             <div className={styles.detailIdBlock}>
-              <span className={styles.detailIdLabel}>ID //</span>
+              <span className={styles.detailIdLabel}>OFFICER ID //</span>
               <span className={styles.detailCallsign}>{activeMember.callsign}</span>
             </div>
-            <div className={styles.detailLevelBadge}>
-              <span className={styles.detailLevelText}>{activeMember.clearance}</span>
-            </div>
+            <span className={styles.detailDivisionBadge}>{activeMember.division}</span>
           </div>
 
           <h2 className={styles.detailName}>{activeMember.name}</h2>

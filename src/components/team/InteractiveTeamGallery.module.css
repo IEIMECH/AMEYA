@@ -2,7 +2,7 @@
    INTERACTIVE HORIZONTAL TEAM CAROUSEL (DIRECT MANIPULATION & MOMENTUM)
    ========================================================================== */
 
-/* Page Wrapper: Normal Document Flow, Never Clamped or Artificially Clipped */
+/* Page Wrapper: Normal Document Flow, Never Clipped */
 .teamPageWrapper {
   position: relative;
   min-height: 100vh;
@@ -56,12 +56,12 @@
 .galleryViewport {
   position: relative;
   width: 100%;
-  height: 520px;
+  height: 500px;
   overflow: hidden;
   user-select: none;
   touch-action: pan-y;
   cursor: grab;
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
 }
 
 .galleryViewport.grabbing {
@@ -71,12 +71,12 @@
 /* Single Authoritative Continuous Motion Track */
 .track {
   position: absolute;
-  top: 30px;
+  top: 25px;
   left: calc(50% - 145px); /* Centers card 0 at X = 0 (290px/2 = 145px) */
   display: flex;
   gap: 24px;
   will-change: transform;
-  transition: none !important; /* Absolutely no CSS transition on the dragged/animated track */
+  transition: none !important; /* Absolutely no CSS transition on track */
 }
 
 /* Portrait Card: Rigid Dimensions, No Layout Shifts */
@@ -97,9 +97,9 @@
 }
 
 .portraitCardActive {
-  border-color: rgba(255, 255, 255, 0.28);
-  border-top-color: rgba(255, 255, 255, 0.45);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.95), 0 0 32px rgba(229, 29, 37, 0.16);
+  border-color: rgba(255, 255, 255, 0.3);
+  border-top-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.95), 0 0 32px rgba(229, 29, 37, 0.18);
 }
 
 .portraitImageWrapper {
@@ -155,42 +155,7 @@
   margin: 0;
 }
 
-/* Subtle Metadata Counter */
-.counterMeta {
-  position: absolute;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.35rem;
-  padding: 0.35rem 0.9rem;
-  border-radius: 9999px;
-  background: rgba(14, 14, 14, 0.75);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-  pointer-events: none;
-}
-
-.counterCurrent {
-  color: #FFFFFF;
-  font-weight: 700;
-}
-
-.counterDivider {
-  color: var(--accent);
-}
-
-.counterTotal {
-  color: var(--text-muted);
-}
-
-/* Active Member Dossier Panel: In Normal Document Flow, Completely Outside Track */
+/* Active Member Dossier Panel: Normal Document Flow (No Level indicator, No 01/18 counter) */
 .activeDetailSection {
   max-width: 760px;
   margin: 0 auto;
@@ -208,7 +173,7 @@
   -webkit-backdrop-filter: blur(18px);
 }
 
-/* Structural Header Row: ID on Left, Level Badge on Right */
+/* Clean Header Row: ID on Left, Division Badge on Right */
 .detailMetaRow {
   display: flex;
   align-items: center;
@@ -240,22 +205,17 @@
   text-transform: uppercase;
 }
 
-.detailLevelBadge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.65rem;
-  border-radius: 4px;
-  background: rgba(229, 29, 37, 0.08);
-  border: 1px solid rgba(229, 29, 37, 0.24);
-}
-
-.detailLevelText {
+.detailDivisionBadge {
   font-family: var(--font-mono);
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   color: #FFFFFF;
   text-transform: uppercase;
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
+  background: rgba(229, 29, 37, 0.08);
+  border: 1px solid rgba(229, 29, 37, 0.24);
 }
 
 .detailName {
@@ -345,7 +305,7 @@
     padding-bottom: 4rem;
   }
   .galleryViewport {
-    height: 440px;
+    height: 430px;
     margin-bottom: 2rem;
   }
   .track {

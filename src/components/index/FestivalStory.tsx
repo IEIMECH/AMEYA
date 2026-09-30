@@ -1,9 +1,8 @@
-﻿"use client";
+"use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
-import { motion, useInView, useReducedMotion } from "framer-motion";
 import styles from "./FestivalStory.module.css";
 
 interface StatItem {
@@ -23,23 +22,12 @@ const statsData: StatItem[] = [
 
 export default function FestivalStory() {
   const [showFullStory, setShowFullStory] = useState(false);
-  const [hasCounted, setHasCounted] = useState(false);
-  const [counts, setCounts] = useState<number[]>([0, 0, 0, 0]);
-  const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, amount: "some" });
-  const shouldReduceMotion = useReducedMotion();
+  const [counts, setCounts] = useState<number[]>([4, 1200, 8, 50]);
 
+  // Smooth numeric counter animation on mount
   useEffect(() => {
-    if (!isInView || hasCounted) return;
-    setHasCounted(true);
-
-    if (shouldReduceMotion) {
-      setCounts(statsData.map((s) => s.target));
-      return;
-    }
-
     const startTime = performance.now();
-    const duration = 1000;
+    const duration = 1200;
 
     const tick = (now: number) => {
       const elapsed = now - startTime;
@@ -56,34 +44,22 @@ export default function FestivalStory() {
     };
 
     requestAnimationFrame(tick);
-  }, [isInView, hasCounted, shouldReduceMotion]);
+  }, []);
 
   return (
-    <section ref={sectionRef} className={styles.section} id="intro">
+    <section className={styles.section} id="intro">
       <div className={styles.innerContainer}>
-        {/* Editorial Headline & Story */}
+        {/* Editorial Headline & Story: Permanent, Never Disappears on Scroll */}
         <div className={styles.editorialGrid}>
-          <motion.div
-            className={styles.headlineColumn}
-            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: "some" }}
-            transition={{ type: "spring", bounce: 0, duration: 0.45 }}
-          >
+          <div className={styles.headlineColumn}>
             <h2 className={styles.monumentalHeadline}>
               <span>AMEYA IS NOT</span>
               <span>JUST ANOTHER</span>
               <span className={styles.highlightText}>TECHNICAL FEST.</span>
             </h2>
-          </motion.div>
+          </div>
 
-          <motion.div
-            className={styles.copyColumn}
-            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: "some" }}
-            transition={{ type: "spring", bounce: 0, duration: 0.45, delay: shouldReduceMotion ? 0 : 0.08 }}
-          >
+          <div className={styles.copyColumn}>
             <p className={styles.leadParagraph}>
               It is a proving ground where theoretical continuum mechanics meets the physical reality of precision machining, robotics, and design.
               Founded under the Institution of Engineers India (SAME), the Sanskrit word <em>Ameya</em> translates
@@ -108,43 +84,23 @@ export default function FestivalStory() {
             </div>
 
             {showFullStory && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3 }}
-                className={styles.expandedStoryBlock}
-              >
+              <div className={styles.expandedStoryBlock}>
                 <p>
                   Held annually at Vasireddy Venkatadri Institute of Technology (VVITU), Ameya brings together collegiate engineers from across India.
                   Across two days of intense competition, participants test their mastery through parametric CAD challenges, high-speed kinematic teardowns, obstacle racecourses, and technical diagnostics.
                 </p>
-              </motion.div>
+              </div>
             )}
-          </motion.div>
+          </div>
         </div>
 
         {/* Clean Datum Line */}
         <div className={styles.datumDivider} aria-hidden="true" />
 
-        {/* Editorial Data Modules (Item 6) */}
+        {/* Editorial Data Modules: Permanent, Visible Across All Scrolling */}
         <div className={styles.statsGrid}>
           {statsData.map((stat, idx) => (
-            <motion.div
-              key={idx}
-              className={styles.statCard}
-              initial={{
-                opacity: 0,
-                y: shouldReduceMotion ? 0 : 16,
-              }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: "some" }}
-              transition={{
-                duration: 0.4,
-                delay: shouldReduceMotion ? 0 : idx * 0.06,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-            >
+            <div key={idx} className={styles.statCard}>
               <div className={styles.numberWrapper}>
                 {stat.prefix && <span className={styles.statPrefix}>{stat.prefix}</span>}
                 <span className={styles.statNumber}>
@@ -155,7 +111,7 @@ export default function FestivalStory() {
 
               <div className={styles.statLabel}>{stat.label}</div>
               <div className={styles.statSub}>{stat.sub}</div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

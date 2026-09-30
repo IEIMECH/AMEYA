@@ -1,10 +1,10 @@
-﻿/* ==========================================================================
-   FESTIVAL STORY & EDITORIAL DATA MODULES
+/* ==========================================================================
+   FESTIVAL STORY & EDITORIAL DATA MODULES (SYMMETRICAL SPACING)
    ========================================================================== */
 
 .section {
   position: relative;
-  padding: 6rem 1.5rem 7rem;
+  padding: 5rem 1.5rem;
   background: transparent;
   z-index: 2;
 }
@@ -19,6 +19,12 @@
   grid-template-columns: 1fr 1fr;
   gap: 4rem;
   align-items: start;
+}
+
+.headlineColumn,
+.copyColumn {
+  opacity: 1;
+  display: block;
 }
 
 .monumentalHeadline {
@@ -111,10 +117,10 @@
   width: 100%;
   height: 1px;
   background: rgba(255, 255, 255, 0.08);
-  margin: 4rem 0 3rem 0;
+  margin: 3.5rem 0 2.5rem 0;
 }
 
-/* Editorial Data Modules (Item 6) */
+/* Editorial Data Modules */
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -136,6 +142,7 @@
               border-color 0.25s ease,
               box-shadow 0.25s ease;
   cursor: default;
+  opacity: 1;
 }
 
 .statCard:hover {
@@ -214,13 +221,12 @@
 
 @media (max-width: 768px) {
   .section {
-    padding: 4rem 1.25rem 5rem;
+    padding: 3.5rem 1.25rem;
   }
   .editorialGrid {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
-  /* Clean 2-column grid on mobile (Req 23.5) */
   .statsGrid {
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
