@@ -11,14 +11,12 @@ import WrenchCursor from "@/components/common/WrenchCursor";
 const syne = Syne({
   subsets: ["latin"],
   variable: "--font-display",
-  weight: ["600", "700", "800"],
   display: "swap",
 });
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
-  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
