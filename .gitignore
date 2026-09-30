@@ -54,3 +54,13 @@ CLAUDE.md
 GEMINI.md
 SKILL_*.md
 .agents/
+
+# AI skills, directives & automation tools
+/directives/
+/execution/
+/skill-creator/
+/theme-factory/
+/algorithmic-art/
+/canvas-design/
+/frontend-design/
+/webapp-testing/
