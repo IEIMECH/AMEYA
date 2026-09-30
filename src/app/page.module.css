@@ -314,3 +314,53 @@
     transform: none !important;
   }
 }
+
+/* VVITU University Top-Left Brand Anchor */
+.vvitTopLogoLink {
+  position: absolute;
+  top: clamp(1rem, 2.2vw, 1.75rem);
+  left: clamp(1.25rem, 4vw, 3.5rem);
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  pointer-events: auto;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease;
+}
+
+.vvitTopLogoLink:hover {
+  transform: translateY(-2px) scale(1.04);
+  opacity: 0.9;
+}
+
+.vvitLogoImg {
+  height: clamp(42px, 4vw, 56px);
+  width: auto;
+  object-fit: contain;
+  border-radius: 6px;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.7));
+}
+
+@media (max-width: 1024px) {
+  .vvitTopLogoLink {
+    top: clamp(0.75rem, 1.8vw, 1.25rem);
+    left: 4vw;
+  }
+  .vvitLogoImg {
+    height: 38px;
+  }
+}
+
+@media (max-width: 768px) {
+  .vvitTopLogoLink {
+    position: relative;
+    top: auto;
+    left: auto;
+    margin-bottom: 0.75rem;
+    align-self: flex-start;
+  }
+  .vvitLogoImg {
+    height: 36px;
+  }
+}

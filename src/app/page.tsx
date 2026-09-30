@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import Hero3DCanvas from "@/components/index/Hero3DCanvas";
 import HeroCountdownTicker from "@/components/index/HeroCountdownTicker";
@@ -40,6 +41,24 @@ export default function Home() {
       <Hero3DCanvas />
 
       <section className={styles.heroSection} id="hero" aria-label="AMEYA Hero">
+        {/* VVITU Institutional Portal Redirect at Top Left */}
+        <a
+          href="https://www.vvitu.ac.in/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.vvitTopLogoLink}
+          aria-label="Vasireddy Venkatadri International Technological University (VVITU)"
+          title="Vasireddy Venkatadri International Technological University — Official Website"
+        >
+          <Image
+            src="/vvit-logo.jpg"
+            alt="VVITU Logo"
+            width={90}
+            height={68}
+            className={styles.vvitLogoImg}
+            priority
+          />
+        </a>
         <div className={styles.heroGrid}>
           {/* Main Left Content Block - Unobstructed Headline Dominance */}
           <div className={styles.leftHeroBlock}>
