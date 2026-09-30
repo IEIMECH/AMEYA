@@ -52,58 +52,56 @@
   color: var(--text-secondary);
 }
 
-/* Direct-Manipulation Carousel Viewport (Req 9, 10, 18) */
+/* Direct-Manipulation Carousel Viewport */
 .galleryViewport {
   position: relative;
   width: 100%;
-  height: 480px;
+  height: 470px;
   display: flex;
   align-items: center;
-  justify-content: center;
   overflow: hidden;
   user-select: none;
   touch-action: pan-y;
   cursor: grab;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 .galleryViewport.grabbing {
   cursor: grabbing !important;
 }
 
-.carouselTrack {
+/* Single Authoritative Continuous Motion Track */
+.track {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  pointer-events: none;
+  top: 30px;
+  left: calc(50% - 145px); /* Centers card 0 at X = 0 */
+  display: flex;
+  gap: 24px;
+  will-change: transform;
+  transition: none !important; /* CRITICAL: Absolutely no CSS transition on track */
 }
 
-/* Portrait Card: 1:1 Direct Manipulation Card (Req 12, 14, 18) */
+/* Portrait Card: Rigid Dimensions, No Layout Shifts */
 .portraitCard {
-  position: absolute;
-  top: 0;
-  left: 0;
+  flex: 0 0 290px;
   width: 290px;
   height: 410px;
-  margin-left: -145px;
   border-radius: 20px;
   overflow: hidden;
   background: var(--surface-elevated, #121212);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-top: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow: 0 20px 48px rgba(0, 0, 0, 0.85);
-  pointer-events: auto;
-  transform-origin: center center;
-  transition: box-shadow 0.25s ease, border-color 0.25s ease;
-  will-change: transform, opacity;
+  cursor: pointer;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .portraitCardActive {
-  border-color: rgba(255, 255, 255, 0.22);
-  border-top-color: rgba(255, 255, 255, 0.35);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.95), 0 0 32px rgba(229, 29, 37, 0.12);
+  border-color: rgba(255, 255, 255, 0.28);
+  border-top-color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.95), 0 0 32px rgba(229, 29, 37, 0.16);
 }
 
 .portraitImageWrapper {
@@ -322,12 +320,17 @@
     padding-bottom: 4rem;
   }
   .galleryViewport {
-    height: 420px;
+    height: 390px;
+  }
+  .track {
+    top: 20px;
+    left: calc(50% - 115px); /* Centers card 0 at X = 0 on mobile (230px/2 = 115px) */
+    gap: 16px;
   }
   .portraitCard {
-    width: 240px;
+    flex: 0 0 230px;
+    width: 230px;
     height: 350px;
-    margin-left: -120px;
   }
   .detailContainer {
     padding: 1.5rem;

@@ -18,6 +18,8 @@
 .header {
   max-width: 720px;
   margin-bottom: 3.5rem;
+  min-height: 80px;
+  opacity: 1;
 }
 
 .title {

@@ -19,6 +19,8 @@
   text-align: center;
   max-width: 680px;
   margin: 0 auto 3rem auto;
+  min-height: 80px;
+  opacity: 1;
 }
 
 .title {

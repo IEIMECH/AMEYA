@@ -86,13 +86,19 @@ export default function SpeakerSection() {
   return (
     <section ref={sectionRef} className={styles.section} id="speakers">
       <div className={styles.innerContainer}>
-        {/* Section Header (Req 5: Meet Our Guests) */}
-        <div className={styles.header}>
+        {/* Section Header: Animate once into view, permanently visible */}
+        <motion.header
+          className={styles.header}
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ type: "spring", bounce: 0, duration: 0.45 }}
+        >
           <h2 className={styles.title}>Meet Our Guests</h2>
           <p className={styles.subtext}>
             Meet the researchers, industry leaders, and engineering specialists sharing their insights at AMEYA &apos;26.
           </p>
-        </div>
+        </motion.header>
 
         {/* 2-Column Guest Layout */}
         <div className={styles.dossierGrid}>

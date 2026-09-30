@@ -67,9 +67,9 @@ export default function SponsorSection() {
         {/* Section Header: Permanently Visible, Immediate Entrance */}
         <motion.header
           className={styles.header}
-          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 18 }}
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: "some" }}
+          viewport={{ once: true, amount: 0.2 }}
           transition={{ type: "spring", bounce: 0, duration: 0.45 }}
         >
           <h2 id="sponsors-heading" className={styles.title}>

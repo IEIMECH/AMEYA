@@ -16,7 +16,8 @@ export default function ClosingManifesto() {
         className={styles.ambientGradients}
         aria-hidden="true"
         initial={{ opacity: 0 }}
-        animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
         transition={{ duration: 1.0, ease: "easeOut" }}
       />
       

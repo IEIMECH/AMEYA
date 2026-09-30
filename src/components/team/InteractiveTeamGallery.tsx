@@ -3,6 +3,10 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { Mail } from "lucide-react";
+import { teamMembers } from "@/data/team";
+import styles from "./InteractiveTeamGallery.module.css";
+
+const TOTAL_MEMBERS = teamMembers.length; // 18
 
 function LinkedinIcon({ size = 16 }: { size?: number }) {
   return (
@@ -41,184 +45,224 @@ function GithubIcon({ size = 16 }: { size?: number }) {
     </svg>
   );
 }
-import { teamMembers } from "@/data/team";
-import styles from "./InteractiveTeamGallery.module.css";
 
-const TOTAL_MEMBERS = teamMembers.length;
+// 3 identical sets of 18 members for an infinitely continuous track
+const TRIPLE_MEMBERS = [
+  ...teamMembers.map((m, i) => ({ ...m, globalIndex: i })),
+  ...teamMembers.map((m, i) => ({ ...m, globalIndex: i + TOTAL_MEMBERS })),
+  ...teamMembers.map((m, i) => ({ ...m, globalIndex: i + TOTAL_MEMBERS * 2 })),
+];
 
 export default function InteractiveTeamGallery() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  
-  // Continuous physical carousel state
-  const offsetRef = useRef<number>(0);
-  const velocityRef = useRef<number>(0);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  // Single authoritative source of truth for carousel position
+  const currentXRef = useRef<number>(0);
   const isDraggingRef = useRef<boolean>(false);
-  const isInteractingRef = useRef<boolean>(false);
-  const lastXRef = useRef<number>(0);
-  const lastTimeRef = useRef<number>(0);
-  const springTargetRef = useRef<number | null>(null);
-  const animFrameRef = useRef<number | null>(null);
-  const cardSpacingRef = useRef<number>(320);
+  const dragStartXRef = useRef<number>(0);
+  const carouselStartXRef = useRef<number>(0);
+  const pointerHistoryRef = useRef<Array<{ x: number; time: number }>>([]);
+  const springRafRef = useRef<number | null>(null);
 
-  // UI Display states
-  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const cardSpacingRef = useRef<number>(314);
+  const activeGlobalIndexRef = useRef<number>(18);
+
+  const [activeDataIndex, setActiveDataIndex] = useState<number>(0);
+  const [activeGlobalIndex, setActiveGlobalIndex] = useState<number>(18);
   const [isGrabbing, setIsGrabbing] = useState<boolean>(false);
-  const [renderSlots, setRenderSlots] = useState<Array<{
-    key: string;
-    member: typeof teamMembers[0];
-    xPos: number;
-    scale: number;
-    opacity: number;
-    zIndex: number;
-    isCenter: boolean;
-  }>>([]);
 
-  // Responsive card spacing
+  // Responsive card spacing calculation
   const updateSpacing = useCallback(() => {
     if (typeof window === "undefined") return;
     const w = window.innerWidth;
-    cardSpacingRef.current = w < 768 ? Math.min(270, w * 0.72) : 320;
+    // Desktop: 290px card + 24px gap = 314px; Mobile: 230px card + 16px gap = 246px
+    cardSpacingRef.current = w < 768 ? 246 : 314;
   }, []);
 
-  useEffect(() => {
-    updateSpacing();
-    window.addEventListener("resize", updateSpacing);
-    return () => window.removeEventListener("resize", updateSpacing);
-  }, [updateSpacing]);
+  // Direct DOM transform update (sole owner of translateX)
+  const applyTrackX = useCallback((x: number) => {
+    if (trackRef.current) {
+      trackRef.current.style.transform = `translate3d(${x}px, 0, 0)`;
+    }
+  }, []);
 
-  // Compute active card & 7-slot continuous visual projection
-  const computeSlots = useCallback(() => {
-    const spacing = cardSpacingRef.current;
-    const currentOffset = offsetRef.current;
-    const centerFloat = -currentOffset / spacing;
-    const centerInt = Math.round(centerFloat);
-    
-    // Normalized active member index [0..17]
-    const normActiveIdx = ((centerInt % TOTAL_MEMBERS) + TOTAL_MEMBERS) % TOTAL_MEMBERS;
-    setActiveIndex(normActiveIdx);
+  // Read actual presentation position from DOM matrix to guarantee 0-jump interrupts
+  const getPresentationX = useCallback((): number => {
+    if (!trackRef.current) return currentXRef.current;
+    const style = window.getComputedStyle(trackRef.current);
+    const transform = style.transform || (style as unknown as { webkitTransform?: string }).webkitTransform;
+    if (!transform || transform === "none") return currentXRef.current;
 
-    // 7 continuous virtual slots: -3, -2, -1, 0, 1, 2, 3
-    const slots = [];
-    for (let k = -3; k <= 3; k++) {
-      const slotIndex = centerInt + k;
-      const memberIdx = ((slotIndex % TOTAL_MEMBERS) + TOTAL_MEMBERS) % TOTAL_MEMBERS;
-      const member = teamMembers[memberIdx];
-      const xPos = slotIndex * spacing + currentOffset;
-      const dist = Math.abs(xPos);
-
-      // Depth calculations
-      const isCenter = k === 0 && dist < spacing * 0.5;
-      const scale = Math.max(0.74, 1.05 - (dist / (spacing * 2.2)) * 0.32);
-      const opacity = Math.max(0.20, 1.0 - (dist / (spacing * 2.2)) * 0.72);
-      const zIndex = Math.max(1, 50 - Math.round(dist / 8));
-
-      slots.push({
-        key: `slot-${slotIndex}`,
-        member,
-        xPos,
-        scale,
-        opacity,
-        zIndex,
-        isCenter,
-      });
+    const match2d = transform.match(/^matrix\((.+)\)$/);
+    if (match2d) {
+      const parts = match2d[1].split(",");
+      const tx = parseFloat(parts[4]);
+      return Number.isFinite(tx) ? tx : currentXRef.current;
     }
 
-    setRenderSlots(slots);
+    const match3d = transform.match(/^matrix3d\((.+)\)$/);
+    if (match3d) {
+      const parts = match3d[1].split(",");
+      const tx = parseFloat(parts[12]);
+      return Number.isFinite(tx) ? tx : currentXRef.current;
+    }
+
+    return currentXRef.current;
   }, []);
 
-  // Authoritative 60 FPS momentum & spring animation loop
+  // Seamless infinite wrapping kept within the middle set range
+  const wrapPosition = useCallback((x: number): number => {
+    const spacing = cardSpacingRef.current;
+    const setWidth = TOTAL_MEMBERS * spacing;
+    const minX = -35.5 * spacing;
+    const maxX = -17.5 * spacing;
+
+    let wrapped = x;
+    while (wrapped < minX) wrapped += setWidth;
+    while (wrapped > maxX) wrapped -= setWidth;
+    return wrapped;
+  }, []);
+
+  // Synchronize active member state with settled carousel position
+  const syncActiveIndex = useCallback((x: number) => {
+    const spacing = cardSpacingRef.current;
+    const nearestGlobal = Math.round(-x / spacing);
+    const normDataIdx = ((nearestGlobal % TOTAL_MEMBERS) + TOTAL_MEMBERS) % TOTAL_MEMBERS;
+    activeGlobalIndexRef.current = nearestGlobal;
+    setActiveGlobalIndex(nearestGlobal);
+    setActiveDataIndex(normDataIdx);
+  }, []);
+
+  // Mount initialization: center on member 0 of middle set (global index 18)
   useEffect(() => {
-    let lastTimestamp = performance.now();
+    updateSpacing();
+    const spacing = cardSpacingRef.current;
+    const startX = -18 * spacing;
+    currentXRef.current = startX;
+    applyTrackX(startX);
+    syncActiveIndex(startX);
 
-    const loop = (timestamp: number) => {
-      const dt = Math.min((timestamp - lastTimestamp) * 0.001, 0.05); // seconds
-      lastTimestamp = timestamp;
+    const onResize = () => {
+      updateSpacing();
+      const newSpacing = cardSpacingRef.current;
+      const target = -activeGlobalIndexRef.current * newSpacing;
+      currentXRef.current = target;
+      applyTrackX(target);
+    };
 
-      const spacing = cardSpacingRef.current;
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [applyTrackX, syncActiveIndex, updateSpacing]);
 
-      if (!isDraggingRef.current) {
-        if (springTargetRef.current !== null) {
-          // Spring settling to nearest card
-          const target = springTargetRef.current;
-          const current = offsetRef.current;
-          const diff = target - current;
+  // Critically damped spring simulation (Single authoritative physics loop)
+  const startSpring = useCallback((targetX: number, initialVelocityPxPerMs: number) => {
+    if (springRafRef.current) {
+      cancelAnimationFrame(springRafRef.current);
+      springRafRef.current = null;
+    }
 
-          // Spring physics: stiffness 160, damping 20
-          const springForce = diff * 18.0;
-          velocityRef.current += springForce * dt;
-          velocityRef.current *= Math.pow(0.08, dt); // smooth deceleration
-          offsetRef.current += velocityRef.current * dt * 1000;
+    let current = currentXRef.current;
+    let velocity = initialVelocityPxPerMs * 1000; // px/sec
+    let lastTime = performance.now();
 
-          if (Math.abs(diff) < 0.3 && Math.abs(velocityRef.current) < 0.01) {
-            offsetRef.current = target;
-            velocityRef.current = 0;
-            springTargetRef.current = null;
-            isInteractingRef.current = false;
-          }
-        } else if (Math.abs(velocityRef.current) > 0.05) {
-          // Momentum coasting after gesture release
-          velocityRef.current *= Math.pow(0.12, dt);
-          offsetRef.current += velocityRef.current * dt * 1000;
+    // Critically damped parameters: smooth, prompt settling with zero bounce
+    const stiffness = 180;
+    const damping = 27;
 
-          if (Math.abs(velocityRef.current) <= 0.05) {
-            // Velocity decayed: lock target to closest card and snap
-            const closest = Math.round(offsetRef.current / spacing) * spacing;
-            springTargetRef.current = closest;
-          }
-        } else if (!isInteractingRef.current) {
-          // Gentle idle drift (Item 16)
-          offsetRef.current -= 0.18;
-        }
+    const tick = (now: number) => {
+      const dt = Math.min((now - lastTime) * 0.001, 0.035);
+      lastTime = now;
+
+      const displacement = current - targetX;
+      const springForce = -stiffness * displacement;
+      const dampingForce = -damping * velocity;
+      const acceleration = springForce + dampingForce;
+
+      velocity += acceleration * dt;
+      current += velocity * dt;
+
+      currentXRef.current = current;
+      applyTrackX(current);
+
+      // Check settling condition
+      if (Math.abs(current - targetX) < 0.4 && Math.abs(velocity) < 15) {
+        current = targetX;
+        // Perform silent wrap at settling point
+        const wrapped = wrapPosition(current);
+        currentXRef.current = wrapped;
+        applyTrackX(wrapped);
+        syncActiveIndex(wrapped);
+        springRafRef.current = null;
+        return;
       }
 
-      computeSlots();
-      animFrameRef.current = requestAnimationFrame(loop);
+      springRafRef.current = requestAnimationFrame(tick);
     };
 
-    animFrameRef.current = requestAnimationFrame(loop);
-    return () => {
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-    };
-  }, [computeSlots]);
+    springRafRef.current = requestAnimationFrame(tick);
+  }, [applyTrackX, syncActiveIndex, wrapPosition]);
 
-  // Pointer Gesture Handlers (Direct manipulation, 1:1 response, immediate interruptibility)
+  // Pointer Down (Interruptible grab: reads presentation value immediately)
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    // Interrupt any ongoing momentum or spring immediately (Item 15)
-    springTargetRef.current = null;
-    velocityRef.current = 0;
-    isDraggingRef.current = true;
-    isInteractingRef.current = true;
-    setIsGrabbing(true);
+    // 1. Cancel running spring immediately (Req 5 & 10)
+    if (springRafRef.current) {
+      cancelAnimationFrame(springRafRef.current);
+      springRafRef.current = null;
+    }
 
-    lastXRef.current = e.clientX;
-    lastTimeRef.current = performance.now();
+    // 2. Read current presentation position from the DOM (Req 4 & 5)
+    let currentX = getPresentationX();
+    currentX = wrapPosition(currentX);
+    currentXRef.current = currentX;
+    applyTrackX(currentX);
 
+    // 3. Capture pointer
     try {
       e.currentTarget.setPointerCapture(e.pointerId);
     } catch {
       // Safe fallback
     }
+
+    // 4. Store drag anchors
+    dragStartXRef.current = e.clientX;
+    carouselStartXRef.current = currentX;
+    isDraggingRef.current = true;
+    setIsGrabbing(true);
+
+    // 5. Initialize velocity tracking
+    pointerHistoryRef.current = [{ x: e.clientX, time: performance.now() }];
   };
 
+  // Pointer Move (Direct 1:1 manipulation without React re-renders)
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isDraggingRef.current) return;
 
-    const currentX = e.clientX;
+    const delta = e.clientX - dragStartXRef.current;
+    let nextX = carouselStartXRef.current + delta;
+
+    // Seamless continuous wrapping during long drag strokes
+    const wrapped = wrapPosition(nextX);
+    if (wrapped !== nextX) {
+      const shift = wrapped - nextX;
+      carouselStartXRef.current += shift;
+      nextX = wrapped;
+    }
+
+    // Direct DOM write: 1:1 tracking with zero lag (Req 3 & 6)
+    currentXRef.current = nextX;
+    applyTrackX(nextX);
+
+    // Track recent pointer positions for velocity estimation (last 100ms window)
     const now = performance.now();
-    const deltaX = currentX - lastXRef.current;
-    const dt = Math.max(now - lastTimeRef.current, 1);
-
-    // 1:1 direct horizontal movement
-    offsetRef.current += deltaX;
-
-    // Smoothed velocity estimation (pixels per ms)
-    const instantVelocity = deltaX / dt;
-    velocityRef.current = velocityRef.current * 0.35 + instantVelocity * 0.65;
-
-    lastXRef.current = currentX;
-    lastTimeRef.current = now;
+    const history = pointerHistoryRef.current;
+    history.push({ x: e.clientX, time: now });
+    while (history.length > 1 && now - history[0].time > 100) {
+      history.shift();
+    }
   };
 
+  // Pointer Up / Release (Momentum projection & spring snap)
   const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isDraggingRef.current) return;
     isDraggingRef.current = false;
@@ -232,38 +276,50 @@ export default function InteractiveTeamGallery() {
       // Safe fallback
     }
 
-    const spacing = cardSpacingRef.current;
-    const currentOffset = offsetRef.current;
-    const v = velocityRef.current;
-
-    // Momentum fling or nearest snap (Item 13)
-    if (Math.abs(v) > 0.25) {
-      // Projected coasting position
-      const projectedOffset = currentOffset + v * 280;
-      const targetCard = Math.round(projectedOffset / spacing) * spacing;
-      springTargetRef.current = targetCard;
-    } else {
-      // Gentle release: snap directly to nearest card
-      const nearestCard = Math.round(currentOffset / spacing) * spacing;
-      springTargetRef.current = nearestCard;
+    // Calculate release velocity from recent history (px/ms)
+    const history = pointerHistoryRef.current;
+    let velocityPxPerMs = 0;
+    if (history.length >= 2) {
+      const oldest = history[0];
+      const newest = history[history.length - 1];
+      const dt = Math.max(newest.time - oldest.time, 1);
+      if (performance.now() - newest.time < 80) {
+        velocityPxPerMs = (newest.x - oldest.x) / dt;
+      }
     }
+
+    // Clamp velocity to prevent wild teleports
+    velocityPxPerMs = Math.max(-3.5, Math.min(3.5, velocityPxPerMs));
+
+    const spacing = cardSpacingRef.current;
+    const currentX = currentXRef.current;
+
+    // Momentum projection: project position based on velocity (Req 8)
+    const projectedX = currentX + velocityPxPerMs * 220;
+    const targetGlobal = Math.round(-projectedX / spacing);
+    const targetX = -targetGlobal * spacing;
+
+    // Launch single spring to settle at target card (Req 9)
+    startSpring(targetX, velocityPxPerMs);
   };
 
   const onPointerCancel = (e: React.PointerEvent<HTMLDivElement>) => {
     onPointerUp(e);
   };
 
-  // Direct card click to center
-  const snapToSlot = (xPos: number) => {
-    springTargetRef.current = offsetRef.current - xPos;
-    isInteractingRef.current = true;
+  // Click card to center
+  const handleCardClick = (globalIdx: number) => {
+    if (isDraggingRef.current) return;
+    const spacing = cardSpacingRef.current;
+    const targetX = -globalIdx * spacing;
+    startSpring(targetX, 0);
   };
 
-  const activeMember = teamMembers[activeIndex] || teamMembers[0];
+  const activeMember = teamMembers[activeDataIndex] || teamMembers[0];
 
   return (
     <div className={styles.teamPageWrapper}>
-      {/* 1. Header: Clean typography directly on background (No opaque boxes, No classification bar) */}
+      {/* 1. Header: Clean typography directly on background (No opaque boxes) */}
       <header className={styles.heroHeader}>
         <h1 className={styles.heroTitle}>
           THE <span className={styles.heroAccent}>TEAM</span>
@@ -272,45 +328,43 @@ export default function InteractiveTeamGallery() {
         <p className={styles.heroDepartment}>Department of Mechanical Engineering</p>
       </header>
 
-      {/* 2. Direct-Manipulation Infinite Carousel Viewport */}
+      {/* 2. Direct-Manipulation Single-Track Carousel Viewport */}
       <div
-        ref={containerRef}
+        ref={viewportRef}
         className={`${styles.galleryViewport} ${isGrabbing ? styles.grabbing : ""}`}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerCancel}
-        aria-label="Direct manipulation team cards carousel. Drag or swipe left and right to inspect members."
+        aria-label="Interactive Team Carousel. Hold and drag horizontally to move cards."
         role="region"
       >
-        <div className={styles.carouselTrack}>
-          {renderSlots.map((slot) => {
-            const { key, member, xPos, scale, opacity, zIndex, isCenter } = slot;
+        <div ref={trackRef} className={styles.track}>
+          {TRIPLE_MEMBERS.map((m) => {
+            const isCenter = (m.globalIndex % TOTAL_MEMBERS) === activeDataIndex;
             return (
               <article
-                key={key}
+                key={`member-card-${m.globalIndex}`}
                 className={`${styles.portraitCard} ${isCenter ? styles.portraitCardActive : ""}`}
-                style={{
-                  transform: `translate3d(${xPos}px, -50%, 0) scale(${scale})`,
-                  opacity,
-                  zIndex,
-                }}
-                onClick={() => !isDraggingRef.current && snapToSlot(xPos)}
+                onClick={() => handleCardClick(m.globalIndex)}
+                role="button"
+                tabIndex={0}
+                aria-label={`Select ${m.name}, ${m.role}`}
               >
                 <div className={styles.portraitImageWrapper}>
                   <Image
-                    src={member.image || "/img/Hero/photo-wall-1.webp"}
-                    alt={member.name}
+                    src={m.image || "/img/Hero/photo-wall-1.webp"}
+                    alt={m.name}
                     fill
-                    sizes="(max-width: 768px) 250px, 310px"
+                    sizes="(max-width: 768px) 230px, 290px"
                     className={styles.portraitImage}
-                    priority={isCenter}
+                    priority={m.globalIndex >= 16 && m.globalIndex <= 20}
                     draggable={false}
                   />
                   <div className={styles.portraitOverlay}>
-                    <span className={styles.memberDivisionTag}>{member.division}</span>
-                    <h3 className={styles.memberName}>{member.name}</h3>
-                    <p className={styles.memberRole}>{member.role}</p>
+                    <span className={styles.memberDivisionTag}>{m.division}</span>
+                    <h3 className={styles.memberName}>{m.name}</h3>
+                    <p className={styles.memberRole}>{m.role}</p>
                   </div>
                 </div>
               </article>
@@ -318,10 +372,10 @@ export default function InteractiveTeamGallery() {
           })}
         </div>
 
-        {/* Minimal Subtle Counter Metadata (Item 17: No arrows) */}
+        {/* Minimal Counter Metadata */}
         <div className={styles.counterMeta} aria-live="polite">
           <span className={styles.counterCurrent}>
-            {String(activeIndex + 1).padStart(2, "0")}
+            {String(activeDataIndex + 1).padStart(2, "0")}
           </span>
           <span className={styles.counterDivider}>/</span>
           <span className={styles.counterTotal}>
