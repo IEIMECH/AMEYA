@@ -1,95 +1,508 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import {
   RotateCcw,
   RotateCw,
-  Camera,
   MapPin,
+  Compass,
   Layers,
+  Sparkles,
 } from "lucide-react";
+import styles from "./Venue3DViewer.module.css";
 
-interface Hotspot {
-  id: string;
-  name: string;
-  role: string;
-  events: string;
-  coords: [number, number, number];
-  photoCoords: { top: string; left: string };
-  color: string;
-  capacity: string;
+export interface CampusFloor {
+  level: string;
+  title: string;
+  desc: string;
 }
 
-const campusHotspots: Hotspot[] = [
+export interface CampusBuilding {
+  id: string;
+  name: string;
+  shortName: string;
+  designation: string;
+  zone: string;
+  capacity: string;
+  events: string;
+  description: string;
+  position: [number, number, number];
+  camPos: [number, number, number];
+  lookAt: [number, number, number];
+  photoCoords?: { top: string; left: string };
+  floors?: CampusFloor[];
+}
+
+export interface CameraPreset {
+  id: string;
+  label: string;
+  camPos: [number, number, number];
+  lookAt: [number, number, number];
+}
+
+const campusBuildings: CampusBuilding[] = [
   {
-    id: "mech",
-    name: "Mechanical Engineering Block",
-    role: "Host Department & Core Fest Arenas",
-    events: "AutoCAD, Assemble & Disassemble Parts, Engineering Drawing",
-    coords: [-16, 10, 6],
-    photoCoords: { top: "62%", left: "20%" },
-    color: "#E51D25",
-    capacity: "450 Seats",
-  },
-  {
-    id: "audi",
+    id: "CENTRAL_BLOCK",
     name: "Central Block & Main Auditorium",
-    role: "Central Administrative & Plenary Complex",
-    events: "Inaugural Ceremony, Keynote Addresses, Valedictory",
-    coords: [0, 13, -5],
-    photoCoords: { top: "38%", left: "53%" },
-    color: "#FFFFFF",
-    capacity: "500 Seats",
+    shortName: "Central Block",
+    designation: "Central Administration & Plenary Complex",
+    zone: "Central Academic Complex",
+    capacity: "800 Seats",
+    events: "Inaugural Ceremony, Keynote Plenary, Valedictory Gala",
+    description:
+      "Square 4-story administrative nucleus featuring monumental arched portal, curved daylight skylight, central conference chambers, and the main fest plenary hall.",
+    position: [0, 8, 0],
+    camPos: [0, 28, 42],
+    lookAt: [0, 6, 0],
+    photoCoords: { top: "45%", left: "48%" },
+    floors: [
+      {
+        level: "Ground Floor",
+        title: "Main Plenary Auditorium & VIP Atrium",
+        desc: "Acoustic 800-seat plenary theatre, VIP welcoming suites, and Secretariat.",
+      },
+      {
+        level: "1st Floor",
+        title: "Deaneries & Administrative Council",
+        desc: "Principal chamber, administrative directorate, and fest registration control.",
+      },
+      {
+        level: "2nd Floor",
+        title: "Central Library & Digital Knowledge Core",
+        desc: "Engineering archive, e-resource portals, and study concourse.",
+      },
+      {
+        level: "3rd Floor",
+        title: "Executive Seminar Halls & Board Room",
+        desc: "Dual multimedia conference halls for VIP speakers and council reviews.",
+      },
+      {
+        level: "Rooftop",
+        title: "Vaulted Skylight & Solar Array",
+        desc: "Central curved architectural daylight canopy illuminating all 4 tiers.",
+      },
+    ],
   },
   {
-    id: "quad",
-    name: "Central Courtyard & Arena Ground",
-    role: "Outdoor Track & Kinetic Challenge Zone",
-    events: "RC Car Challenge, Treasure Hunt, Nuts & Bolts Speed Race",
-    coords: [0, 3, 2],
-    photoCoords: { top: "48%", left: "50%" },
-    color: "#FF3B3B",
-    capacity: "1200 Attendees",
+    id: "LF_3",
+    name: "LF 3 — Academic Block (IEI SAME HQ)",
+    shortName: "LF 3 (SAME)",
+    designation: "Southwest Academic Wing (SAME HQ)",
+    zone: "Central Quadrant (SW)",
+    capacity: "650 Students",
+    events: "IEI SAME Fest Operations, Design & Drafting Studio, Project Expo",
+    description:
+      "4-Story L-shaped block facing the entrance spine road. Houses IEI SAME student executive chambers, precision drafting studios, and mechatronics exhibits.",
+    position: [-34, 8, 34],
+    camPos: [-50, 24, 52],
+    lookAt: [-34, 6, 34],
+    photoCoords: { top: "60%", left: "38%" },
+    floors: [
+      {
+        level: "Ground Floor",
+        title: "IEI SAME Fest Operations Control",
+        desc: "Central student coordination desk, kit distribution, and briefing room.",
+      },
+      {
+        level: "1st Floor",
+        title: "Engineering Graphics & Drafting Hall",
+        desc: "Precision drafting tables and technical graphics facility.",
+      },
+      {
+        level: "2nd Floor",
+        title: "Robotics & Micro-Mechatronics Lab",
+        desc: "Kinetic test tracks, mechatronics workstations.",
+      },
+      {
+        level: "3rd Floor",
+        title: "Digital Prototyping Workshop",
+        desc: "3D printers and laser cutters.",
+      },
+      {
+        level: "Rooftop",
+        title: "Rooftop Solar Array",
+        desc: "Grid-tied solar panels.",
+      },
+    ],
   },
   {
-    id: "cse",
-    name: "Technology & Computing Block",
-    role: "East Wing Academic Block",
-    events: "High-Performance Workstations, Technical Simulations",
-    coords: [16, 10, 6],
-    photoCoords: { top: "64%", left: "82%" },
-    color: "#D8D8D8",
-    capacity: "400 Students",
+    id: "ARUNA_1",
+    name: "Aruna 1 — Engineering Tower",
+    shortName: "Aruna 1",
+    designation: "Western Academic Complex",
+    zone: "Western Quadrangle",
+    capacity: "1,200 Students",
+    events: "Kinetic Track Arena, Assemble & Disassemble Parts, AutoCAD Championship",
+    description:
+      "Prominent elongated 4-story engineering building (96m) featuring heavy mechanical workshops, barrel-vaulted roof canopy, white monumental entrance portico, and CNC machine shops.",
+    position: [-82, 9, 5],
+    camPos: [-52, 28, 15],
+    lookAt: [-82, 8, 5],
+    photoCoords: { top: "52%", left: "22%" },
+    floors: [
+      {
+        level: "Ground Floor",
+        title: "Heavy Machine Shop & Foundry Workshop",
+        desc: "Lathes, CNC milling centers, welding bays, and mechanical assembly floor.",
+      },
+      {
+        level: "1st Floor",
+        title: "Computer-Aided Design (CAD/CAM) Lab",
+        desc: "High-spec workstations running SolidWorks, AutoCAD, and ANSYS.",
+      },
+      {
+        level: "2nd Floor",
+        title: "Thermal Engineering & Fluid Mechanics Lab",
+        desc: "Wind tunnel test rig, IC engine dynamometers, and pump testbeds.",
+      },
+      {
+        level: "3rd Floor",
+        title: "Mechatronics & Kinematics Studio",
+        desc: "Mechanism demonstration kits and gear train test rigs.",
+      },
+      {
+        level: "Rooftop",
+        title: "Vaulted Canopy & Solar Field",
+        desc: "Full-length arched canopy flanked by solar panel arrays.",
+      },
+    ],
   },
   {
-    id: "gate",
-    name: "Campus Main Boulevard & Welcome Desk",
-    role: "Entry Gate & Registration Desk",
-    events: "QR Ticket Scan, Attendee Kit Distribution, Helpdesk",
-    coords: [0, 2, 22],
-    photoCoords: { top: "85%", left: "52%" },
-    color: "#E51D25",
-    capacity: "All Attendees",
+    id: "H_BLOCK",
+    name: "H - BLOCK",
+    shortName: "H - Block",
+    designation: "Northern Academic & Services Sector",
+    zone: "Northern Perimeter",
+    capacity: "500 Occupants",
+    events: "Fest Registration, Help Desk, Refreshment Concourse",
+    description:
+      "Northern academic and student service facility (formerly labeled university cafeteria in older drafts). Features large open halls, curved roof canopy, and hospitality lounges.",
+    position: [0, 8, -85],
+    camPos: [0, 28, -52],
+    lookAt: [0, 6, -85],
+    photoCoords: { top: "25%", left: "48%" },
+    floors: [
+      {
+        level: "Ground Floor",
+        title: "Central Registration & Welcome Lounge",
+        desc: "QR check-in counters and attendee kit distribution.",
+      },
+      {
+        level: "1st Floor",
+        title: "Hospitality & Dining Concourse",
+        desc: "Air-conditioned dining lounge and refreshment stations.",
+      },
+      {
+        level: "2nd Floor",
+        title: "Faculty & VIP Discussion Suites",
+        desc: "Meeting rooms and conference lounge.",
+      },
+    ],
+  },
+  {
+    id: "LF_1",
+    name: "LF 1 — Academic Block",
+    shortName: "LF 1",
+    designation: "Northeast Academic Quadrant",
+    zone: "Central Quadrant (NE)",
+    capacity: "600 Students",
+    events: "Technical Paper Presentation, PPT Championships",
+    description:
+      "4-Story L-shaped block framing the northeast courtyard. Connected via skybridge to Central Block, equipped with smart lecture halls and rooftop solar microgrid.",
+    position: [34, 8, -34],
+    camPos: [50, 24, -16],
+    lookAt: [34, 6, -34],
+    photoCoords: { top: "35%", left: "60%" },
+    floors: [
+      {
+        level: "Ground Floor",
+        title: "Department Concourse & Reception",
+        desc: "Faculty offices and student guidance center.",
+      },
+      {
+        level: "1st Floor",
+        title: "Smart Lecture Halls 101–108",
+        desc: "Tiered presentation rooms with 4K projection.",
+      },
+      {
+        level: "2nd Floor",
+        title: "Computational Design Suite",
+        desc: "High-spec CAD workstations.",
+      },
+      {
+        level: "3rd Floor",
+        title: "Advanced Research Labs",
+        desc: "Project testing facilities.",
+      },
+      {
+        level: "Rooftop",
+        title: "Photovoltaic Solar Matrix",
+        desc: "Clean power harvesting installation.",
+      },
+    ],
+  },
+  {
+    id: "LF_2",
+    name: "LF 2 — Academic Block",
+    shortName: "LF 2",
+    designation: "Northwest Academic Quadrant",
+    zone: "Central Quadrant (NW)",
+    capacity: "600 Students",
+    events: "Coding Marathon, Algorithm Hackathon",
+    description:
+      "4-Story L-shaped block framing the northwest courtyard and open-air amphitheater. Connected via elevated skybridge.",
+    position: [-34, 8, -34],
+    camPos: [-50, 24, -16],
+    lookAt: [-34, 6, -34],
+    photoCoords: { top: "35%", left: "36%" },
+    floors: [
+      {
+        level: "Ground Floor",
+        title: "Amphitheater Concourse & Labs",
+        desc: "Direct access to cultural stage.",
+      },
+      {
+        level: "1st Floor",
+        title: "Smart Lecture Halls 201–208",
+        desc: "Acoustically treated halls.",
+      },
+      {
+        level: "2nd Floor",
+        title: "AI & Neural Computing Lab",
+        desc: "GPU simulation rigs.",
+      },
+      {
+        level: "3rd Floor",
+        title: "Software Innovation Hub",
+        desc: "Collaborative hackathon space.",
+      },
+      {
+        level: "Rooftop",
+        title: "Solar Array & Green Deck",
+        desc: "Renewable energy system.",
+      },
+    ],
+  },
+  {
+    id: "LF_4",
+    name: "LF 4 — Academic Block",
+    shortName: "LF 4",
+    designation: "Southeast Academic Wing",
+    zone: "Central Quadrant (SE)",
+    capacity: "600 Students",
+    events: "Technical Quiz, Robo-Wars Prep Zone",
+    description:
+      "4-Story L-shaped block overlooking the campus lake and sports fields. Connected via elevated skybridge.",
+    position: [34, 8, 34],
+    camPos: [50, 24, 52],
+    lookAt: [34, 6, 34],
+    photoCoords: { top: "60%", left: "60%" },
+    floors: [
+      {
+        level: "Ground Floor",
+        title: "Student Club Hub & Common Rooms",
+        desc: "Society spaces and indoor technical displays.",
+      },
+      {
+        level: "1st Floor",
+        title: "Lecture Theatres 401–408",
+        desc: "Multi-tier lecture classrooms.",
+      },
+      {
+        level: "2nd Floor",
+        title: "IoT & Embedded Systems Lab",
+        desc: "Microcontroller testbenches.",
+      },
+      {
+        level: "3rd Floor",
+        title: "Cloud Simulation & Server Room",
+        desc: "Network testing suites.",
+      },
+      {
+        level: "Rooftop",
+        title: "Solar Power Array",
+        desc: "Photovoltaic generation array.",
+      },
+    ],
+  },
+  {
+    id: "AMPHITHEATER",
+    name: "Open-Air Amphitheater Plaza",
+    shortName: "Amphitheater",
+    designation: "Central Cultural Stage",
+    zone: "Central Courtyard North",
+    capacity: "600 Spectators",
+    events: "Cultural Showcases, Acoustic Sessions, Award Ceremonies",
+    description:
+      "Semicircular tiered brick amphitheater and performance stage set behind the Central Block between LF1 and LF2.",
+    position: [0, 2, -26],
+    camPos: [0, 18, -6],
+    lookAt: [0, 1, -26],
+    photoCoords: { top: "36%", left: "48%" },
+  },
+  {
+    id: "PLAYGROUND",
+    name: "VVIT Sports Arena & 400m Track Ground",
+    shortName: "Sports Arena",
+    designation: "Athletic Field & Outdoor Arenas",
+    zone: "Southern Sports Zone",
+    capacity: "2,000 Spectators",
+    events: "RC Car Championship, Aeromodelling Drone Flight, Sports Show",
+    description:
+      "Full-scale 400m red-clay running track, inner grass football stadium, cricket pitch, and basketball courts.",
+    position: [50, 2, 85],
+    camPos: [40, 24, 55],
+    lookAt: [50, 1, 85],
+    photoCoords: { top: "80%", left: "70%" },
+  },
+  {
+    id: "VVIT_POND",
+    name: "VVIT Lake & Conservation Pond",
+    shortName: "Campus Lake",
+    designation: "Natural Campus Ecological Feature",
+    zone: "Eastern Eco-Reserve",
+    capacity: "Scenic Promenade",
+    events: "Evening Light Installation, Aquatic Drone Telemetry",
+    description:
+      "Natural curved water reservoir with stone revetment promenade and perimeter shade trees.",
+    position: [80, 2, 15],
+    camPos: [55, 20, 30],
+    lookAt: [80, 1, 15],
+    photoCoords: { top: "50%", left: "82%" },
+  },
+  {
+    id: "BUS_PARKING",
+    name: "Central Transit & Bus Terminal",
+    shortName: "Bus Terminal",
+    designation: "Campus Student Transit Hub",
+    zone: "Southwest Transport Hub",
+    capacity: "60+ College Buses",
+    events: "Shuttle Station, Regional Delegate Arrival & Departure",
+    description:
+      "Paved parking yard accommodating VVIT's fleet of yellow transit buses serving coastal Andhra districts.",
+    position: [-45, 2, 95],
+    camPos: [-32, 18, 75],
+    lookAt: [-45, 1, 95],
+    photoCoords: { top: "78%", left: "30%" },
+  },
+  {
+    id: "VIVA_SCHOOL",
+    name: "VIVA The School by VVIT",
+    shortName: "VIVA School",
+    designation: "Autonomous International School Campus",
+    zone: "Southwestern Sector",
+    capacity: "500 Students",
+    events: "Auxiliary Technical Display, Regional STEM Showcase",
+    description:
+      "Autonomous international school complex located on the campus perimeter. Features distinct multi-wing classrooms and courtyards.",
+    position: [-85, 7, -110],
+    camPos: [-60, 24, -80],
+    lookAt: [-85, 6, -110],
+    photoCoords: { top: "20%", left: "20%" },
+  },
+];
+
+const cameraPresets: CameraPreset[] = [
+  {
+    id: "overview",
+    label: "Isometric 45°",
+    camPos: [0, 65, 95],
+    lookAt: [0, 4, 0],
+  },
+  {
+    id: "central",
+    label: "Central Complex",
+    camPos: [0, 32, 50],
+    lookAt: [0, 6, 0],
+  },
+  {
+    id: "aruna",
+    label: "Aruna 1 (West)",
+    camPos: [-52, 28, 15],
+    lookAt: [-82, 8, 5],
+  },
+  {
+    id: "hblock",
+    label: "H - BLOCK (North)",
+    camPos: [0, 28, -52],
+    lookAt: [0, 6, -85],
+  },
+  {
+    id: "sports",
+    label: "Sports Ground",
+    camPos: [38, 24, 55],
+    lookAt: [50, 2, 85],
+  },
+  {
+    id: "bus",
+    label: "Bus Terminal",
+    camPos: [-30, 18, 72],
+    lookAt: [-45, 2, 95],
   },
 ];
 
 export default function Venue3DViewer() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
   const [activeTab, setActiveTab] = useState<"3d" | "photo">("3d");
-  const [selectedHotspot, setSelectedHotspot] = useState<Hotspot>(campusHotspots[0]);
-  const [autoRotate, setAutoRotate] = useState(false);
+  const [selectedBuilding, setSelectedBuilding] = useState<CampusBuilding>(campusBuildings[0]);
+  const [activePreset, setActivePreset] = useState<string>("overview");
+  const [selectedFloorIdx, setSelectedFloorIdx] = useState<number>(0);
+  const [autoRotate, setAutoRotate] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [hoveredBuilding, setHoveredBuilding] = useState<CampusBuilding | null>(null);
+  const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
   const controlsRef = useRef<OrbitControls | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-  const targetCamPos = useRef<THREE.Vector3>(new THREE.Vector3(0, 38, 54));
-  const targetControlsTarget = useRef<THREE.Vector3>(new THREE.Vector3(0, 5, 0));
+  const targetCamPos = useRef<THREE.Vector3>(new THREE.Vector3(0, 65, 95));
+  const targetControlsTarget = useRef<THREE.Vector3>(new THREE.Vector3(0, 4, 0));
   const isTransitioning = useRef<boolean>(false);
   const highlightSpotlight = useRef<THREE.SpotLight | null>(null);
+  const campusModelRef = useRef<THREE.Group | null>(null);
 
+  // Focus building callback
+  const handleFocusBuilding = useCallback((building: CampusBuilding) => {
+    setSelectedBuilding(building);
+    setSelectedFloorIdx(0);
+
+    if (cameraRef.current && controlsRef.current && activeTab === "3d") {
+      targetControlsTarget.current.set(...building.lookAt);
+      targetCamPos.current.set(...building.camPos);
+      isTransitioning.current = true;
+
+      if (highlightSpotlight.current) {
+        highlightSpotlight.current.position.set(
+          building.position[0],
+          building.position[1] + 28,
+          building.position[2]
+        );
+        highlightSpotlight.current.target.position.set(...building.position);
+      }
+    }
+  }, [activeTab]);
+
+  // Apply Camera Preset
+  const handleApplyPreset = (preset: CameraPreset) => {
+    setActivePreset(preset.id);
+    if (cameraRef.current && controlsRef.current) {
+      targetCamPos.current.set(...preset.camPos);
+      targetControlsTarget.current.set(...preset.lookAt);
+      isTransitioning.current = true;
+    }
+  };
+
+  // Reset Camera View
+  const handleResetCamera = () => {
+    handleApplyPreset(cameraPresets[0]);
+  };
+
+  // Three.js Scene Setup & Model Loading
   useEffect(() => {
     if (activeTab !== "3d" || !canvasRef.current || !containerRef.current) return;
 
@@ -97,169 +510,172 @@ export default function Venue3DViewer() {
     let animId: number | null = null;
     const canvas = canvasRef.current;
     const width = containerRef.current.clientWidth;
-    const height = 560;
+    const height = Math.min(Math.max(window.innerHeight * 0.65, 420), 650);
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x060606);
-    scene.fog = new THREE.FogExp2(0x060606, 0.011);
+    scene.background = new THREE.Color(0x0a0a0d);
+    scene.fog = new THREE.FogExp2(0x0a0a0d, 0.0045);
 
-    const camera = new THREE.PerspectiveCamera(40, width / height, 0.5, 600);
-    camera.position.set(0, 38, 54);
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.5, 900);
+    camera.position.set(0, 65, 95);
     cameraRef.current = camera;
 
     const renderer = new THREE.WebGLRenderer({
       canvas,
       antialias: true,
       powerPreference: "high-performance",
+      alpha: false,
     });
     renderer.setSize(width, height);
-    renderer.setClearColor(0x060606, 1);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFShadowMap;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.15;
+    renderer.toneMappingExposure = 1.1;
 
-    // Fluid Orbit Controls with momentum damping
+    // Orbit Controls
     const controls = new OrbitControls(camera, canvas);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.maxPolarAngle = Math.PI / 2.15;
-    controls.minDistance = 16;
-    controls.maxDistance = 140;
-    controls.target.set(0, 5, 0);
+    controls.maxPolarAngle = Math.PI / 2.05;
+    controls.minDistance = 15;
+    controls.maxDistance = 250;
+    controls.target.set(0, 4, 0);
     controlsRef.current = controls;
 
-    // Atmospheric lighting
-    const hemiLight = new THREE.HemisphereLight(0xFFFFFF, 0x111111, 0.85);
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambientLight);
+
+    const hemiLight = new THREE.HemisphereLight(0xdbeafe, 0x1e1e24, 0.85);
     scene.add(hemiLight);
 
-    const sunLight = new THREE.DirectionalLight(0xFFFAEE, 2.0);
-    sunLight.position.set(40, 60, 30);
+    // Warm Sun Directional Light
+    const sunLight = new THREE.DirectionalLight(0xfffaed, 2.2);
+    sunLight.position.set(65, 95, 50);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.width = 2048;
     sunLight.shadow.mapSize.height = 2048;
+    sunLight.shadow.camera.near = 10;
+    sunLight.shadow.camera.far = 300;
+    sunLight.shadow.camera.left = -140;
+    sunLight.shadow.camera.right = 140;
+    sunLight.shadow.camera.top = 140;
+    sunLight.shadow.camera.bottom = -140;
+    sunLight.shadow.bias = -0.0005;
     scene.add(sunLight);
 
+    // Accent directional fill from opposite side
+    const fillLight = new THREE.DirectionalLight(0x7dd3fc, 0.6);
+    fillLight.position.set(-70, 40, -60);
+    scene.add(fillLight);
+
     // Dynamic building highlight spotlight
-    const spot = new THREE.SpotLight(0xE51D25, 4.0, 60, Math.PI / 4, 0.4, 1.5);
-    spot.position.set(-16, 35, 6);
-    spot.target.position.set(-16, 5, 6);
+    const spot = new THREE.SpotLight(0xe51d25, 4.2, 85, Math.PI / 5, 0.35, 1.2);
+    spot.position.set(0, 36, 0);
+    spot.target.position.set(0, 8, 0);
     scene.add(spot);
     scene.add(spot.target);
     highlightSpotlight.current = spot;
 
-    // Materials
-    const brickMat = new THREE.MeshStandardMaterial({
-      color: 0x9e2417,
-      roughness: 0.7,
-      metalness: 0.1,
-    });
-    const whiteTrimMat = new THREE.MeshStandardMaterial({
-      color: 0xF2EDE8,
-      roughness: 0.35,
-      metalness: 0.15,
-    });
-    const glassMat = new THREE.MeshPhysicalMaterial({
-      color: 0x0A0F1D,
-      metalness: 0.9,
-      roughness: 0.1,
-      transparent: true,
-      opacity: 0.85,
-    });
-    const metalMat = new THREE.MeshStandardMaterial({
-      color: 0x8892B0,
-      metalness: 0.85,
-      roughness: 0.2,
-    });
-    const fieldMat = new THREE.MeshStandardMaterial({
-      color: 0x0A0A0A,
-      roughness: 0.95,
-      metalness: 0.1,
-    });
-    const pavementMat = new THREE.MeshStandardMaterial({
-      color: 0x1E1E1E,
-      roughness: 0.6,
-      metalness: 0.3,
-    });
-
-    const campusGroup = new THREE.Group();
-
-    // Base ground plane
-    const baseMesh = new THREE.Mesh(new THREE.PlaneGeometry(160, 160), fieldMat);
-    baseMesh.rotation.x = -Math.PI / 2;
-    baseMesh.receiveShadow = true;
-    campusGroup.add(baseMesh);
-
     // Subtle technical grid
-    const grid = new THREE.GridHelper(160, 40, 0x441010, 0x181818);
-    grid.position.y = 0.02;
-    campusGroup.add(grid);
+    const grid = new THREE.GridHelper(300, 60, 0x331010, 0x141418);
+    grid.position.y = -0.05;
+    scene.add(grid);
 
-    // Central courtyard road & path
-    const pathMesh = new THREE.Mesh(new THREE.PlaneGeometry(36, 36), pavementMat);
-    pathMesh.rotation.x = -Math.PI / 2;
-    pathMesh.position.set(0, 0.05, -1);
-    pathMesh.receiveShadow = true;
-    campusGroup.add(pathMesh);
+    // Campus Root Group
+    const campusRoot = new THREE.Group();
+    campusRoot.name = "CAMPUS_ROOT";
+    scene.add(campusRoot);
+    campusModelRef.current = campusRoot;
 
-    // Helper to build architectural wing block
-    const createWingBlock = (
-      w: number,
-      h: number,
-      d: number,
-      x: number,
-      y: number,
-      z: number
-    ) => {
-      const wing = new THREE.Group();
-      const body = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), brickMat);
-      body.castShadow = true;
-      body.receiveShadow = true;
-      wing.add(body);
+    // Load Standalone Binary GLB Campus Model
+    const loader = new GLTFLoader();
+    setIsLoading(true);
 
-      // Glass ribbon window
-      const win = new THREE.Mesh(new THREE.BoxGeometry(w + 0.1, h * 0.25, d + 0.1), glassMat);
-      win.position.y = h * 0.15;
-      wing.add(win);
+    loader.load(
+      "/models/vvit-campus.glb",
+      (gltf) => {
+        const model = gltf.scene;
+        model.traverse((child) => {
+          if ((child as THREE.Mesh).isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+          }
+        });
+        campusRoot.add(model);
+        setIsLoading(false);
+      },
+      undefined,
+      (error) => {
+        console.warn("Failed to load /models/vvit-campus.glb:", error);
+        setIsLoading(false);
+      }
+    );
 
-      // Roof cornice
-      const roof = new THREE.Mesh(new THREE.BoxGeometry(w + 0.5, 0.6, d + 0.5), whiteTrimMat);
-      roof.position.y = h / 2 + 0.3;
-      wing.add(roof);
+    // Raycasting for interactive hover and click
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
 
-      wing.position.set(x, y + h / 2, z);
-      return wing;
+    const handlePointerMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+
+      raycaster.setFromCamera(pointer, camera);
+      const intersects = raycaster.intersectObjects(campusRoot.children, true);
+
+      let foundBuilding: CampusBuilding | null = null;
+      for (const hit of intersects) {
+        let curr: THREE.Object3D | null = hit.object;
+        while (curr && curr !== campusRoot && curr !== scene) {
+          if (curr.userData?.buildingId || curr.name) {
+            const bId = curr.userData?.buildingId || curr.name;
+            const match = campusBuildings.find((b) => b.id === bId);
+            if (match) {
+              foundBuilding = match;
+              break;
+            }
+          }
+          curr = curr.parent;
+        }
+        if (foundBuilding) break;
+      }
+
+      setHoveredBuilding(foundBuilding);
+      canvas.style.cursor = foundBuilding ? "pointer" : "grab";
     };
 
-    // 1. Central Auditorium Complex
-    const audiWing = createWingBlock(24, 14, 18, 0, 0, -8);
-    campusGroup.add(audiWing);
+    const handleClick = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
 
-    // 2. West Wing: Mechanical Engineering Block (IEI SAME HQ)
-    const mechWing = createWingBlock(14, 12, 28, -20, 0, 4);
-    campusGroup.add(mechWing);
+      raycaster.setFromCamera(pointer, camera);
+      const intersects = raycaster.intersectObjects(campusRoot.children, true);
 
-    // 3. East Wing: Technology Block
-    const cseWing = createWingBlock(14, 12, 28, 20, 0, 4);
-    campusGroup.add(cseWing);
+      for (const hit of intersects) {
+        let curr: THREE.Object3D | null = hit.object;
+        while (curr && curr !== campusRoot && curr !== scene) {
+          const bId = curr.userData?.buildingId || curr.name;
+          const match = campusBuildings.find((b) => b.id === bId);
+          if (match) {
+            handleFocusBuilding(match);
+            return;
+          }
+          curr = curr.parent;
+        }
+      }
+    };
 
-    // 4. Connecting skywalk bridges
-    const bridgeWest = new THREE.Mesh(new THREE.BoxGeometry(10, 3, 4), metalMat);
-    bridgeWest.position.set(-11, 8, -4);
-    campusGroup.add(bridgeWest);
+    canvas.addEventListener("pointermove", handlePointerMove);
+    canvas.addEventListener("click", handleClick);
 
-    const bridgeEast = new THREE.Mesh(new THREE.BoxGeometry(10, 3, 4), metalMat);
-    bridgeEast.position.set(11, 8, -4);
-    campusGroup.add(bridgeEast);
-
-    scene.add(campusGroup);
-
-    // Smooth render & animation loop
+    // Animation Render Loop
     const tick = () => {
       if (!isRunning) return;
 
-      // Smooth camera interpolation toward target
       if (isTransitioning.current) {
         camera.position.lerp(targetCamPos.current, 0.055);
         controls.target.lerp(targetControlsTarget.current, 0.055);
@@ -270,7 +686,7 @@ export default function Venue3DViewer() {
       }
 
       if (autoRotate && !isTransitioning.current) {
-        campusGroup.rotation.y += 0.002;
+        campusRoot.rotation.y += 0.0018;
       }
 
       controls.update();
@@ -280,6 +696,7 @@ export default function Venue3DViewer() {
 
     tick();
 
+    // Resize handler
     const handleResize = () => {
       if (!containerRef.current || !cameraRef.current) return;
       const newW = containerRef.current.clientWidth;
@@ -293,110 +710,30 @@ export default function Venue3DViewer() {
     return () => {
       isRunning = false;
       if (animId) cancelAnimationFrame(animId);
+      canvas.removeEventListener("pointermove", handlePointerMove);
+      canvas.removeEventListener("click", handleClick);
       window.removeEventListener("resize", handleResize);
       renderer.dispose();
     };
-  }, [activeTab, autoRotate]);
-
-  const handleFocusHotspot = useCallback((hs: Hotspot) => {
-    setSelectedHotspot(hs);
-
-    if (cameraRef.current && controlsRef.current && activeTab === "3d") {
-      targetControlsTarget.current.set(hs.coords[0], hs.coords[1] - 4, hs.coords[2]);
-      targetCamPos.current.set(hs.coords[0] + 14, hs.coords[1] + 16, hs.coords[2] + 22);
-      isTransitioning.current = true;
-
-      // Update spotlight target
-      if (highlightSpotlight.current) {
-        highlightSpotlight.current.position.set(hs.coords[0], hs.coords[1] + 25, hs.coords[2]);
-        highlightSpotlight.current.target.position.set(hs.coords[0], hs.coords[1], hs.coords[2]);
-      }
-    }
-  }, [activeTab]);
-
-  const handleResetCamera = () => {
-    if (cameraRef.current && controlsRef.current) {
-      targetCamPos.current.set(0, 38, 54);
-      targetControlsTarget.current.set(0, 5, 0);
-      isTransitioning.current = true;
-    }
-  };
+  }, [activeTab, autoRotate, handleFocusBuilding]);
 
   return (
-    <div
-      ref={containerRef}
-      style={{
-        position: "relative",
-        width: "100%",
-        borderRadius: "20px",
-        overflow: "hidden",
-        border: "1px solid rgba(255, 255, 255, 0.08)",
-        background: "rgba(10, 10, 10, 0.8)",
-        boxShadow: "0 24px 60px rgba(0, 0, 0, 0.85)",
-        marginBottom: "3.5rem",
-      }}
-    >
+    <div ref={containerRef} className={styles.container}>
       {/* Top Floating Control Bar */}
-      <div
-        style={{
-          position: "absolute",
-          top: "16px",
-          left: "16px",
-          right: "16px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          zIndex: 30,
-          pointerEvents: "none",
-        }}
-      >
-        {/* Left: Mode switcher */}
-        <div
-          style={{
-            pointerEvents: "auto",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "4px",
-            background: "rgba(14, 14, 14, 0.85)",
-            backdropFilter: "blur(16px)",
-            padding: "4px",
-            borderRadius: "9999px",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
-          }}
-        >
+      <div className={styles.topBar}>
+        {/* Left: Mode switcher (3D Campus vs Satellite Photo) */}
+        <div className={styles.modeSwitcher}>
           <button
             type="button"
             onClick={() => setActiveTab("3d")}
-            style={{
-              padding: "5px 14px",
-              borderRadius: "9999px",
-              fontSize: "0.75rem",
-              fontFamily: "var(--font-mono)",
-              fontWeight: 600,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              background: activeTab === "3d" ? "var(--accent)" : "transparent",
-              color: activeTab === "3d" ? "#FFFFFF" : "var(--text-secondary)",
-              transition: "all 0.2s ease",
-            }}
+            className={`${styles.modeBtn} ${activeTab === "3d" ? styles.modeBtnActive : ""}`}
           >
             3D CAMPUS
           </button>
           <button
             type="button"
             onClick={() => setActiveTab("photo")}
-            style={{
-              padding: "5px 14px",
-              borderRadius: "9999px",
-              fontSize: "0.75rem",
-              fontFamily: "var(--font-mono)",
-              fontWeight: 600,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              background: activeTab === "photo" ? "var(--accent)" : "transparent",
-              color: activeTab === "photo" ? "#FFFFFF" : "var(--text-secondary)",
-              transition: "all 0.2s ease",
-            }}
+            className={`${styles.modeBtn} ${activeTab === "photo" ? styles.modeBtnActive : ""}`}
           >
             AERIAL PHOTO
           </button>
@@ -404,32 +741,12 @@ export default function Venue3DViewer() {
 
         {/* Right: Camera Action Controls */}
         {activeTab === "3d" && (
-          <div
-            style={{
-              pointerEvents: "auto",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-            }}
-          >
+          <div className={styles.topActions}>
             <button
               type="button"
               onClick={() => setAutoRotate(!autoRotate)}
               title="Toggle Auto Orbit"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
-                padding: "6px 12px",
-                borderRadius: "9999px",
-                fontSize: "0.72rem",
-                fontFamily: "var(--font-mono)",
-                background: autoRotate ? "rgba(229, 29, 37, 0.2)" : "rgba(14, 14, 14, 0.85)",
-                color: autoRotate ? "var(--accent)" : "var(--text-secondary)",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
-                backdropFilter: "blur(16px)",
-                transition: "all 0.2s ease",
-              }}
+              className={`${styles.actionBtn} ${autoRotate ? styles.actionBtnActive : ""}`}
             >
               <RotateCw size={12} />
               <span>ORBIT</span>
@@ -439,20 +756,7 @@ export default function Venue3DViewer() {
               type="button"
               onClick={handleResetCamera}
               title="Reset Camera View"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
-                padding: "6px 12px",
-                borderRadius: "9999px",
-                fontSize: "0.72rem",
-                fontFamily: "var(--font-mono)",
-                background: "rgba(14, 14, 14, 0.85)",
-                color: "var(--text-secondary)",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
-                backdropFilter: "blur(16px)",
-                transition: "all 0.2s ease",
-              }}
+              className={styles.actionBtn}
             >
               <RotateCcw size={12} />
               <span>RESET</span>
@@ -461,200 +765,158 @@ export default function Venue3DViewer() {
         )}
       </div>
 
-      {/* Main View Area (Req 23.11: Responsive Viewport Fit & Touch Orbit) */}
-      <div style={{ position: "relative", height: "clamp(340px, 58vh, 560px)", width: "100%", touchAction: "none" }}>
+      {/* Preset Camera Viewpoints Bar (Upper Right) */}
+      {activeTab === "3d" && (
+        <div className={styles.presetsBar}>
+          <span style={{ fontSize: "0.65rem", fontFamily: "var(--font-mono)", color: "#71717a", padding: "4px 6px" }}>
+            PRESETS:
+          </span>
+          {cameraPresets.map((preset) => (
+            <button
+              key={preset.id}
+              type="button"
+              onClick={() => handleApplyPreset(preset)}
+              className={`${styles.presetBtn} ${activePreset === preset.id ? styles.presetBtnActive : ""}`}
+            >
+              {preset.label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Main View Area */}
+      <div className={styles.viewportArea}>
         {activeTab === "3d" ? (
-          <canvas
-            ref={canvasRef}
-            style={{
-              width: "100%",
-              height: "100%",
-              display: "block",
-              outline: "none",
-              touchAction: "none",
-            }}
-          />
+          <>
+            <canvas ref={canvasRef} className={styles.canvas} />
+
+            {/* Loading Indicator */}
+            {isLoading && (
+              <div className={styles.loadingOverlay}>
+                <div className={styles.loadingSpinner} />
+                <div className={styles.loadingTitle}>GENERATING VVIT 3D CAMPUS</div>
+                <div className={styles.loadingSub}>Loading architectural geometry, solar arrays &amp; academic quads...</div>
+              </div>
+            )}
+
+            {/* Hover Tooltip HUD */}
+            {hoveredBuilding && (
+              <div
+                className={styles.hoverTooltip}
+                style={{
+                  left: `${mousePos.x}px`,
+                  top: `${mousePos.y}px`,
+                }}
+              >
+                <div className={styles.hoverTooltipName}>{hoveredBuilding.name}</div>
+                <span className={styles.hoverTooltipHint}>Click to inspect architectural details</span>
+              </div>
+            )}
+          </>
         ) : (
-          <div style={{ position: "relative", width: "100%", height: "100%" }}>
+          <div className={styles.photoContainer}>
             <Image
-              src="/img/campus/aerial-view.webp"
-              alt="VVITU Nambur Campus Aerial View"
+              src="/img/venue/vvit-campus-oblique.jpg"
+              alt="Vasireddy Venkatadri Institute of Technology Nambur Aerial Satellite View"
               fill
               style={{ objectFit: "cover" }}
               priority
             />
             {/* Hotspots overlay on 2D Aerial photo */}
-            {campusHotspots.map((hs) => {
-              const isSelected = selectedHotspot.id === hs.id;
+            {campusBuildings.map((building) => {
+              if (!building.photoCoords) return null;
+              const isSelected = selectedBuilding.id === building.id;
               return (
                 <button
-                  key={hs.id}
-                  onClick={() => setSelectedHotspot(hs)}
+                  key={building.id}
+                  onClick={() => setSelectedBuilding(building)}
+                  className={styles.photoHotspot}
                   style={{
-                    position: "absolute",
-                    top: hs.photoCoords.top,
-                    left: hs.photoCoords.left,
-                    transform: "translate(-50%, -50%)",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    padding: "4px 10px",
-                    borderRadius: "9999px",
-                    background: isSelected ? "var(--accent)" : "rgba(14, 14, 14, 0.85)",
+                    top: building.photoCoords.top,
+                    left: building.photoCoords.left,
+                    background: isSelected ? "var(--accent)" : "rgba(14, 14, 16, 0.88)",
                     border: `1px solid ${isSelected ? "#FFFFFF" : "rgba(255, 255, 255, 0.2)"}`,
                     color: "#FFFFFF",
-                    fontSize: "0.72rem",
-                    fontFamily: "var(--font-mono)",
-                    cursor: "pointer",
-                    backdropFilter: "blur(10px)",
-                    boxShadow: "0 4px 16px rgba(0, 0, 0, 0.6)",
                   }}
                 >
                   <MapPin size={11} />
-                  <span>{hs.name.split(" ")[0]}</span>
+                  <span>{building.shortName}</span>
                 </button>
               );
             })}
           </div>
         )}
 
-        {/* Selected Building Editorial Material Panel (Bottom-Left) */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: "20px",
-            left: "20px",
-            right: "20px",
-            maxWidth: "480px",
-            background: "rgba(12, 12, 12, 0.85)",
-            backdropFilter: "blur(20px) saturate(140%)",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
-            borderTop: "1px solid rgba(255, 255, 255, 0.2)",
-            borderRadius: "16px",
-            padding: "1.25rem 1.5rem",
-            boxShadow: "0 16px 40px rgba(0, 0, 0, 0.85)",
-            zIndex: 30,
-            transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "0.5rem",
-            }}
-          >
-            <span
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.68rem",
-                fontWeight: 700,
-                color: "var(--accent)",
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-              }}
-            >
-              {selectedHotspot.role}
-            </span>
-            <span
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.7rem",
-                color: "var(--text-muted)",
-              }}
-            >
-              Capacity: {selectedHotspot.capacity}
-            </span>
+        {/* Selected Building Architectural Dossier (Bottom-Left) */}
+        <div className={styles.dossierPanel}>
+          <div className={styles.dossierHeader}>
+            <span className={styles.dossierBadge}>{selectedBuilding.designation}</span>
+            <span className={styles.dossierCapacity}>Capacity: {selectedBuilding.capacity}</span>
           </div>
 
-          <h3
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "1.2rem",
-              fontWeight: 700,
-              color: "#FFFFFF",
-              margin: "0 0 0.4rem 0",
-              lineHeight: 1.2,
-            }}
-          >
-            {selectedHotspot.name}
-          </h3>
+          <h3 className={styles.dossierTitle}>{selectedBuilding.name}</h3>
 
-          <p
-            style={{
-              fontSize: "0.85rem",
-              color: "var(--text-secondary)",
-              lineHeight: 1.5,
-              margin: 0,
-            }}
-          >
-            <strong style={{ color: "#FFFFFF" }}>Fest Events: </strong>
-            {selectedHotspot.events}
-          </p>
+          <p className={styles.dossierDesc}>{selectedBuilding.description}</p>
+
+          <div className={styles.dossierEvents}>
+            <strong style={{ color: "#FFFFFF" }}>Fest Events Hosted: </strong>
+            {selectedBuilding.events}
+          </div>
+
+          {/* Floor Level Breakdown System */}
+          {selectedBuilding.floors && selectedBuilding.floors.length > 0 && (
+            <div className={styles.floorsSection}>
+              <div className={styles.floorsHeader}>
+                <span className={styles.floorsLabel}>Floor Level Breakdown</span>
+                <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.65rem", color: "var(--accent)" }}>
+                  Tier {selectedFloorIdx + 1} of {selectedBuilding.floors.length}
+                </span>
+              </div>
+
+              <div className={styles.floorsGrid}>
+                {selectedBuilding.floors.map((floor, idx) => (
+                  <button
+                    key={floor.level}
+                    type="button"
+                    onClick={() => setSelectedFloorIdx(idx)}
+                    className={`${styles.floorChip} ${selectedFloorIdx === idx ? styles.floorChipActive : ""}`}
+                  >
+                    {floor.level.replace(" Floor", "")}
+                  </button>
+                ))}
+              </div>
+
+              <div className={styles.floorDetail}>
+                <div className={styles.floorDetailTitle}>
+                  {selectedBuilding.floors[selectedFloorIdx]?.title}
+                </div>
+                <div>{selectedBuilding.floors[selectedFloorIdx]?.desc}</div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Minimal Gesture Telemetry Hint (Bottom-Right) */}
         {activeTab === "3d" && (
-          <div
-            style={{
-              position: "absolute",
-              bottom: "20px",
-              right: "20px",
-              background: "rgba(12, 12, 12, 0.65)",
-              border: "1px solid rgba(255, 255, 255, 0.06)",
-              borderRadius: "9999px",
-              padding: "4px 12px",
-              fontSize: "0.68rem",
-              fontFamily: "var(--font-mono)",
-              color: "var(--text-muted)",
-              pointerEvents: "none",
-              backdropFilter: "blur(12px)",
-            }}
-          >
-            Left-click: Orbit &bull; Right-click: Pan &bull; Scroll: Zoom
+          <div className={styles.telemetryBadge}>
+            Left-click: Orbit &bull; Right-click: Pan &bull; Scroll: Zoom &bull; Click building to inspect
           </div>
         )}
       </div>
 
-      {/* Quick Location Pills Strip */}
-      <div
-        style={{
-          display: "flex",
-          gap: "8px",
-          padding: "0.85rem 1.25rem",
-          background: "rgba(10, 10, 10, 0.95)",
-          borderTop: "1px solid rgba(255, 255, 255, 0.05)",
-          overflowX: "auto",
-        }}
-      >
-        {campusHotspots.map((hs) => {
-          const isSelected = selectedHotspot.id === hs.id;
+      {/* Quick Location Pills Strip (Bottom) */}
+      <div className={styles.locationStrip}>
+        {campusBuildings.map((building) => {
+          const isSelected = selectedBuilding.id === building.id;
           return (
             <button
-              key={hs.id}
+              key={building.id}
               type="button"
-              onClick={() => handleFocusHotspot(hs)}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
-                padding: "6px 14px",
-                borderRadius: "9999px",
-                background: isSelected ? "rgba(229, 29, 37, 0.15)" : "rgba(255, 255, 255, 0.03)",
-                border: `1px solid ${isSelected ? "var(--accent)" : "rgba(255, 255, 255, 0.06)"}`,
-                color: isSelected ? "#FFFFFF" : "var(--text-secondary)",
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.72rem",
-                fontWeight: 600,
-                letterSpacing: "0.06em",
-                cursor: "pointer",
-                whiteSpace: "nowrap",
-                transition: "all 0.2s ease",
-              }}
+              onClick={() => handleFocusBuilding(building)}
+              className={`${styles.locationPill} ${isSelected ? styles.locationPillActive : ""}`}
             >
               <MapPin size={12} color={isSelected ? "var(--accent)" : "#96908B"} />
-              <span>{hs.name.split(" ")[0]}</span>
+              <span>{building.shortName}</span>
             </button>
           );
         })}
