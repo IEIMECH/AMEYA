@@ -1,13 +1,13 @@
 /* ==========================================================================
    AMEYA '26 REFINED FOOTER
-   Clean, restrained, Apple-grade whitespace
+   Clean, restrained, Apple-grade whitespace with Student POCs
    ========================================================================== */
 
 .footer {
   width: 100%;
   border-top: 1px solid var(--border);
   background: var(--bg);
-  padding: 3.5rem 0 2.5rem 0;
+  padding: 4rem 0 2.5rem 0;
   position: relative;
   z-index: 10;
 }
@@ -18,6 +18,117 @@
   align-items: center;
   text-align: center;
   gap: 1.5rem;
+}
+
+/* ==========================================================================
+   Student Points of Contact (POCs) Grid
+   ========================================================================== */
+.pocsSection {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto 2.5rem auto;
+  padding-bottom: 2.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pocsHeading {
+  margin-bottom: 1.75rem;
+  text-align: center;
+}
+
+.pocsBadge {
+  display: inline-block;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--accent, #e51d25);
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.pocsTitle {
+  font-family: var(--font-display, sans-serif);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.pocsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  text-align: left;
+}
+
+.pocCard {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 1.35rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pocCard:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(229, 29, 37, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+}
+
+.pocCategory {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent, #e51d25);
+  text-transform: uppercase;
+}
+
+.pocMembers {
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+}
+
+.pocMember {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.pocName {
+  font-family: var(--font-display, sans-serif);
+  font-size: 0.96rem;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.pocPhone {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.82rem;
+  color: var(--text-secondary, #9ca3af);
+  text-decoration: none;
+  transition: all 0.15s ease;
+  width: fit-content;
+}
+
+.pocPhone:hover {
+  color: #FFFFFF;
+  text-decoration: underline;
+}
+
+.pocPhoneIcon {
+  color: var(--accent, #e51d25);
+  flex-shrink: 0;
 }
 
 /* Brand */
@@ -104,7 +215,22 @@
   transform: translateY(-2px);
 }
 
+@media (max-width: 860px) {
+  .pocsGrid {
+    grid-template-columns: 1fr;
+    max-width: 440px;
+    margin: 0 auto;
+  }
+}
+
 @media (max-width: 640px) {
+  .footer {
+    padding: 3rem 0 2rem 0;
+  }
+  .pocsSection {
+    margin-bottom: 1.75rem;
+    padding-bottom: 2rem;
+  }
   .metaRow {
     flex-direction: column;
     gap: 1rem;

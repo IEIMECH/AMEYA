@@ -1,7 +1,8 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Phone } from "lucide-react";
 import { events } from "@/data/events";
 import EventCard from "@/components/EventCard";
 import RegistrationDialog from "@/components/RegistrationDialog";
@@ -91,6 +92,21 @@ export default function EventsCatalogPage() {
             ))}
           </AnimatePresence>
         </motion.div>
+
+        {/* Events Coordinator POC Banner */}
+        <div className={styles.pocCallout}>
+          <div className={styles.pocCalloutInfo}>
+            <span className={styles.pocCalloutTag}>EVENTS COORDINATION POINT OF CONTACT</span>
+            <h4 className={styles.pocCalloutName}>T. Jaya Kumar</h4>
+            <p className={styles.pocCalloutDesc}>
+              Have queries regarding arena slots, competition rules, submission requirements, or problem statements? Reach out directly.
+            </p>
+          </div>
+          <a href="tel:+917416532304" className={styles.pocCalloutLink}>
+            <Phone size={14} />
+            <span>+91 74165 32304</span>
+          </a>
+        </div>
       </div>
 
       {/* Registration Dialog */}

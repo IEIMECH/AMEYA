@@ -1,4 +1,4 @@
-import { Bus, Train, Plane } from "lucide-react";
+import { Bus, Train, Plane, Phone } from "lucide-react";
 import Venue3DViewer from "@/components/venue/Venue3DViewer";
 import styles from "./page.module.css";
 
@@ -50,7 +50,7 @@ export default function VenuePage() {
   return (
     <div className={styles.page}>
       <div className="container" style={{ position: "relative", zIndex: 1 }}>
-        {/* Header: Clean Spatial Pattern with No Red Badge */}
+        {/* Header */}
         <header className={styles.header}>
           <h1 className={styles.title}>
             Venue &amp; <span className={styles.titleAccent}>Interactive 3D Map</span>
@@ -131,6 +131,21 @@ export default function VenuePage() {
                 Vijayawada International Airport (Gannavaram - 42 km). Taxis and app rides available directly to campus.
               </p>
             </div>
+          </div>
+
+          {/* Transport & Hospitality Point of Contact */}
+          <div className={styles.pocCallout}>
+            <div className={styles.pocCalloutInfo}>
+              <span className={styles.pocCalloutTag}>TRANSPORT &amp; HOSPITALITY POINT OF CONTACT</span>
+              <h4 className={styles.pocCalloutName}>S. Durga Sai Ram</h4>
+              <p className={styles.pocCalloutDesc}>
+                For express campus shuttle timings, train station pickup coordination, and delegate hospitality assistance.
+              </p>
+            </div>
+            <a href="tel:+919392458746" className={styles.pocCalloutLink}>
+              <Phone size={14} />
+              <span>+91 93924 58746</span>
+            </a>
           </div>
         </section>
       </div>

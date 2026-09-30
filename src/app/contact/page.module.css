@@ -1,4 +1,4 @@
-﻿/* Contact Operations Desk Styling */
+/* Contact Operations Desk Styling */
 .container {
   min-height: 100vh;
   padding: var(--page-top-padding) 1.5rem 8rem;
@@ -34,6 +34,105 @@
   margin: 0 0 3.5rem;
 }
 
+/* ==========================================================================
+   Student Points of Contact (POCs) Section
+   ========================================================================== */
+.pocsSection {
+  margin-bottom: 3.5rem;
+}
+
+.pocsTitle {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0 0 0.35rem;
+  letter-spacing: -0.01em;
+}
+
+.pocsSubtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin: 0 0 1.5rem;
+}
+
+.pocsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+.pocCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pocCard:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(229, 29, 37, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+}
+
+.pocCategory {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.pocMembers {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.pocMember {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.pocName {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.pocPhone {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.15s ease;
+  width: fit-content;
+}
+
+.pocPhone:hover {
+  color: #FFFFFF;
+  text-decoration: underline;
+}
+
+.pocPhoneIcon {
+  color: var(--accent);
+}
+
+/* ==========================================================================
+   Channels Grid
+   ========================================================================== */
 .channelsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));

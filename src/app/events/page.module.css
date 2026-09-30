@@ -1,39 +1,31 @@
-/* ==========================================================================
-   EVENTS CATALOG PAGE
-   Apple-grade whitespace, sliding filter pill, glossy grid
-   ========================================================================== */
-
 .pageWrapper {
-  position: relative;
   min-height: 100vh;
-  padding-top: var(--header-safe-space, clamp(8.5rem, 12vw, 11rem));
+  padding-top: clamp(8rem, 16vw, 10.5rem);
   padding-bottom: 6rem;
-  background: transparent;
-  z-index: 1;
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
 }
 
 .contentContainer {
   position: relative;
-  z-index: 2;
+  z-index: 1;
 }
 
-/* Header Area: Completely Transparent, Direct on Background */
+/* Header Area */
 .headerArea {
   margin-bottom: 3rem;
-  max-width: 840px;
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
+  max-width: 780px;
 }
 
 .title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  font-size: var(--font-size-section);
   line-height: var(--line-height-section);
   letter-spacing: var(--letter-spacing-section);
   font-weight: 700;
   color: #FFFFFF;
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.75rem;
 }
 
 .titleAccent {
@@ -41,57 +33,43 @@
 }
 
 .subtitle {
-  font-size: clamp(0.95rem, 1.4vw, 1.05rem);
-  line-height: 1.6;
+  font-size: 1.05rem;
   color: var(--text-secondary);
-  max-width: 680px;
+  line-height: 1.6;
+  max-width: 620px;
   margin-bottom: 2rem;
 }
 
-/* Sliding Filter Pill Rail: Horizontally scrollable on touch */
+/* Sliding Filter Navigation */
 .filtersWrapper {
   display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.35rem 0.4rem;
-  border-radius: 9999px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  border-radius: 9999px;
+  padding: 4px;
   position: relative;
-  max-width: 100%;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  gap: 2px;
   overflow-x: auto;
-  white-space: nowrap;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-}
-
-.filtersWrapper::-webkit-scrollbar {
-  display: none;
+  max-width: 100%;
 }
 
 .filterBtn {
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  padding: 0.45rem 1.25rem;
-  border-radius: 9999px;
+  padding: 8px 18px;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.06em;
   color: var(--text-secondary);
   background: transparent;
   border: none;
+  border-radius: 9999px;
   cursor: pointer;
-  z-index: 1;
-  transition: color 0.18s ease;
-  outline: none;
-  flex-shrink: 0;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+  user-select: none;
 }
 
 .filterBtn:hover {
@@ -120,6 +98,75 @@
   margin-top: 1rem;
 }
 
+/* Events Coordinator POC Banner */
+.pocCallout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(229, 29, 37, 0.05) 100%);
+  border: 1px solid var(--border);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
+  margin-top: 3.5rem;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.pocCalloutInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.pocCalloutTag {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.pocCalloutName {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.pocCalloutDesc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.pocCalloutLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  background: var(--accent);
+  color: #FFFFFF;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(229, 29, 37, 0.35);
+}
+
+.pocCalloutLink:hover {
+  background: #cc151d;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(229, 29, 37, 0.5);
+}
+
 @media (max-width: 768px) {
   .pageWrapper {
     padding-top: clamp(7rem, 14vw, 8.5rem);
@@ -136,5 +183,9 @@
     display: flex;
     width: 100%;
     border-radius: 14px;
+  }
+  .pocCallout {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

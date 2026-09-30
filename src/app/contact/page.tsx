@@ -1,11 +1,33 @@
-﻿import Link from "next/link";
-import { Mail, MapPin, ArrowRight, ExternalLink } from "lucide-react";
+import Link from "next/link";
+import { Mail, ArrowRight, ExternalLink, Phone } from "lucide-react";
 import styles from "./page.module.css";
 
 export const metadata = {
   title: "Operations & Contact - AMEYA '26 | IEI SAME",
-  description: "Official festival operations desk, direct inquiry channels, and physical location coordinates at VVITU Nambur.",
+  description: "Official festival operations desk, direct student POCs, inquiry channels, and physical location coordinates at VVITU Nambur.",
 };
+
+const pocs = [
+  {
+    category: "FOR ANY QUERIES",
+    members: [
+      { name: "S. Sai Kumar", phone: "+91 77320 14762", tel: "+917732014762" },
+      { name: "S. Sameer Basha", phone: "+91 96764 19146", tel: "+919676419146" },
+    ],
+  },
+  {
+    category: "EVENTS COORDINATOR",
+    members: [
+      { name: "T. Jaya Kumar", phone: "+91 74165 32304", tel: "+917416532304" },
+    ],
+  },
+  {
+    category: "TRANSPORT & HOSPITALITY",
+    members: [
+      { name: "S. Durga Sai Ram", phone: "+91 93924 58746", tel: "+919392458746" },
+    ],
+  },
+];
 
 const channels = [
   {
@@ -44,31 +66,65 @@ export default function ContactPage() {
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
-        {/* Header: Functional Pattern without Red Badge */}
+        {/* Header */}
         <h1 className={styles.heading}>
           Connect With <span className={styles.headingAccent}>The AMEYA Team</span>
         </h1>
         <p className={styles.subtext}>
-          Direct communication channels to the organizing cadre, arena directors, and secretariat at VVITU.
+          Direct communication channels to the student points of contact, organizing cadre, and secretariat at VVITU.
         </p>
 
-        {/* Communication Channels Grid */}
-        <div className={styles.channelsGrid}>
-          {channels.map((ch, idx) => (
-            <div key={idx} className={styles.channelCard}>
-              <div className={styles.channelHeader}>
-                <span className={styles.channelCode}>{ch.code}</span>
-                <span className={styles.channelLabel}>{ch.label}</span>
+        {/* Student Points of Contact (POCs) Section */}
+        <section className={styles.pocsSection} aria-labelledby="pocs-title">
+          <h2 id="pocs-title" className={styles.pocsTitle}>
+            Student Points of Contact (POCs)
+          </h2>
+          <p className={styles.pocsSubtitle}>
+            Reach out directly to lead student coordinators for festival inquiries, event slots, or hospitality.
+          </p>
+
+          <div className={styles.pocsGrid}>
+            {pocs.map((group, idx) => (
+              <div key={idx} className={styles.pocCard}>
+                <span className={styles.pocCategory}>{group.category}</span>
+                <div className={styles.pocMembers}>
+                  {group.members.map((member, mIdx) => (
+                    <div key={mIdx} className={styles.pocMember}>
+                      <span className={styles.pocName}>{member.name}</span>
+                      <a href={`tel:${member.tel}`} className={styles.pocPhone}>
+                        <Phone size={13} className={styles.pocPhoneIcon} />
+                        <span>{member.phone}</span>
+                      </a>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <p className={styles.channelDesc}>{ch.desc}</p>
-              <a href={`mailto:${ch.email}`} className={styles.channelEmail}>
-                <Mail size={13} color="var(--accent)" />
-                <span>{ch.email}</span>
-                <ArrowRight size={12} className={styles.arrow} />
-              </a>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Communication Channels Grid */}
+        <section aria-labelledby="channels-title">
+          <h2 id="channels-title" className={styles.pocsTitle} style={{ marginBottom: "1.25rem" }}>
+            Official Festival Desks
+          </h2>
+          <div className={styles.channelsGrid}>
+            {channels.map((ch, idx) => (
+              <div key={idx} className={styles.channelCard}>
+                <div className={styles.channelHeader}>
+                  <span className={styles.channelCode}>{ch.code}</span>
+                  <span className={styles.channelLabel}>{ch.label}</span>
+                </div>
+                <p className={styles.channelDesc}>{ch.desc}</p>
+                <a href={`mailto:${ch.email}`} className={styles.channelEmail}>
+                  <Mail size={13} color="var(--accent)" />
+                  <span>{ch.email}</span>
+                  <ArrowRight size={12} className={styles.arrow} />
+                </a>
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* Campus Location & Coordinates Panel */}
         <div className={styles.inquirySection}>
