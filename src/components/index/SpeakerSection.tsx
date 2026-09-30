@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
@@ -80,25 +80,50 @@ export default function SpeakerSection() {
   const [activeIdx, setActiveIdx] = useState(0);
   const activeSpeaker = speakers[activeIdx];
   const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, amount: "some" });
+  const headerRef = useRef<HTMLElement>(null);
+  const [isRevealed, setIsRevealed] = useState(false);
   const shouldReduceMotion = useReducedMotion();
+
+  // Bulletproof one-time entrance reveal that NEVER reverts
+  useEffect(() => {
+    if (isRevealed) return;
+    const el = headerRef.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    if (rect.top <= window.innerHeight + 150) {
+      setIsRevealed(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry && (entry.isIntersecting || entry.boundingClientRect.top <= window.innerHeight + 150)) {
+          setIsRevealed(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "150px 0px" }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [isRevealed]);
 
   return (
     <section ref={sectionRef} className={styles.section} id="speakers">
       <div className={styles.innerContainer}>
         {/* Section Header: Animate once into view, permanently visible */}
-        <motion.header
-          className={styles.header}
-          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ type: "spring", bounce: 0, duration: 0.45 }}
+        <header
+          ref={headerRef}
+          className={`${styles.header} ${isRevealed ? styles.headerRevealed : styles.headerHidden}`}
         >
           <h2 className={styles.title}>Meet Our Guests</h2>
           <p className={styles.subtext}>
             Meet the researchers, industry leaders, and engineering specialists sharing their insights at AMEYA &apos;26.
           </p>
-        </motion.header>
+        </header>
 
         {/* 2-Column Guest Layout */}
         <div className={styles.dossierGrid}>

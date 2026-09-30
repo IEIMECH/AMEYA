@@ -1,9 +1,10 @@
-﻿"use client";
+"use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Hero3DCanvas from "@/components/index/Hero3DCanvas";
+import HeroCountdownTicker from "@/components/index/HeroCountdownTicker";
 import FestivalStory from "@/components/index/FestivalStory";
 import PhotoWall from "@/components/index/PhotoWall";
 import SpeakerSection from "@/components/index/SpeakerSection";
@@ -17,33 +18,6 @@ import styles from "./page.module.css";
 
 export default function Home() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-
-  // Fest Countdown to October 4, 2026 (Asia/Kolkata timezone standard)
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    const festDate = new Date("2026-10-04T09:00:00+05:30").getTime();
-
-    const updateCountdown = () => {
-      const now = new Date().getTime();
-      const diff = festDate - now;
-
-      if (diff > 0) {
-        setTimeLeft({
-          days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-          hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-          minutes: Math.floor((diff / 1000 / 60) % 60),
-          seconds: Math.floor((diff / 1000) % 60),
-        });
-      }
-    };
-
-    updateCountdown();
-    const timer = setInterval(updateCountdown, 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   const handleOpenRegister = (eventName?: string) => {
     if (eventName) {
@@ -69,20 +43,8 @@ export default function Home() {
         <div className={styles.heroGrid}>
           {/* Main Left Content Block - Unobstructed Headline Dominance */}
           <div className={styles.leftHeroBlock}>
-            {/* Sleek Integrated Countdown Ticker (Extracted naturally) */}
-            <div className={styles.heroCountdownTicker} suppressHydrationWarning>
-              <span className={styles.pulseDot} />
-              <span className={styles.tickerLabel}>AMEYA &apos;26 COUNTDOWN</span>
-              <span className={styles.tickerDivider}>/</span>
-              <span className={styles.tickerValue}>
-                T-MINUS{" "}
-                {mounted
-                  ? `${String(timeLeft.days).padStart(2, "0")}D : ${String(timeLeft.hours).padStart(2, "0")}H : ${String(timeLeft.minutes).padStart(2, "0")}M : ${String(timeLeft.seconds).padStart(2, "0")}S`
-                  : "08D : 11H : 31M : 40S"}
-              </span>
-              <span className={styles.tickerDivider}>/</span>
-              <span className={styles.tickerDate}>OCT 04–05</span>
-            </div>
+            {/* Sleek Integrated Countdown Ticker (Independent, no whole-page re-renders) */}
+            <HeroCountdownTicker />
 
             {/* Monumental Headline */}
             <h1 className={styles.editorialTitle}>

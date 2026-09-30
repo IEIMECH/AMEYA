@@ -21,12 +21,40 @@ const photoArchive: PhotoItem[] = [
 ];
 
 export default function PhotoWall() {
-  const [activePhoto, setActivePhoto] = useState<PhotoItem | null>(null);
+    const [activePhoto, setActivePhoto] = useState<PhotoItem | null>(null);
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(2); // Default center (index 2)
   const trackRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLElement>(null);
-  const isInView = useInView(containerRef, { once: true, amount: "some" });
+  const headerRef = useRef<HTMLElement>(null);
+  const [isRevealed, setIsRevealed] = useState(false);
   const shouldReduceMotion = useReducedMotion();
+
+  // Bulletproof one-time entrance reveal that NEVER reverts
+  useEffect(() => {
+    if (isRevealed) return;
+    const el = headerRef.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    if (rect.top <= window.innerHeight + 150) {
+      setIsRevealed(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry && (entry.isIntersecting || entry.boundingClientRect.top <= window.innerHeight + 150)) {
+          setIsRevealed(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "150px 0px" }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [isRevealed]);
 
   // Escape key & scroll-lock listener for lightbox
   useEffect(() => {
@@ -64,18 +92,15 @@ export default function PhotoWall() {
     <section ref={containerRef} className={styles.section} id="experience">
       <div className={styles.innerContainer}>
         {/* Section Header: Animate once into view, permanently visible */}
-        <motion.header
-          className={styles.header}
-          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ type: "spring", bounce: 0, duration: 0.45 }}
+        <header
+          ref={headerRef}
+          className={`${styles.header} ${isRevealed ? styles.headerRevealed : styles.headerHidden}`}
         >
           <h2 className={styles.title}>A Look Back</h2>
           <p className={styles.subtitle}>
             A glimpse into the adrenaline, craft, and championship arenas of our previous national conclave.
           </p>
-        </motion.header>
+        </header>
 
         {/* Interactive Image Strip (Item 6) */}
         <div

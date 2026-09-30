@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import styles from "./SponsorSection.module.css";
@@ -60,17 +61,43 @@ const exhibitionPartners: SponsorItem[] = [
 
 export default function SponsorSection() {
   const shouldReduceMotion = useReducedMotion();
+  const headerRef = useRef<HTMLElement>(null);
+  const [isRevealed, setIsRevealed] = useState(false);
+
+  // Bulletproof one-time entrance reveal that NEVER reverts
+  useEffect(() => {
+    if (isRevealed) return;
+    const el = headerRef.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    if (rect.top <= window.innerHeight + 150) {
+      setIsRevealed(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry && (entry.isIntersecting || entry.boundingClientRect.top <= window.innerHeight + 150)) {
+          setIsRevealed(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "150px 0px" }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [isRevealed]);
 
   return (
     <section className={styles.section} id="sponsors" aria-labelledby="sponsors-heading">
       <div className={styles.container}>
         {/* Section Header: Permanently Visible, Immediate Entrance */}
-        <motion.header
-          className={styles.header}
-          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ type: "spring", bounce: 0, duration: 0.45 }}
+        <header
+          ref={headerRef}
+          className={`${styles.header} ${isRevealed ? styles.headerRevealed : styles.headerHidden}`}
         >
           <h2 id="sponsors-heading" className={styles.title}>
             Our Valued Sponsors
@@ -78,7 +105,7 @@ export default function SponsorSection() {
           <p className={styles.subtitle}>
             Industry leaders, institutions, and professional engineering bodies supporting AMEYA &apos;26.
           </p>
-        </motion.header>
+        </header>
 
         {/* Logo Exhibition Grid with Self-Triggering Stagger */}
         <div className={styles.exhibitionGrid}>
