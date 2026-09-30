@@ -45,3 +45,12 @@ next-env.d.ts
 
 # Scratch & intermediate files (3-Layer Architecture)
 .tmp/
+repomix*
+*.xml
+
+# AI assistant configuration & instructions
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+SKILL_*.md
+.agents/
