@@ -1,9 +1,10 @@
 ﻿.section {
   position: relative;
   z-index: 3;
-  padding: 7.5rem 1.5rem 5rem 1.5rem;
+  padding: 10rem 1.5rem 6rem 1.5rem;
+  margin-top: 3rem;
   background: var(--machined-dark, #050505);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .container {
