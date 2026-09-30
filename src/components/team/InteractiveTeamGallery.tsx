@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
-import { Mail } from "lucide-react";
 import { teamMembers } from "@/data/team";
 import styles from "./InteractiveTeamGallery.module.css";
 
 const TOTAL_MEMBERS = teamMembers.length; // 18
+const IDLE_DRIFT_SPEED = 30; // pixels per second (smooth, continuous idle motion)
 
 function LinkedinIcon({ size = 16 }: { size?: number }) {
   return (
@@ -63,13 +63,16 @@ export default function InteractiveTeamGallery() {
   const dragStartXRef = useRef<number>(0);
   const carouselStartXRef = useRef<number>(0);
   const pointerHistoryRef = useRef<Array<{ x: number; time: number }>>([]);
-  const springRafRef = useRef<number | null>(null);
-
   const cardSpacingRef = useRef<number>(314);
-  const activeGlobalIndexRef = useRef<number>(18);
+
+  // Motion state machine: "DRIFT" | "SPRING" | "PAUSE"
+  const motionModeRef = useRef<"DRIFT" | "SPRING" | "PAUSE">("DRIFT");
+  const springTargetRef = useRef<number>(0);
+  const springVelocityRef = useRef<number>(0);
+  const pauseUntilRef = useRef<number>(0);
+  const currentActiveIdxRef = useRef<number>(0);
 
   const [activeDataIndex, setActiveDataIndex] = useState<number>(0);
-  const [activeGlobalIndex, setActiveGlobalIndex] = useState<number>(18);
   const [isGrabbing, setIsGrabbing] = useState<boolean>(false);
 
   // Responsive card spacing calculation
@@ -124,94 +127,100 @@ export default function InteractiveTeamGallery() {
     return wrapped;
   }, []);
 
-  // Synchronize active member state with settled carousel position
-  const syncActiveIndex = useCallback((x: number) => {
-    const spacing = cardSpacingRef.current;
-    const nearestGlobal = Math.round(-x / spacing);
-    const normDataIdx = ((nearestGlobal % TOTAL_MEMBERS) + TOTAL_MEMBERS) % TOTAL_MEMBERS;
-    activeGlobalIndexRef.current = nearestGlobal;
-    setActiveGlobalIndex(nearestGlobal);
-    setActiveDataIndex(normDataIdx);
-  }, []);
-
-  // Mount initialization: center on member 0 of middle set (global index 18)
+  // Single authoritative continuous physics / animation loop
   useEffect(() => {
     updateSpacing();
     const spacing = cardSpacingRef.current;
-    const startX = -18 * spacing;
+    const startX = -18 * spacing; // Start on member 0 of middle set
     currentXRef.current = startX;
     applyTrackX(startX);
-    syncActiveIndex(startX);
+
+    let rafId: number;
+    let lastTime = performance.now();
+
+    const loop = (now: number) => {
+      const dt = Math.min((now - lastTime) * 0.001, 0.04);
+      lastTime = now;
+
+      const currentSpacing = cardSpacingRef.current;
+
+      // 1. If currently being dragged, pointer handlers directly manipulate DOM
+      if (!isDraggingRef.current) {
+        if (motionModeRef.current === "SPRING") {
+          const target = springTargetRef.current;
+          let current = currentXRef.current;
+          let v = springVelocityRef.current;
+
+          // Critically damped spring physics: k = 180, c = 27
+          const displacement = current - target;
+          const springForce = -180 * displacement;
+          const dampingForce = -27 * v;
+          const acceleration = springForce + dampingForce;
+
+          v += acceleration * dt;
+          current += v * dt;
+
+          springVelocityRef.current = v;
+          currentXRef.current = current;
+          applyTrackX(current);
+
+          // Settling check
+          if (Math.abs(displacement) < 0.4 && Math.abs(v) < 15) {
+            current = wrapPosition(target);
+            currentXRef.current = current;
+            applyTrackX(current);
+            // Pause for 1.8 seconds after user drag/click snap so user can read dossier
+            pauseUntilRef.current = now + 1800;
+            motionModeRef.current = "PAUSE";
+          }
+        } else if (motionModeRef.current === "PAUSE") {
+          if (now >= pauseUntilRef.current) {
+            motionModeRef.current = "DRIFT";
+          }
+        } else if (motionModeRef.current === "DRIFT") {
+          // Smooth continuous horizontal progression
+          let nextX = currentXRef.current - IDLE_DRIFT_SPEED * dt;
+          nextX = wrapPosition(nextX);
+          currentXRef.current = nextX;
+          applyTrackX(nextX);
+        }
+      }
+
+      // Check center active index (only triggers React render when center card actually changes)
+      const nearestGlobal = Math.round(-currentXRef.current / currentSpacing);
+      const normIdx = ((nearestGlobal % TOTAL_MEMBERS) + TOTAL_MEMBERS) % TOTAL_MEMBERS;
+      if (normIdx !== currentActiveIdxRef.current) {
+        currentActiveIdxRef.current = normIdx;
+        setActiveDataIndex(normIdx);
+      }
+
+      rafId = requestAnimationFrame(loop);
+    };
+
+    rafId = requestAnimationFrame(loop);
 
     const onResize = () => {
       updateSpacing();
       const newSpacing = cardSpacingRef.current;
-      const target = -activeGlobalIndexRef.current * newSpacing;
+      const target = -(18 + currentActiveIdxRef.current) * newSpacing;
       currentXRef.current = target;
       applyTrackX(target);
     };
 
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, [applyTrackX, syncActiveIndex, updateSpacing]);
-
-  // Critically damped spring simulation (Single authoritative physics loop)
-  const startSpring = useCallback((targetX: number, initialVelocityPxPerMs: number) => {
-    if (springRafRef.current) {
-      cancelAnimationFrame(springRafRef.current);
-      springRafRef.current = null;
-    }
-
-    let current = currentXRef.current;
-    let velocity = initialVelocityPxPerMs * 1000; // px/sec
-    let lastTime = performance.now();
-
-    // Critically damped parameters: smooth, prompt settling with zero bounce
-    const stiffness = 180;
-    const damping = 27;
-
-    const tick = (now: number) => {
-      const dt = Math.min((now - lastTime) * 0.001, 0.035);
-      lastTime = now;
-
-      const displacement = current - targetX;
-      const springForce = -stiffness * displacement;
-      const dampingForce = -damping * velocity;
-      const acceleration = springForce + dampingForce;
-
-      velocity += acceleration * dt;
-      current += velocity * dt;
-
-      currentXRef.current = current;
-      applyTrackX(current);
-
-      // Check settling condition
-      if (Math.abs(current - targetX) < 0.4 && Math.abs(velocity) < 15) {
-        current = targetX;
-        // Perform silent wrap at settling point
-        const wrapped = wrapPosition(current);
-        currentXRef.current = wrapped;
-        applyTrackX(wrapped);
-        syncActiveIndex(wrapped);
-        springRafRef.current = null;
-        return;
-      }
-
-      springRafRef.current = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("resize", onResize);
     };
+  }, [applyTrackX, updateSpacing, wrapPosition]);
 
-    springRafRef.current = requestAnimationFrame(tick);
-  }, [applyTrackX, syncActiveIndex, wrapPosition]);
-
-  // Pointer Down (Interruptible grab: reads presentation value immediately)
+  // Pointer Down (Immediate interruptible grab: reads actual presentation value)
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    // 1. Cancel running spring immediately (Req 5 & 10)
-    if (springRafRef.current) {
-      cancelAnimationFrame(springRafRef.current);
-      springRafRef.current = null;
-    }
+    // 1. Immediately interrupt any motion mode
+    motionModeRef.current = "PAUSE";
+    pauseUntilRef.current = Infinity;
 
-    // 2. Read current presentation position from the DOM (Req 4 & 5)
+    // 2. Read current presentation position from the DOM (0 visual jump)
     let currentX = getPresentationX();
     currentX = wrapPosition(currentX);
     currentXRef.current = currentX;
@@ -249,7 +258,7 @@ export default function InteractiveTeamGallery() {
       nextX = wrapped;
     }
 
-    // Direct DOM write: 1:1 tracking with zero lag (Req 3 & 6)
+    // Direct DOM write: 1:1 tracking with zero lag
     currentXRef.current = nextX;
     applyTrackX(nextX);
 
@@ -294,25 +303,29 @@ export default function InteractiveTeamGallery() {
     const spacing = cardSpacingRef.current;
     const currentX = currentXRef.current;
 
-    // Momentum projection: project position based on velocity (Req 8)
+    // Momentum projection: project position based on velocity
     const projectedX = currentX + velocityPxPerMs * 220;
     const targetGlobal = Math.round(-projectedX / spacing);
     const targetX = -targetGlobal * spacing;
 
-    // Launch single spring to settle at target card (Req 9)
-    startSpring(targetX, velocityPxPerMs);
+    // Switch to spring settling mode
+    springTargetRef.current = targetX;
+    springVelocityRef.current = velocityPxPerMs * 1000; // px/sec
+    motionModeRef.current = "SPRING";
   };
 
   const onPointerCancel = (e: React.PointerEvent<HTMLDivElement>) => {
     onPointerUp(e);
   };
 
-  // Click card to center
+  // Direct card click to center
   const handleCardClick = (globalIdx: number) => {
     if (isDraggingRef.current) return;
     const spacing = cardSpacingRef.current;
     const targetX = -globalIdx * spacing;
-    startSpring(targetX, 0);
+    springTargetRef.current = targetX;
+    springVelocityRef.current = 0;
+    motionModeRef.current = "SPRING";
   };
 
   const activeMember = teamMembers[activeDataIndex] || teamMembers[0];
@@ -328,7 +341,7 @@ export default function InteractiveTeamGallery() {
         <p className={styles.heroDepartment}>Department of Mechanical Engineering</p>
       </header>
 
-      {/* 2. Direct-Manipulation Single-Track Carousel Viewport */}
+      {/* 2. Isolated Carousel Viewport (Only the track moves horizontally) */}
       <div
         ref={viewportRef}
         className={`${styles.galleryViewport} ${isGrabbing ? styles.grabbing : ""}`}
@@ -336,7 +349,7 @@ export default function InteractiveTeamGallery() {
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerCancel}
-        aria-label="Interactive Team Carousel. Hold and drag horizontally to move cards."
+        aria-label="Interactive Team Carousel. Drag to browse officers, or watch continuous progression."
         role="region"
       >
         <div ref={trackRef} className={styles.track}>
@@ -384,12 +397,18 @@ export default function InteractiveTeamGallery() {
         </div>
       </div>
 
-      {/* 3. Detailed Profile Panel for Active Center Member */}
+      {/* 3. Detailed Profile Panel for Active Center Member (Completely independent in document flow) */}
       <section className={styles.activeDetailSection} aria-label="Selected Officer Dossier">
         <div className={styles.detailContainer}>
+          {/* Structural Header Row: ID on Left, Level on Right */}
           <div className={styles.detailMetaRow}>
-            <span className={styles.detailCallsign}>{activeMember.callsign}</span>
-            <span className={styles.detailClearance}>{activeMember.clearance}</span>
+            <div className={styles.detailIdBlock}>
+              <span className={styles.detailIdLabel}>ID //</span>
+              <span className={styles.detailCallsign}>{activeMember.callsign}</span>
+            </div>
+            <div className={styles.detailLevelBadge}>
+              <span className={styles.detailLevelText}>{activeMember.clearance}</span>
+            </div>
           </div>
 
           <h2 className={styles.detailName}>{activeMember.name}</h2>
@@ -403,15 +422,6 @@ export default function InteractiveTeamGallery() {
             </div>
 
             <div className={styles.socialLinks}>
-              {activeMember.socials?.email && (
-                <a
-                  href={`mailto:${activeMember.socials.email}`}
-                  className={styles.socialIcon}
-                  aria-label={`Email ${activeMember.name}`}
-                >
-                  <Mail size={16} />
-                </a>
-              )}
               {activeMember.socials?.linkedin && (
                 <a
                   href={activeMember.socials.linkedin}

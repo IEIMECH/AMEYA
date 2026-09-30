@@ -1,16 +1,8 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { ArrowUp } from "lucide-react";
 import styles from "./Footer.module.css";
-
-const navLinks = [
-  { href: "/events", label: "EVENTS" },
-  { href: "/venue", label: "VENUE" },
-  { href: "/team", label: "TEAM" },
-  { href: "/about", label: "ABOUT" },
-  { href: "/info", label: "INFO" },
-];
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -27,15 +19,6 @@ export default function Footer() {
             <span className={styles.brandYear}>&apos;26</span>
           </Link>
         </div>
-
-        {/* Clean Minimal Navigation Links */}
-        <nav className={styles.navRow} aria-label="Footer Navigation">
-          {navLinks.map((link) => (
-            <Link key={link.href} href={link.href} className={styles.navLink}>
-              {link.label}
-            </Link>
-          ))}
-        </nav>
 
         {/* Copyright & Back to Top */}
         <div className={styles.metaRow}>
