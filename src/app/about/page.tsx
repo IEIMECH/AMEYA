@@ -1,139 +1,128 @@
-﻿import styles from "./page.module.css";
-import { Lightbulb, Target, Users, Award, ShieldAlert, Sparkles } from "lucide-react";
+﻿import { Lightbulb, Target, Users, Award } from "lucide-react";
+import styles from "./page.module.css";
 
 export const metadata = {
-  title: "About & Engineering Legacy — AMEYA '26 | IEI SAME",
-  description: "Discover the engineering heritage and vision of AMEYA — organized by the Department of Mechanical Engineering and IEI Students' Chapter at VVIIT Nambur.",
+  title: "About & Engineering Legacy - AMEYA '26 | IEI SAME",
+  description: "Discover the engineering heritage and vision of AMEYA - organized by the Department of Mechanical Engineering and IEI Students' Chapter at VVIIT Nambur.",
 };
+
+const pillars = [
+  {
+    icon: Lightbulb,
+    title: "Innovation",
+    desc: "Challenging conventional kinematic paradigms through rapid prototyping, generative CAD modeling, and advanced mechanics.",
+    tag: "01",
+  },
+  {
+    icon: Target,
+    title: "Competition",
+    desc: "High-octane obstacle tracks, mechatronic assembly, and timed precision manufacturing challenges under rigorous standards.",
+    tag: "02",
+  },
+  {
+    icon: Users,
+    title: "Community",
+    desc: "Uniting collegiate innovators, practicing researchers, and faculty mentors in an authentic collaborative forum.",
+    tag: "03",
+  },
+  {
+    icon: Award,
+    title: "Excellence",
+    desc: "Rewarding craftsmanship, software mastery, and rigorous engineering problem solving across two championship days.",
+    tag: "04",
+  },
+];
 
 export default function AboutPage() {
   return (
     <div className={styles.page}>
-      {/* Ghost Industrial Watermark */}
-      
-
       <div className="container" style={{ position: "relative", zIndex: 1 }}>
-        {/* Header */}
-        <div className={styles.header}>
-          <div className="section-label">
-            <ShieldAlert size={13} />
-            HERITAGE &amp; IDENTITY // AMEYA
-          </div>
-          <h1>
-            What is <span className="gradient-text">Ameya</span>?
+        {/* Editorial Header (No Red Badges) */}
+        <header className={styles.header}>
+          <h1 className={styles.title}>
+            What is <span className={styles.titleAccent}>Ameya</span>?
           </h1>
-          <p className={styles.sub}>
-            The story of VVITU's flagship mechanical engineering fest, organized by the IEI SAME Student Chapter.
+          <p className={styles.leadIntro}>
+            The flagship mechanical engineering technical conclave of VVITU Nambur, forged by the IEI SAME Student Chapter.
           </p>
-        </div>
+          <p className={styles.sub}>
+            An authentic proving ground where theoretical continuum mechanics meets the physical reality of precision machining, robotics, and design.
+          </p>
+        </header>
 
-        {/* Main Content */}
-        <div className={styles.content}>
-          <div className={`glass-card ${styles.mainCard}`}>
-            <span className={styles.crosshairTL}>+</span>
-            <span className={styles.crosshairTR}>+</span>
-            <div className={styles.hudCorner}>ABOUT THE NAME</div>
-            <h2>The Name — Ameya (अमेय)</h2>
-            <p>
-              Derived from classical Sanskrit, <strong>Ameya</strong> translates to <em>immeasurable</em> or <em>boundless</em>. It embodies the limitless intellectual and creative potential of the mechanical engineer — from forging raw billet steel to architecting autonomous kinematics that transcend textbooks.
-            </p>
-            <p>
-              Since its inception, Ameya has stood as the flagship technical fest of the Department of Mechanical Engineering at Vasireddy Venkatadri Institute of Technology (VVITU) — an authentic proving ground where theoretical mechanics meet physical realization.
-            </p>
-          </div>
+        <div className={styles.editorialDivider} aria-hidden="true" />
 
-          {/* Two-Column Institutional Grid */}
-          <div className={styles.twoCol}>
-            <div className={`glass-card ${styles.infoCard}`}>
-              <span className={styles.crosshairTL}>+</span>
-              <span className={styles.crosshairTR}>+</span>
-              <div className={styles.hudCorner}>IEI SAME CHAPTER</div>
-              <h3>What is IEI SAME?</h3>
-              <p>
-                <strong>IEI SAME</strong> represents the <strong>Institution of Engineers India — Student Activity for Mechanical Engineers</strong>. It is the premier chartered technical student body of the Mechanical Engineering Department at VVITU Nambur, Andhra Pradesh.
-              </p>
-              <p>
-                Affiliated with the prestigious Institution of Engineers (India), IEI SAME bridges academic rigor with industrial reality through hands-on technical symposiums, robotic combat arenas, and national symposiums.
-              </p>
-            </div>
+        {/* Section 1: The Name - Ameya (Sitting directly on background) */}
+        <section className={styles.editorialSection} aria-labelledby="the-name-heading">
+          <h2 id="the-name-heading" className={styles.sectionHeading}>
+            The Name &mdash; Ameya (अमेय)
+          </h2>
+          <p className={styles.paragraph}>
+            Derived from classical Sanskrit, <strong>Ameya</strong> translates to <em>immeasurable</em> or <em>boundless</em>. It honors the limitless intellectual and creative ambition of the mechanical engineer &mdash; from transforming raw billet steel into precision linkages to architecting automated kinematics that transcend standard textbooks.
+          </p>
+          <p className={styles.paragraph}>
+            Since its founding, Ameya has served as the annual benchmark festival for the Department of Mechanical Engineering at Vasireddy Venkatadri Institute of Technology &mdash; a crucible where engineering rigor is celebrated through hands-on fabrication, algorithmic CAD drafting, and kinetic speed.
+          </p>
+        </section>
 
-            <div className={`glass-card ${styles.infoCard}`}>
-              <span className={styles.crosshairTL}>+</span>
-              <span className={styles.crosshairTR}>+</span>
-              <div className={styles.hudCorner}>OUR VISION</div>
-              <h3>Why This Fest?</h3>
-              <p>
-                Ameya was forged from a singular conviction: that student engineers deserve an arena larger than the lecture hall. A crucible to stress-test designs, debate cutting-edge research, and celebrate the unyielding craft of precision engineering.
+        <div className={styles.editorialDivider} aria-hidden="true" />
+
+        {/* Section 2: Two-Column Institutional Narrative */}
+        <section className={styles.editorialSection} aria-labelledby="chapter-vision-heading">
+          <div className={styles.twoColGrid}>
+            <div>
+              <h3 id="chapter-vision-heading" className={styles.colHeading}>
+                What is IEI SAME?
+              </h3>
+              <p className={styles.paragraph}>
+                <strong>IEI SAME</strong> represents the <strong>Institution of Engineers India &mdash; Student Activity for Mechanical Engineers</strong>. It is the premier chartered technical student body of the Mechanical Engineering Department at VVITU Nambur, Andhra Pradesh.
               </p>
-              <p>
-                Every autumn, Ameya convenes hundreds of aspiring innovators, machinists, and coders from across India, entirely directed and orchestrated by student engineers.
+              <p className={styles.paragraph}>
+                Affiliated with the prestigious national Institution of Engineers (India), IEI SAME bridges academic coursework with industrial craft through technical symposiums, hands-on workshop competitions, and national conventions.
               </p>
             </div>
+
+            <div>
+              <h3 className={styles.colHeading}>
+                Why This Fest?
+              </h3>
+              <p className={styles.paragraph}>
+                Ameya was created from a single conviction: student engineers deserve an arena larger than the lecture hall. A proving ground to stress-test designs against the clock, debate emerging manufacturing methods, and celebrate the unyielding discipline of mechanical craftsmanship.
+              </p>
+              <p className={styles.paragraph}>
+                Every edition convenes hundreds of aspiring innovators, machinists, and designers from across regional colleges, directed and orchestrated entirely by student council engineers.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <div className={styles.editorialDivider} aria-hidden="true" />
+
+        {/* Section 3: Interactive Pillars */}
+        <section aria-labelledby="pillars-heading" style={{ marginBottom: "2rem" }}>
+          <div className={styles.pillarsHeader}>
+            <h2 id="pillars-heading" className={styles.pillarsTitle}>
+              Our Core <span className={styles.titleAccent}>Pillars</span>
+            </h2>
+            <p className={styles.pillarsSubtitle}>Four Foundational Principles</p>
           </div>
 
-          {/* Pillars of Engineering */}
-          <div style={{ textAlign: "center", marginTop: "2rem", marginBottom: "1rem" }}>
-            
-            <h2 className={styles.centeredH2}>Our Core Pillars</h2>
-          </div>
-
-          <div className={styles.pillars}>
-            {[
-              {
-                icon: <Lightbulb size={22} />,
-                title: "Innovation",
-                desc: "Challenging conventional kinematic paradigms through rapid prototyping and generative CAD modeling.",
-                tag: "PILLAR // 01",
-              },
-              {
-                icon: <Target size={22} />,
-                title: "Competition",
-                desc: "High-octane robotic combat, mechatronic troubleshooting, and timed precision design challenges.",
-                tag: "PILLAR // 02",
-              },
-              {
-                icon: <Users size={22} />,
-                title: "Community",
-                desc: "Uniting collegiate innovators, DRDO scientists, and industry leaders in a shared technical forum.",
-                tag: "PILLAR // 03",
-              },
-              {
-                icon: <Award size={22} />,
-                title: "Excellence",
-                desc: "Rewarding rigor, tight tolerances, and peer-reviewed technical manuscripts with national citations.",
-                tag: "PILLAR // 04",
-              },
-            ].map((p) => (
-              <div key={p.title} className={`glass-card ${styles.pillar}`}>
-                <span className={styles.crosshairTL}>+</span>
-                <span className={styles.crosshairTR}>+</span>
-                <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.65rem", color: "#666666", alignSelf: "flex-start" }}>
-                  {p.tag}
+          <div className={styles.pillarsGrid}>
+            {pillars.map((pillar) => {
+              const Icon = pillar.icon;
+              return (
+                <div key={pillar.title} className={styles.pillarCard}>
+                  <div className={styles.pillarIconBox}>
+                    <Icon size={20} />
+                  </div>
+                  <div className={styles.pillarIndex}>PILLAR // {pillar.tag}</div>
+                  <h3 className={styles.pillarName}>{pillar.title}</h3>
+                  <p className={styles.pillarDesc}>{pillar.desc}</p>
                 </div>
-                <span className={styles.pillarIcon}>
-                  {p.icon}
-                </span>
-                <h4>{p.title}</h4>
-                <p>{p.desc}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
-
-          {/* Stats Bar */}
-          <div className={`glass-card ${styles.statsCard}`}>
-            {[
-              { num: "05+", label: "Consecutive Editions" },
-              { num: "1,200+", label: "Participant Engineers" },
-              { num: "12+", label: "Technical Arenas" },
-              { num: "₹50K+", label: "Total Prize Pool" },
-            ].map((s, i) => (
-              <div key={i} className={styles.statItem}>
-                <span className={`gradient-text ${styles.statNum}`}>{s.num}</span>
-                <span className={styles.statLabel}>{s.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+        </section>
       </div>
     </div>
   );

@@ -435,7 +435,7 @@ export default function Hero3DCanvas() {
     type GearState = "IDLE" | "HOVER" | "ACCELERATING" | "DECELERATING";
     let gearState: GearState = "IDLE";
 
-    const BASE_ROT_PER_SEC = 0.20; // ~1.2566 rad/s (slow, cinematic baseline)
+    const BASE_ROT_PER_SEC = 0.035; // ~1.2566 rad/s (slow, cinematic baseline)
     const BASE_RAD_PER_SEC = BASE_ROT_PER_SEC * Math.PI * 2;
 
     let currentMultiplier = 1.0;

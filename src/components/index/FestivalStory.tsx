@@ -15,10 +15,10 @@ interface StatItem {
 }
 
 const statsData: StatItem[] = [
-  { target: 5, suffix: "+", label: "NATIONAL EDITIONS", sub: "LEGACY OF EXCELLENCE" },
-  { target: 1200, suffix: "+", label: "PARTICIPANT ENGINEERS", sub: "ACROSS 40+ INSTITUTES" },
-  { target: 8, suffix: "", label: "COMPETITION EVENTS", sub: "TECHNICAL & HANDS-ON CHALLENGES" },
-  { target: 50, suffix: "K+", prefix: "₹", label: "TOTAL PRIZE POOL", sub: "MERIT & AWARDS" },
+  { target: 4, suffix: "+", label: "NATIONAL EDITIONS", sub: "Legacy of Technical Excellence" },
+  { target: 1200, suffix: "+", label: "PARTICIPANT ENGINEERS", sub: "Across 40+ Regional Institutes" },
+  { target: 8, suffix: "", label: "CHAMPIONSHIP ARENAS", sub: "Individual Engineering Challenges" },
+  { target: 50, suffix: "K+", prefix: "₹", label: "TOTAL PRIZE POOL", sub: "Merit Awards & Recognition" },
 ];
 
 export default function FestivalStory() {
@@ -61,21 +61,15 @@ export default function FestivalStory() {
   return (
     <section ref={sectionRef} className={styles.section} id="intro">
       <div className={styles.innerContainer}>
-        {/* Asymmetrical Editorial Header Layout */}
+        {/* Editorial Headline & Story */}
         <div className={styles.editorialGrid}>
-          {/* Left Column: Monumental Headline */}
           <motion.div
             className={styles.headlineColumn}
-            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: "some" }}
             transition={{ type: "spring", bounce: 0, duration: 0.45 }}
           >
-            <div className={styles.kicker}>
-              <span className={styles.kickerDot} />
-              ABOUT AMEYA
-            </div>
-
             <h2 className={styles.monumentalHeadline}>
               <span>AMEYA IS NOT</span>
               <span>JUST ANOTHER</span>
@@ -83,69 +77,57 @@ export default function FestivalStory() {
             </h2>
           </motion.div>
 
-          {/* Right Column: Editorial Paragraph */}
           <motion.div
             className={styles.copyColumn}
-            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: "some" }}
             transition={{ type: "spring", bounce: 0, duration: 0.45, delay: shouldReduceMotion ? 0 : 0.08 }}
           >
             <p className={styles.leadParagraph}>
-              It is a proving ground where theoretical mechanics meets physical reality.
+              It is a proving ground where theoretical continuum mechanics meets the physical reality of precision machining, robotics, and design.
               Founded under the Institution of Engineers India (SAME), the Sanskrit word <em>Ameya</em> translates
-              to <strong>&ldquo;immeasurable&rdquo;</strong> &mdash; honoring the limitless potential and creative ambition
-              of young engineers.
+              to <strong>&ldquo;immeasurable&rdquo;</strong> &mdash; honoring the boundless potential and creative discipline of young engineers.
             </p>
-
-            {showFullStory && (
-              <div className={styles.expandedText}>
-                <p>
-                  Whether you are testing your modeling speed in AutoCAD, racing kinetic RC machines,
-                  troubleshooting mechanical assemblies against the clock, or identifying industrial tooling under pressure &mdash; Ameya is your stage.
-                </p>
-                <p>
-                  Two days. Eight official solo competitions. Hundreds of aspiring engineers from across institutions
-                  converging at the Department of Mechanical Engineering, VVITU.
-                </p>
-              </div>
-            )}
 
             <div className={styles.actionRow}>
               <button
                 type="button"
-                className={styles.toggleBtn}
                 onClick={() => setShowFullStory(!showFullStory)}
+                className={styles.revealStoryBtn}
                 aria-expanded={showFullStory}
               >
-                <span>{showFullStory ? "SHOW LESS" : "READ FULL STORY"}</span>
-                {showFullStory ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                <span>{showFullStory ? "CONCISE VIEW" : "READ COMPLETE FESTIVAL ARCHIVE"}</span>
+                {showFullStory ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
               </button>
 
-              <Link href="/about" className={styles.aboutLink}>
-                <span>About Ameya &amp; Legacy</span>
+              <Link href="/about" className={styles.inlineArchiveLink}>
+                <span>ABOUT IEI SAME</span>
                 <ArrowRight size={13} />
               </Link>
             </div>
+
+            {showFullStory && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className={styles.expandedStoryBlock}
+              >
+                <p>
+                  Held annually at Vasireddy Venkatadri Institute of Technology (VVITU), Ameya brings together collegiate engineers from across India.
+                  Across two days of intense competition, participants test their mastery through parametric CAD challenges, high-speed kinematic teardowns, obstacle racecourses, and technical diagnostics.
+                </p>
+              </motion.div>
+            )}
           </motion.div>
         </div>
 
-        {/* 1px Clean Crimson Datum Divider */}
-        <motion.div
-          className={styles.datumDivider}
-          aria-hidden="true"
-          initial={{ opacity: 0, scaleX: shouldReduceMotion ? 1 : 0 }}
-          animate={isInView ? { opacity: 1, scaleX: 1 } : { opacity: 0, scaleX: shouldReduceMotion ? 1 : 0 }}
-          transition={{ type: "spring", bounce: 0, duration: 0.45, delay: shouldReduceMotion ? 0 : 0.12 }}
-          style={{ transformOrigin: "left center" }}
-        >
-          <span className={styles.datumCrossLeft}>+</span>
-          <div className={styles.datumLine} />
-          <span className={styles.datumTag}>BY THE NUMBERS</span>
-          <span className={styles.datumCrossRight}>+</span>
-        </motion.div>
+        {/* Clean Datum Line */}
+        <div className={styles.datumDivider} aria-hidden="true" />
 
-        {/* Interactive Statistics Grid with Subtle Scale & Once-only Count */}
+        {/* Editorial Data Modules (Item 6) */}
         <div className={styles.statsGrid}>
           {statsData.map((stat, idx) => (
             <motion.div
@@ -153,28 +135,20 @@ export default function FestivalStory() {
               className={styles.statCard}
               initial={{
                 opacity: 0,
-                y: shouldReduceMotion ? 0 : 20,
-                scale: shouldReduceMotion ? 1 : 0.96,
+                y: shouldReduceMotion ? 0 : 16,
               }}
-              animate={
-                isInView
-                  ? { opacity: 1, y: 0, scale: 1 }
-                  : { opacity: 0, y: shouldReduceMotion ? 0 : 20, scale: shouldReduceMotion ? 1 : 0.96 }
-              }
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: "some" }}
               transition={{
-                duration: 0.55,
-                delay: shouldReduceMotion ? 0 : 0.2 + idx * 0.08,
+                duration: 0.4,
+                delay: shouldReduceMotion ? 0 : idx * 0.06,
                 ease: [0.16, 1, 0.3, 1],
               }}
             >
-              <span className={styles.cornerCrossTL}>+</span>
-              <span className={styles.cornerCrossBR}>+</span>
-              <div className={styles.statIndex}>0{idx + 1}</div>
-
               <div className={styles.numberWrapper}>
                 {stat.prefix && <span className={styles.statPrefix}>{stat.prefix}</span>}
                 <span className={styles.statNumber}>
-                  {counts[idx].toLocaleString()}
+                  {stat.target < 10 && counts[idx] < 10 ? `0${counts[idx]}` : counts[idx].toLocaleString()}
                 </span>
                 <span className={styles.statSuffix}>{stat.suffix}</span>
               </div>

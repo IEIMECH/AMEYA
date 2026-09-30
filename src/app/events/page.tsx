@@ -1,11 +1,11 @@
 ﻿"use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { events } from "@/data/events";
 import EventCard from "@/components/EventCard";
 import RegistrationDialog from "@/components/RegistrationDialog";
 import type { Event } from "@/data/events";
-import { ShieldAlert } from "lucide-react";
 import styles from "./page.module.css";
 
 type FilterType = "ALL" | "DAY 1" | "DAY 2" | "TECHNICAL" | "NON-TECHNICAL";
@@ -27,61 +27,70 @@ export default function EventsCatalogPage() {
 
   return (
     <div className={styles.pageWrapper}>
-      {/* Layer 1: Dark atmospheric vignette to protect text readability */}
-      <div className={styles.atmosphericVignette} aria-hidden="true" />
-
-      {/* Layer 2: Navbar legibility protection vignette */}
-      <div className={styles.navProtectionGlow} aria-hidden="true" />
-
-      {/* Ghost Industrial Watermark */}
-      
-
       <div className={`container ${styles.contentContainer}`}>
-        {/* Header Area */}
+        {/* Header: Functional Pattern with Strong Hierarchy & No Badges */}
         <header className={styles.headerArea}>
-          <div className={styles.headerBackdrop} aria-hidden="true" />
-          <div className={styles.sectionLabel}>
-            <ShieldAlert size={13} className={styles.sectionIcon} />
-            <span>OFFICIAL CONCLAVE EVENTS // AMEYA 2026</span>
-          </div>
           <h1 className={styles.title}>
-            Conclave <span className={styles.gradientText}>Arenas &amp; Lineup</span>
+            Conclave Arenas &amp; <span className={styles.titleAccent}>Lineup</span>
           </h1>
           <p className={styles.subtitle}>
-            8 Championship Arenas across 2 days. All events are individual (solo) challenges. Select an arena below to register.
+            Eight championship arenas across two days. All events are individual challenges. Select an arena below to inspect telemetry and register.
           </p>
 
-          {/* Filter Pills with Technical Indicators */}
+          {/* Sliding Pill Navigation */}
           <nav className={styles.filtersWrapper} aria-label="Event category and day filters">
             {FILTERS.map((filter) => {
               const isActive = activeFilter === filter;
               return (
                 <button
-                  suppressHydrationWarning
                   key={filter}
                   onClick={() => setActiveFilter(filter)}
                   className={`${styles.filterBtn} ${isActive ? styles.filterBtnActive : ""}`}
                   aria-pressed={isActive}
                 >
-                  {isActive && <span className={styles.filterDot} aria-hidden="true">•</span>}
-                  <span>{filter}</span>
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeFilterPill"
+                      className={styles.slidingActivePill}
+                      transition={{
+                        type: "spring",
+                        bounce: 0.15,
+                        duration: 0.35,
+                      }}
+                    />
+                  )}
+                  <span style={{ position: "relative", zIndex: 1 }}>{filter}</span>
                 </button>
               );
             })}
           </nav>
         </header>
 
-        {/* Event Cards Grid with Smooth Transition on Filter Switch */}
-        <div key={activeFilter} className={styles.eventsGrid}>
-          {filteredEvents.map((event, idx) => (
-            <EventCard
-              key={event.id}
-              event={event}
-              index={idx}
-              onRegister={() => setSelectedEvent(event)}
-            />
-          ))}
-        </div>
+        {/* Event Cards Grid */}
+        <motion.div layout className={styles.eventsGrid}>
+          <AnimatePresence mode="popLayout">
+            {filteredEvents.map((event, idx) => (
+              <motion.div
+                key={event.id}
+                layout
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{
+                  duration: 0.25,
+                  delay: idx * 0.04,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+              >
+                <EventCard
+                  event={event}
+                  index={idx}
+                  onRegister={() => setSelectedEvent(event)}
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
       </div>
 
       {/* Registration Dialog */}

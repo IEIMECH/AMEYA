@@ -1,15 +1,11 @@
-import { Metadata } from "next";
-import OversizedArcOrbit from "@/components/team/OversizedArcOrbit";
+﻿import { Metadata } from "next";
+import InteractiveTeamGallery from "@/components/team/InteractiveTeamGallery";
 
 export const metadata: Metadata = {
-  title: "Organizing Cadre — AMEYA '26 | IEI SAME Student Chapter",
-  description: "Interactive oversized arc orbit showcase of the 18 student council engineers driving AMEYA '26 mechanical fest at VVIT.",
+  title: "The Team - AMEYA '26 | IEI SAME Student Chapter",
+  description: "Meet the 18 student council engineers and faculty advisors leading the AMEYA '26 mechanical fest at VVIT.",
 };
 
 export default function TeamPage() {
-  return (
-    <main style={{ minHeight: "100vh", background: "#080808", position: "relative", overflow: "hidden" }}>
-      <OversizedArcOrbit />
-    </main>
-  );
+  return <InteractiveTeamGallery />;
 }

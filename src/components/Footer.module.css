@@ -1,255 +1,140 @@
-/* Footer.module.css - Master Redesign Section 52 Final Frame */
+﻿/* ==========================================================================
+   AMEYA '26 REFINED FOOTER
+   Clean, restrained, Apple-grade whitespace
+   ========================================================================== */
+
 .footer {
+  width: 100%;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+  padding: 3.5rem 0 2.5rem 0;
   position: relative;
-  z-index: 2;
-  background: #050505;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 6.5rem 0 3rem;
-  overflow: hidden;
+  z-index: 10;
 }
 
-/* Final Brand Statement */
-.finalBrandFrame {
-  margin-bottom: 5rem;
-  max-width: 880px;
+.footerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.75rem;
 }
 
-.brandTitle {
+/* Brand */
+.brandRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brandLink {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.15rem;
+  text-decoration: none;
+  font-family: var(--font-display);
+  transition: opacity 0.2s ease;
+}
+
+.brandLink:hover {
+  opacity: 0.85;
+}
+
+.brandName {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #FFFFFF;
+}
+
+.brandYear {
   font-family: var(--font-mono);
   font-size: 0.85rem;
   font-weight: 700;
-  letter-spacing: 0.2em;
-  color: var(--crimson-core, #E51D25);
-  margin-bottom: 1.25rem;
+  letter-spacing: 0.04em;
+  color: var(--accent);
 }
 
-.brandMotto {
-  font-family: var(--font-display);
-  font-size: clamp(2.4rem, 5.2vw, 4.8rem);
-  font-weight: 800;
-  line-height: 0.96;
-  letter-spacing: -0.02em;
-  color: var(--text-primary, #F2EDE8);
-  margin-bottom: 1.5rem;
-  text-transform: uppercase;
-}
-
-.brandDesc {
-  font-family: var(--font-mono);
-  font-size: 0.9rem;
-  line-height: 1.65;
-  color: var(--text-secondary, #96908B);
-  max-width: 600px;
-  margin: 0;
-}
-
-/* Sitemap Grid (No grid lines in footer) */
-.sitemapGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 3rem;
-  padding-bottom: 4rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.linkGroup {
-  display: flex;
-  flex-direction: column;
-}
-
-.groupHeading {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  color: var(--text-primary, #F2EDE8);
-  margin: 0 0 1.25rem;
-  text-transform: uppercase;
+/* Nav Links */
+.navRow {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
+  gap: 1.75rem;
+  flex-wrap: wrap;
 }
 
-.groupHeading::after {
-  content: '';
-  display: inline-block;
-  width: 14px;
-  height: 1px;
-  background: rgba(229, 29, 37, 0.5);
-}
-
-.linkList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.linkList a {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: var(--text-secondary, #96908B);
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  transition: color 0.18s ease, transform 0.18s ease;
-  position: relative;
-}
-
-.linkList a::before {
-  content: '•';
-  color: var(--crimson-core, #E51D25);
-  font-size: 0.65rem;
-  opacity: 0;
-  transform: translateX(-4px);
-  transition: opacity 0.18s ease, transform 0.18s ease;
-}
-
-.linkList a:hover {
-  color: var(--text-primary, #F2EDE8);
-  transform: translateX(3px);
-}
-
-.linkList a:hover::before {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.linkList a:focus-visible {
-  outline: 2px solid var(--crimson-core, #E51D25);
-  outline-offset: 3px;
-  border-radius: 2px;
-  color: var(--text-primary, #F2EDE8);
-}
-
-.commText {
+.navLink {
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  line-height: 1.6;
-  color: var(--text-muted, #605B56);
-  margin: 0 0 1.5rem;
-}
-
-.scrollTopBtn {
-  background: var(--machined-surface, #101010);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: var(--text-primary, #F2EDE8);
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.12em;
-  padding: 0.65rem 1rem;
-  border-radius: 2px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.18s ease;
 }
 
-.scrollTopBtn:hover {
-  border-color: var(--crimson-core, #E51D25);
-  color: #fff;
-  background: var(--machined-interactive, #161616);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(229, 29, 37, 0.15);
+.navLink:hover {
+  color: #FFFFFF;
 }
 
-.scrollTopBtn:active {
-  transform: translateY(0) scale(0.97);
-}
-
-.scrollTopBtn:focus-visible {
-  outline: 2px solid var(--crimson-core, #E51D25);
-  outline-offset: 3px;
-}
-
-/* Bottom Bar */
-.bottomBar {
+/* Meta & Back to top */
+.metaRow {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 2rem;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
-  color: var(--text-muted, #605B56);
-  flex-wrap: wrap;
-  gap: 1rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  margin-top: 0.5rem;
 }
 
-.bottomTag {
-  color: var(--text-secondary, #96908B);
+.copyright {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin: 0;
 }
 
-/* Minimal Subpage Footer */
-.minimalFooter {
-  background: #050505;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 1.5rem 0;
+.backToTop {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  color: var(--text-muted, #605B56);
-}
-
-.minimalInner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.backHome {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  color: var(--text-secondary, #96908B);
-  text-decoration: none;
   font-weight: 600;
-  transition: color 0.18s ease, transform 0.18s ease;
-  position: relative;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
   padding: 0.25rem 0.5rem;
-  border-radius: 2px;
+  border-radius: 4px;
+  transition: color 0.18s ease, transform 0.18s ease;
 }
 
-.backHome::before {
-  content: '←';
-  color: var(--crimson-core, #E51D25);
-  font-size: 0.8rem;
-  opacity: 0;
-  transform: translateX(4px);
-  transition: opacity 0.18s ease, transform 0.18s ease;
+.backToTop:hover {
+  color: #FFFFFF;
+  transform: translateY(-1px);
 }
 
-.backHome:hover {
-  color: var(--text-primary, #F2EDE8);
-  transform: translateX(-2px);
+.arrowIcon {
+  color: var(--accent);
+  transition: transform 0.2s ease;
 }
 
-.backHome:hover::before {
-  opacity: 1;
-  transform: translateX(0);
+.backToTop:hover .arrowIcon {
+  transform: translateY(-2px);
 }
 
-.backHome:focus-visible {
-  outline: 2px solid var(--crimson-core, #E51D25);
-  outline-offset: 2px;
-}
-
-@media (max-width: 900px) {
-  .sitemapGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2.5rem;
+@media (max-width: 640px) {
+  .metaRow {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
   }
-}
-
-@media (max-width: 500px) {
-  .sitemapGrid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+  .navRow {
+    gap: 1.25rem;
   }
 }

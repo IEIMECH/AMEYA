@@ -1,8 +1,10 @@
-/* Contact Operations Desk Styling */
+﻿/* Contact Operations Desk Styling */
 .container {
   min-height: 100vh;
-  padding: calc(var(--nav-height) + 3.5rem) 1.5rem 8rem;
+  padding: var(--page-top-padding) 1.5rem 8rem;
   background: transparent;
+  position: relative;
+  z-index: 1;
 }
 
 .wrapper {
@@ -10,221 +12,148 @@
   margin: 0 auto;
 }
 
-.metaLabel {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.2em;
-  color: var(--crimson-core, #E51D25);
-  margin-bottom: 1.25rem;
-}
-
-.metaDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--crimson-core, #E51D25);
-}
-
 .heading {
   font-family: var(--font-display);
-  font-size: clamp(2.4rem, 5vw, 4rem);
-  font-weight: 800;
-  line-height: 0.98;
-  letter-spacing: -0.02em;
-  color: var(--text-primary, #F2EDE8);
+  font-size: var(--font-size-section);
+  line-height: var(--line-height-section);
+  letter-spacing: var(--letter-spacing-section);
+  font-weight: 700;
+  color: #FFFFFF;
   margin: 0 0 0.85rem;
-  text-transform: uppercase;
+}
+
+.headingAccent {
+  color: var(--accent);
 }
 
 .subtext {
-  font-family: var(--font-mono);
-  font-size: 0.92rem;
-  line-height: 1.65;
-  color: var(--text-secondary, #96908B);
-  max-width: 640px;
-  margin-bottom: 3.5rem;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 620px;
+  margin: 0 0 3.5rem;
 }
 
 .channelsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 1.5rem;
+  gap: 1.25rem;
   margin-bottom: 3.5rem;
 }
 
 .channelCard {
-  background: var(--machined-surface, #101010);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 4px;
-  padding: 1.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 1.5rem;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  justify-content: space-between;
 }
 
 .channelCard:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.8), 0 0 20px rgba(229, 29, 37, 0.08);
   transform: translateY(-3px);
-  border-color: rgba(229, 29, 37, 0.45);
 }
 
-.channelTop {
+.channelHeader {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
 }
 
 .channelCode {
   font-family: var(--font-mono);
   font-size: 0.65rem;
-  letter-spacing: 0.14em;
-  color: var(--crimson-core, #E51D25);
   font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
 }
 
-.activeDot {
+.channelLabel {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: #38a169;
-  letter-spacing: 0.1em;
-}
-
-.channelTitle {
-  font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  color: var(--text-primary, #F2EDE8);
-  margin: 0 0 0.5rem;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  text-transform: uppercase;
 }
 
 .channelDesc {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: var(--text-secondary, #96908B);
-  line-height: 1.6;
-  margin: 0 0 1.5rem;
-  flex: 1;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0 0 1.25rem;
 }
 
-.emailLink {
+.channelEmail {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: var(--text-primary, #F2EDE8);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #FFFFFF;
   text-decoration: none;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  transition: color 0.2s ease;
+  transition: color 0.18s ease;
 }
 
-.emailLink:hover {
-  color: var(--crimson-core, #E51D25);
+.channelEmail:hover {
+  color: var(--accent);
 }
 
-.arrowIcon {
-  margin-left: auto;
-  opacity: 0.6;
+.arrow {
+  color: var(--accent);
+  transition: transform 0.2s ease;
 }
 
-.campusCard {
-  background: var(--machined-surface, #101010);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-left: 3px solid var(--crimson-core, #E51D25);
-  border-radius: 4px;
-  padding: 2.25rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 2rem;
+.channelCard:hover .arrow {
+  transform: translateX(3px);
 }
 
-.campusBadge {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.14em;
-  color: var(--text-secondary, #96908B);
-  margin-bottom: 0.75rem;
+.inquirySection {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.015) 100%);
+  border: 1px solid var(--border);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  padding: 2.5rem;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
-.campusTitle {
+.inquiryTitle {
   font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-size: 1.6rem;
   font-weight: 700;
-  color: var(--text-primary, #F2EDE8);
+  color: #FFFFFF;
   margin: 0 0 0.5rem;
 }
 
-.campusAddress {
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  line-height: 1.6;
-  color: var(--text-secondary, #96908B);
-  margin: 0 0 1rem;
+.inquirySub {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  margin: 0 0 2rem;
 }
 
-.campusMeta {
-  display: flex;
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 1.25rem;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: var(--text-muted, #605B56);
+  margin-bottom: 1.25rem;
 }
 
-.campusActions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.mapBtn {
-  background: var(--crimson-core, #E51D25);
-  border: 1px solid var(--crimson-glow, #ff3b3b);
-  color: #ffffff;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  padding: 0.75rem 1.4rem;
-  border-radius: 3px;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-
-.mapBtn:hover {
-  background: #ff2b33;
-}
-
-.venueBtn {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: var(--text-primary, #F2EDE8);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  padding: 0.75rem 1.4rem;
-  border-radius: 3px;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-
-.venueBtn:hover {
-  border-color: var(--text-primary, #F2EDE8);
+@media (max-width: 768px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+  .inquirySection {
+    padding: 1.5rem;
+  }
 }

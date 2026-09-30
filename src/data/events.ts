@@ -1,4 +1,4 @@
-export type EventCategory = "Technical" | "Non-technical";
+﻿export type EventCategory = "Technical" | "Non-technical";
 
 export interface Event {
   id: string;
@@ -27,7 +27,7 @@ export const events: Event[] = [
     type: "solo",
     tagline: "Computer-Aided Precision Design",
     description: "Technical CAD modeling and parametric drawing competition testing speed, dimensional accuracy, and software mastery.",
-    icon: "📐",
+    icon: "Compass",
     color: "#E51D25",
   },
   {
@@ -38,7 +38,7 @@ export const events: Event[] = [
     type: "solo",
     tagline: "Kinematic Assembly & Precision Speed",
     description: "Hands-on mechanical challenge testing component identification, mechanical dexterity, and assembly sequencing against the clock.",
-    icon: "⚙️",
+    icon: "Wrench",
     color: "#E51D25",
   },
   {
@@ -49,7 +49,7 @@ export const events: Event[] = [
     type: "solo",
     tagline: "Kinetic Track Navigation",
     description: "High-octane radio-controlled obstacle track navigation testing maneuvering skill, acceleration, and precision steering.",
-    icon: "🏎️",
+    icon: "Gauge",
     color: "#F2EDE8",
   },
   {
@@ -60,7 +60,7 @@ export const events: Event[] = [
     type: "solo",
     tagline: "Visual Deduction & Fast Recognition",
     description: "Fast-paced visual guessing and deduction competition decoding technical and creative concepts under rapid time limits.",
-    icon: "🧩",
+    icon: "Sparkles",
     color: "#F2EDE8",
   },
 
@@ -75,7 +75,7 @@ export const events: Event[] = [
     type: "solo",
     tagline: "Geometric Projection & Drafting Standards",
     description: "Fundamental engineering graphics and drafting challenge emphasizing orthographic projections, isometric views, and dimensional precision.",
-    icon: "✏️",
+    icon: "PenTool",
     color: "#E51D25",
   },
   {
@@ -86,7 +86,7 @@ export const events: Event[] = [
     type: "solo",
     tagline: "Workshop Tools & Manufacturing Telemetry",
     description: "Comprehensive identification and functional diagnostic challenge covering workshop machinery, measuring instruments, and hand tools.",
-    icon: "🔧",
+    icon: "Hammer",
     color: "#E51D25",
   },
   {
@@ -97,7 +97,7 @@ export const events: Event[] = [
     type: "solo",
     tagline: "Campus Exploration & Clue Decoding",
     description: "Campus-wide scavenger pursuit deciphering cryptic clues, logical puzzles, and mechanical landmarks across VVITU.",
-    icon: "🧭",
+    icon: "MapPin",
     color: "#F2EDE8",
   },
   {
@@ -108,7 +108,7 @@ export const events: Event[] = [
     type: "solo",
     tagline: "Thread Matching & Fastener Velocity",
     description: "A rapid manual dexterity and reflex race matching fasteners, threading pitch sizes, and torquing nuts to bolts against the clock.",
-    icon: "🔩",
+    icon: "Timer",
     color: "#F2EDE8",
   },
 ];

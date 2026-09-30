@@ -1,9 +1,9 @@
-import Link from "next/link";
-import { Mail, MapPin, Phone, ArrowRight, ExternalLink, ShieldCheck, Clock } from "lucide-react";
+﻿import Link from "next/link";
+import { Mail, MapPin, ArrowRight, ExternalLink } from "lucide-react";
 import styles from "./page.module.css";
 
 export const metadata = {
-  title: "Operations & Contact — AMEYA '26 | IEI SAME",
+  title: "Operations & Contact - AMEYA '26 | IEI SAME",
   description: "Official festival operations desk, direct inquiry channels, and physical location coordinates at VVITU Nambur.",
 };
 
@@ -44,13 +44,10 @@ export default function ContactPage() {
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
-        {/* Header */}
-        <div className={styles.metaLabel}>
-          <span className={styles.metaDot} />
-          COMMS // OPERATIONS DESK
-        </div>
-
-        <h1 className={styles.heading}>Connect With The AMEYA Team</h1>
+        {/* Header: Functional Pattern without Red Badge */}
+        <h1 className={styles.heading}>
+          Connect With <span className={styles.headingAccent}>The AMEYA Team</span>
+        </h1>
         <p className={styles.subtext}>
           Direct communication channels to the organizing cadre, arena directors, and secretariat at VVITU.
         </p>
@@ -59,52 +56,40 @@ export default function ContactPage() {
         <div className={styles.channelsGrid}>
           {channels.map((ch, idx) => (
             <div key={idx} className={styles.channelCard}>
-              <div className={styles.channelTop}>
+              <div className={styles.channelHeader}>
                 <span className={styles.channelCode}>{ch.code}</span>
-                <span className={styles.activeDot}>● ONLINE</span>
+                <span className={styles.channelLabel}>{ch.label}</span>
               </div>
-              <h2 className={styles.channelTitle}>{ch.label}</h2>
               <p className={styles.channelDesc}>{ch.desc}</p>
-              <a href={`mailto:${ch.email}`} className={styles.emailLink}>
-                <Mail size={13} />
+              <a href={`mailto:${ch.email}`} className={styles.channelEmail}>
+                <Mail size={13} color="var(--accent)" />
                 <span>{ch.email}</span>
-                <ArrowRight size={12} className={styles.arrowIcon} />
+                <ArrowRight size={12} className={styles.arrow} />
               </a>
             </div>
           ))}
         </div>
 
         {/* Campus Location & Coordinates Panel */}
-        <div className={styles.campusCard}>
-          <div className={styles.campusInfo}>
-            <div className={styles.campusBadge}>
-              <MapPin size={14} color="#E51D25" />
-              <span>PHYSICAL CAMPUS COORDINATES</span>
-            </div>
-            <h3 className={styles.campusTitle}>Department of Mechanical Engineering</h3>
-            <p className={styles.campusAddress}>
-              Vasireddy Venkatadri Institute of Technology (VVITU)<br />
-              Nambur, Guntur District, Andhra Pradesh &ndash; 522508
-            </p>
-            <div className={styles.campusMeta}>
-              <span>LAT: 16.3685° N</span>
-              <span>LONG: 80.5284° E</span>
-              <span>ELEVATION: 24M</span>
-            </div>
-          </div>
+        <div className={styles.inquirySection}>
+          <h2 className={styles.inquiryTitle}>Department of Mechanical Engineering</h2>
+          <p className={styles.inquirySub}>
+            Vasireddy Venkatadri Institute of Technology (VVITU)<br />
+            NH-16, Nambur, Guntur District, Andhra Pradesh &ndash; 522508
+          </p>
 
-          <div className={styles.campusActions}>
+          <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginTop: "1.5rem" }}>
             <a
               href="https://maps.google.com/?q=VVIT+Guntur"
               target="_blank"
               rel="noopener noreferrer"
-              className={styles.mapBtn}
+              className="btn-primary"
             >
               <span>OPEN GOOGLE MAPS</span>
               <ExternalLink size={13} />
             </a>
-            <Link href="/venue" className={styles.venueBtn}>
-              <span>LAUNCH 3D DIGITAL TWIN</span>
+            <Link href="/venue" className="btn-secondary">
+              <span>EXPLORE 3D CAMPUS MAP</span>
               <ArrowRight size={13} />
             </Link>
           </div>

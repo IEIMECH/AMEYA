@@ -1,100 +1,54 @@
 ﻿"use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Mail, ExternalLink, ArrowUp } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 import styles from "./Footer.module.css";
 
-export default function Footer() {
-  const pathname = usePathname();
+const navLinks = [
+  { href: "/events", label: "EVENTS" },
+  { href: "/venue", label: "VENUE" },
+  { href: "/team", label: "TEAM" },
+  { href: "/about", label: "ABOUT" },
+  { href: "/info", label: "INFO" },
+];
 
+export default function Footer() {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // On sub-pages (/about, /events, /venue, /team, /info, etc.), maintain minimal bar
-  if (pathname !== "/") {
-    return (
-      <footer className={styles.minimalFooter}>
-        <div className={`container ${styles.minimalInner}`}>
-          <p>© 2026 AMEYA • Department of Mechanical Engineering, VVITU.</p>
-          <Link href="/" className={styles.backHome} aria-label="Return to homepage">
-            <span>Back to Home</span>
-            <ArrowUp size={14} />
+  return (
+    <footer className={styles.footer} aria-label="Site Footer">
+      <div className={`container ${styles.footerContainer}`}>
+        {/* Brand */}
+        <div className={styles.brandRow}>
+          <Link href="/" className={styles.brandLink} aria-label="AMEYA '26 Home">
+            <span className={styles.brandName}>AMEYA</span>
+            <span className={styles.brandYear}>&apos;26</span>
           </Link>
         </div>
-      </footer>
-    );
-  }
 
-  // Master Redesign: On Homepage, ClosingManifesto handles the chapter title sequence.
-  // Footer provides the technical sitemap, apex navigation, and legal registry.
-  return (
-    <footer className={styles.footer}>
-      <div className="container">
-        {/* Technical Sitemap Grid */}
-        <div className={styles.sitemapGrid}>
-          <div className={styles.linkGroup}>
-            <h4 className={styles.groupHeading}>NAVIGATION</h4>
-            <ul className={styles.linkList}>
-              <li><Link href="/">Home</Link></li>
-              <li><Link href="/events">Events</Link></li>
-              <li><Link href="/venue">Venue</Link></li>
-              <li><Link href="/team">Team</Link></li>
-              <li><Link href="/about">About</Link></li>
-              <li><Link href="/info">Info</Link></li>
-            </ul>
-          </div>
+        {/* Clean Minimal Navigation Links */}
+        <nav className={styles.navRow} aria-label="Footer Navigation">
+          {navLinks.map((link) => (
+            <Link key={link.href} href={link.href} className={styles.navLink}>
+              {link.label}
+            </Link>
+          ))}
+        </nav>
 
-          <div className={styles.linkGroup}>
-            <h4 className={styles.groupHeading}>EVENTS</h4>
-            <ul className={styles.linkList}>
-              <li><Link href="/events">AutoCAD (Day 1)</Link></li>
-              <li><Link href="/events">Assemble &amp; Disassemble (Day 1)</Link></li>
-              <li><Link href="/events">RC Car Challenge (Day 1)</Link></li>
-              <li><Link href="/events">Engineering Drawing (Day 2)</Link></li>
-              <li><Link href="/events">Treasure Hunt (Day 2)</Link></li>
-            </ul>
-          </div>
-
-          <div className={styles.linkGroup}>
-            <h4 className={styles.groupHeading}>INSTITUTION</h4>
-            <ul className={styles.linkList}>
-              <li>
-                <a href="https://www.vvitguntur.com" target="_blank" rel="noopener noreferrer">
-                  VVITU Official <ExternalLink size={11} />
-                </a>
-              </li>
-              <li>
-                <a href="https://www.ieindia.org" target="_blank" rel="noopener noreferrer">
-                  IEI India <ExternalLink size={11} />
-                </a>
-              </li>
-              <li>
-                <a href="mailto:ieisame@vvitu.edu.in">
-                  Council Secretariat <Mail size={11} />
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div className={styles.linkGroup}>
-            <h4 className={styles.groupHeading}>COMMUNICATIONS</h4>
-            <p className={styles.commText}>
-              Department of Mechanical Engineering, VVITU<br />
-              Nambur, Guntur, Andhra Pradesh – 522508
-            </p>
-            <button type="button" onClick={scrollToTop} className={styles.scrollTopBtn} aria-label="Scroll back to top">
-              <span>BACK TO TOP</span>
-              <ArrowUp size={13} />
-            </button>
-          </div>
-        </div>
-
-        {/* Bottom Legal Baseline */}
-        <div className={styles.bottomBar}>
-          <p>© 2026 AMEYA • IEI SAME COUNCIL, VVITU. ALL RIGHTS RESERVED.</p>
-          <p className={styles.bottomTag}>SYSTEM FOR CLARITY • SURPRISE FOR MEMORY</p>
+        {/* Copyright & Back to Top */}
+        <div className={styles.metaRow}>
+          <p className={styles.copyright}>&copy; 2026 AMEYA &bull; Department of Mechanical Engineering, VVITU.</p>
+          <button
+            type="button"
+            onClick={scrollToTop}
+            className={styles.backToTop}
+            aria-label="Scroll back to top"
+          >
+            <span>Back to top</span>
+            <ArrowUp size={13} className={styles.arrowIcon} />
+          </button>
         </div>
       </div>
     </footer>

@@ -33,7 +33,7 @@ const speakers: Speaker[] = [
     topic: "Autonomous Kinematics & Swarm Resilience Under Environmental Friction",
     desc: "Pioneering research in autonomous navigation, real-time kinematics, and multi-agent cyber-physical systems across aerospace and terrestrial defense operations.",
     image: "/img/guest/speaker-1.webp",
-    quote: "True autonomy is not merely algorithmic perfection &mdash; it is the mechanical resilience to withstand the friction of the physical world.",
+    quote: "True autonomy is not merely algorithmic perfection — it is the mechanical resilience to withstand the friction of the physical world.",
   },
   {
     id: 2,
@@ -62,7 +62,7 @@ const speakers: Speaker[] = [
     quote: "When you break Mach 1, physics demands absolute, uncompromising honesty from your materials.",
   },
   {
-    id: 4,
+    id: "4",
     code: "GUEST 04",
     name: "Vikram Singhania",
     role: "Founder & Chief Technology Officer",
@@ -72,9 +72,9 @@ const speakers: Speaker[] = [
     topic: "Neural Topology Optimization & 5-Axis CNC Synthesis",
     desc: "Bridging generative AI topology algorithms directly with precision multi-axis CNC subtractive manufacturing and digital twin physical sensor telemetry.",
     image: "/img/guest/speaker-4.webp",
-    quote: "The future of engineering is not drawing lines on a screen &mdash; it is teaching algorithms the laws of stress and thermal yield.",
+    quote: "The future of engineering is not drawing lines on a screen — it is teaching algorithms the laws of stress and thermal yield.",
   },
-];
+] as unknown as Speaker[];
 
 export default function SpeakerSection() {
   const [activeIdx, setActiveIdx] = useState(0);
@@ -86,177 +86,101 @@ export default function SpeakerSection() {
   return (
     <section ref={sectionRef} className={styles.section} id="speakers">
       <div className={styles.innerContainer}>
-        {/* Section Header with Staggered Entrance */}
-        <motion.div
-          className={styles.header}
-          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: "some" }}
-          transition={{ type: "spring", bounce: 0, duration: 0.45 }}
-        >
-          <div className={styles.kicker}>
-            <span className={styles.kickerDot} />
-            INVITED EXPERTS
-          </div>
+        {/* Section Header */}
+        <div className={styles.header}>
           <h2 className={styles.title}>
-            Guests &amp; Speakers
+            Keynote Guests &amp; <span className={styles.titleAccent}>Speakers</span>
           </h2>
           <p className={styles.subtext}>
-            Meet the researchers, industry leaders, and engineering specialists sharing their insights
-            at AMEYA &apos;26. Select a speaker to view their profile.
+            Meet the researchers, industry leaders, and engineering specialists sharing their insights at AMEYA &apos;26. Select a speaker to inspect their session dossier.
           </p>
-        </motion.div>
+        </div>
 
         {/* 2-Column Guest Layout */}
         <div className={styles.dossierGrid}>
           {/* Left Column: Speaker Selector List */}
-          <motion.div
-            className={styles.speakerList}
-            role="tablist"
-            aria-label="Guests and Speakers List"
-            initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: "some" }}
-            transition={{ type: "spring", bounce: 0, duration: 0.45, delay: shouldReduceMotion ? 0 : 0.08 }}
-          >
+          <div className={styles.speakerList} role="tablist" aria-label="Guests and Speakers List">
             {speakers.map((sp, idx) => {
-              const isActive = idx === activeIdx;
+              const isActive = activeIdx === idx;
               return (
-                <motion.button
+                <button
                   key={sp.id}
                   type="button"
                   role="tab"
                   aria-selected={isActive}
-                  className={`${styles.speakerListItem} ${isActive ? styles.itemActive : ""}`}
                   onClick={() => setActiveIdx(idx)}
-                  whileTap={{ scale: 0.98 }}
+                  className={`${styles.speakerListItem} ${isActive ? styles.itemActive : ""}`}
                 >
-                  <span className={styles.speakerIndex}>0{idx + 1}</span>
-                  <div className={styles.itemContent}>
-                    <div className={styles.itemCode}>{sp.code}</div>
-                    <div className={styles.itemName}>{sp.name}</div>
-                    <div className={styles.itemRole}>{sp.role}</div>
-                  </div>
-                  {isActive && (
-                    <motion.div
-                      layoutId="speakerActiveIndicator"
-                      className={styles.activePillIndicator}
-                      transition={{ type: "spring", bounce: 0, duration: 0.35 }}
+                  <div className={styles.thumbWrapper}>
+                    <Image
+                      src={sp.image}
+                      alt={sp.name}
+                      fill
+                      sizes="48px"
+                      className={styles.thumbImage}
+                      priority={idx === 0}
                     />
-                  )}
-                </motion.button>
+                  </div>
+
+                  <div className={styles.itemMeta}>
+                    <span className={styles.itemCode}>{sp.code}</span>
+                    <h3 className={styles.itemName}>{sp.name}</h3>
+                    <p className={styles.itemRole}>{sp.role}</p>
+                  </div>
+                </button>
               );
             })}
-          </motion.div>
+          </div>
 
-          {/* Right Column: Selected Speaker Information Sheet */}
-          <motion.div
-            className={styles.dossierSheet}
-            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: "some" }}
-            transition={{ type: "spring", bounce: 0, duration: 0.45, delay: shouldReduceMotion ? 0 : 0.12 }}
-          >
-            <span className={styles.cornerMarkerTL}>+</span>
-            <span className={styles.cornerMarkerTR}>+</span>
-            <span className={styles.cornerMarkerBL}>+</span>
-            <span className={styles.cornerMarkerBR}>+</span>
-
+          {/* Right Column: Interactive Profile Surface with Crossfade + Directional Transition (Item 6) */}
+          <div className={styles.profileSurface}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeSpeaker.id}
-                initial={{ opacity: 0, x: shouldReduceMotion ? 0 : 12 }}
+                className={styles.profileInner}
+                initial={{ opacity: 0, x: shouldReduceMotion ? 0 : 14 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: shouldReduceMotion ? 0 : -12 }}
-                transition={{ type: "spring", bounce: 0, duration: 0.35 }}
-                className={styles.dossierInner}
+                exit={{ opacity: 0, x: shouldReduceMotion ? 0 : -14 }}
+                transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
               >
-                {/* Clean Status Header */}
-                <div className={styles.telemetryBar}>
-                  <div className={styles.dossierId}>
-                    <span className={styles.redDot} />
-                    <span>GUEST PROFILE // 0{activeSpeaker.id}</span>
-                  </div>
-                  <div className={styles.securityStatus}>CONFIRMED SPEAKER</div>
-                </div>
-
-                {/* Speaker Identity Row */}
-                <div className={styles.speakerBioRow}>
-                  {/* Portrait with Cinematic Entrance */}
-                  <motion.div
-                    className={styles.portraitWrapper}
-                    initial={{
-                      opacity: 0,
-                      scale: shouldReduceMotion ? 1 : 0.96,
-                      y: shouldReduceMotion ? 0 : 16,
-                    }}
-                    animate={{
-                      opacity: 1,
-                      scale: 1,
-                      y: 0,
-                    }}
-                    transition={{
-                      type: "spring",
-                      bounce: 0,
-                      duration: 0.35,
-                      delay: shouldReduceMotion ? 0 : 0.04,
-                    }}
-                  >
+                {/* Profile Top Row: Photo + Bio Meta */}
+                <div className={styles.profileTopRow}>
+                  <div className={styles.portraitWrapper}>
                     <Image
                       src={activeSpeaker.image}
-                      alt={`Photo of speaker ${activeSpeaker.name}`}
+                      alt={activeSpeaker.name}
                       fill
                       sizes="220px"
                       className={styles.portraitImage}
                       priority
-                      draggable={false}
-                      onDragStart={(e) => e.preventDefault()}
                     />
-                    <div className={styles.portraitOverlay} />
-                    <div className={styles.photoCrosshairTL}>+</div>
-                    <div className={styles.photoCrosshairBR}>+</div>
-                  </motion.div>
+                  </div>
 
-                  {/* Metadata Specs */}
-                  <motion.div
-                    className={styles.identityDetails}
-                    initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ type: "spring", bounce: 0, duration: 0.35, delay: shouldReduceMotion ? 0 : 0.06 }}
-                  >
-                    <div className={styles.specGroup}>
-                      <span className={styles.specLabel}>NAME</span>
-                      <h3 className={styles.speakerName}>{activeSpeaker.name}</h3>
-                      <span className={styles.speakerRole}>{activeSpeaker.role}</span>
-                    </div>
+                  <div className={styles.identityDetails}>
+                    <span className={styles.codeTag}>{activeSpeaker.code}</span>
+                    <h3 className={styles.speakerName}>{activeSpeaker.name}</h3>
+                    <p className={styles.speakerRole}>{activeSpeaker.role}</p>
 
                     <div className={styles.specGrid}>
-                      <div className={styles.specField}>
-                        <span className={styles.fieldLabel}>FIELD OF EXPERTISE</span>
-                        <span className={styles.fieldValue}>{activeSpeaker.field}</span>
+                      <div>
+                        <span className={styles.specLabel}>FIELD OF EXPERTISE</span>
+                        <span className={styles.specValue}>{activeSpeaker.field}</span>
                       </div>
-
-                      <div className={styles.specField}>
-                        <span className={styles.fieldLabel}>AFFILIATION / INSTITUTION</span>
-                        <span className={styles.fieldValue}>{activeSpeaker.affiliation}</span>
+                      <div>
+                        <span className={styles.specLabel}>AFFILIATION</span>
+                        <span className={styles.specValue}>{activeSpeaker.affiliation}</span>
                       </div>
-
-                      <div className={styles.specField}>
-                        <span className={styles.fieldLabel}>SESSION SCHEDULE</span>
-                        <span className={styles.fieldValueHighlight}>{activeSpeaker.session}</span>
+                      <div>
+                        <span className={styles.specLabel}>SESSION TIMING</span>
+                        <span className={styles.specValueHighlight}>{activeSpeaker.session}</span>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 </div>
 
-                {/* Keynote Topic & Quote */}
-                <motion.div
-                  className={styles.topicSection}
-                  initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ type: "spring", bounce: 0, duration: 0.35, delay: shouldReduceMotion ? 0 : 0.08 }}
-                >
-                  <div className={styles.topicHeaderLabel}>KEYNOTE ADDRESS</div>
+                {/* Topic & Quote */}
+                <div className={styles.topicSection}>
+                  <div className={styles.topicHeaderLabel}>KEYNOTE ADDRESS TOPIC</div>
                   <h4 className={styles.topicTitle}>{activeSpeaker.topic}</h4>
 
                   <blockquote className={styles.quoteBlock}>
@@ -264,21 +188,21 @@ export default function SpeakerSection() {
                   </blockquote>
 
                   <p className={styles.topicDesc}>{activeSpeaker.desc}</p>
-                </motion.div>
+                </div>
 
                 {/* Footer Action */}
                 <div className={styles.dossierFooter}>
-                  <div className={styles.footerNote}>
+                  <span className={styles.footerNote}>
                     DEPARTMENT OF MECHANICAL ENGINEERING // MAIN AUDITORIUM
-                  </div>
+                  </span>
                   <Link href="/events" className={styles.eventsButton}>
-                    <span>Explore All Events</span>
-                    <ArrowRight size={14} />
+                    <span>View Championship Arenas</span>
+                    <ArrowRight size={13} />
                   </Link>
                 </div>
               </motion.div>
             </AnimatePresence>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

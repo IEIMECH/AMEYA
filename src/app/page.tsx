@@ -103,7 +103,7 @@ export default function Home() {
                 <ArrowRight size={16} />
               </Link>
               <Link href="/venue" className={styles.secondaryHeroCta} id="hero-secondary-cta">
-                <span>3D CAMPUS MAP</span>
+                <span>EXPLORE CAMPUS</span>
               </Link>
             </div>
           </div>

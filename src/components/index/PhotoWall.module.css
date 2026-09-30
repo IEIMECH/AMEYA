@@ -1,302 +1,197 @@
+﻿/* ==========================================================================
+   PHOTO WALL: INTERACTIVE MOMENTUM IMAGE STRIP
+   ========================================================================== */
+
 .section {
   position: relative;
-  z-index: 3;
-  padding: 7rem 5vw 8rem;
-  background: var(--machined-dark, #050505);
+  padding: 5rem 1.5rem 6.5rem;
+  background: transparent;
+  z-index: 2;
   overflow: hidden;
 }
 
 .innerContainer {
-  max-width: 1440px;
+  max-width: 1280px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 3.5rem;
 }
 
 .header {
-  max-width: 820px;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.2em;
-  color: var(--text-secondary, #96908B);
-  text-transform: uppercase;
-}
-
-.kickerDot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--crimson-core, #E51D25);
-  box-shadow: 0 0 6px rgba(229, 29, 37, 0.7);
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto 3rem auto;
 }
 
 .title {
-  font-family: var(--font-serif, "Playfair Display", Georgia, serif);
-  font-size: clamp(2.2rem, 4.2vw, 3.4rem);
-  font-weight: 800;
-  line-height: 1.05;
-  color: var(--steel-bright, #F2EDE8);
-  letter-spacing: -0.02em;
+  font-family: var(--font-display);
+  font-size: var(--font-size-section);
+  line-height: var(--line-height-section);
+  letter-spacing: var(--letter-spacing-section);
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 0.5rem;
+}
+
+.titleAccent {
+  color: var(--accent);
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
   margin: 0;
 }
 
-.subtext {
-  font-family: var(--font-mono);
-  font-size: 0.88rem;
-  line-height: 1.65;
-  color: var(--text-secondary, #96908B);
-  margin: 0;
-  max-width: 640px;
-}
-
-/* Responsive Filmstrip Track: Fills the entire section harmoniously */
-.filmstripTrack {
+/* Horizontal Interactive Image Strip */
+.imageStrip {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(1rem, 1.6vw, 1.85rem);
-  width: 100%;
-  position: relative;
-  padding: 3rem 0 2rem;
-  flex-wrap: nowrap;
-}
-
-/* Tactile Photo Card: Substantial Editorial Proportions */
-.photoCard {
-  position: relative;
-  background: #0d0d0d;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  padding: 6px;
-  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.85);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.25s ease,
-              z-index 0.1s ease;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
   user-select: none;
+}
+
+.photoItem {
+  position: relative;
+  flex: 0 0 240px;
+  height: 360px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--surface-elevated);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
   cursor: pointer;
-  z-index: 1;
-  outline: none;
-}
-
-.photoCard:focus-visible {
-  border-color: var(--crimson-core, #E51D25);
-  box-shadow: 0 0 0 2px rgba(229, 29, 37, 0.4), 0 20px 50px rgba(0, 0, 0, 0.9);
-}
-
-/* Primary Hero Photo: Prominently centered, fits section gracefully */
-.primaryCard {
-  flex: 1.35;
-  max-width: 380px;
-  min-width: 250px;
-  border-color: rgba(255, 255, 255, 0.16);
-}
-
-.primaryCard .imageWrapper {
-  height: clamp(300px, 26vw, 400px);
-}
-
-/* Secondary Photos: Balanced flankers filling width */
-.secondaryCard {
-  flex: 1;
-  max-width: 270px;
-  min-width: 180px;
-}
-
-.secondaryCard .imageWrapper {
-  height: clamp(240px, 21vw, 320px);
-}
-
-.cardHovered {
-  border-color: rgba(229, 29, 37, 0.75);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.95), 0 0 28px rgba(229, 29, 37, 0.3);
-  z-index: 10;
-}
-
-.cardNeighbor {
-  opacity: 0.88;
-}
-
-/* Corner Crosshair Markers */
-.crosshairTL {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  line-height: 1;
-  color: rgba(229, 29, 37, 0.85);
-  pointer-events: none;
-  z-index: 2;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
-}
-
-.crosshairBR {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  line-height: 1;
-  color: rgba(255, 255, 255, 0.45);
-  pointer-events: none;
-  z-index: 2;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  transform-origin: center center;
 }
 
 .imageWrapper {
   position: relative;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-user-drag: none;
   width: 100%;
-  border-radius: 2px;
-  overflow: hidden;
-  background: #080808;
+  height: 100%;
 }
 
 .imageElement {
   object-fit: cover;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-user-drag: none;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
-  filter: contrast(1.04) brightness(0.96);
+  transition: transform 0.4s ease;
 }
 
-.cardHovered .imageElement {
-  transform: scale(1.035);
-  filter: contrast(1.08) brightness(1.02);
+.photoItem:hover .imageElement {
+  transform: scale(1.04);
 }
 
-.lensOverlay {
+.vignetteOverlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.35) 100%);
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(5, 5, 5, 0.85) 100%
+  );
   pointer-events: none;
+}
+
+.captionTag {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(12, 12, 12, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Lightbox Modal */
 .lightboxBackdrop {
   position: fixed;
   inset: 0;
-  z-index: 9999;
   background: rgba(5, 5, 5, 0.88);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
-  cursor: pointer;
+  padding: 2rem;
 }
 
 .lightboxCard {
   position: relative;
-  max-width: 92vw;
-  max-height: 88vh;
-  background: #0a0a0a;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 6px;
-  padding: 8px;
-  box-shadow: 0 35px 90px rgba(0, 0, 0, 0.98), 0 0 45px rgba(229, 29, 37, 0.22);
-  cursor: default;
+  width: 100%;
+  max-width: 900px;
+  background: var(--surface-elevated);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
   overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.95);
 }
 
 .lightboxCloseBtn {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  z-index: 10;
-  background: rgba(18, 18, 18, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-  border-radius: 50%;
-  width: 38px;
-  height: 38px;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  background: rgba(12, 12, 12, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+  z-index: 10;
   backdrop-filter: blur(8px);
-}
-
-.lightboxCloseBtn:hover {
-  background: var(--crimson-core, #E51D25);
-  border-color: var(--crimson-core, #E51D25);
-  transform: scale(1.08);
 }
 
 .lightboxImageWrapper {
   position: relative;
-  width: clamp(280px, 82vw, 1080px);
-  height: clamp(220px, 74vh, 700px);
-  border-radius: 3px;
-  overflow: hidden;
-  background: #050505;
+  width: 100%;
+  height: 520px;
 }
 
 .lightboxImage {
-  object-fit: contain;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-user-drag: none;
+  object-fit: cover;
 }
 
-/* Tablet & Mobile Responsiveness */
-@media (max-width: 1100px) {
-  .section {
-    padding: 6rem 4vw 7rem;
-  }
-  .filmstripTrack {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.25rem;
-    padding: 1.5rem 0;
-  }
-  .primaryCard,
-  .secondaryCard {
-    width: 100%;
-    max-width: none;
-    transform: none !important;
-  }
-  .primaryCard .imageWrapper {
-    height: 260px;
-  }
-  .secondaryCard .imageWrapper {
-    height: 240px;
-  }
+.lightboxFooter {
+  padding: 1rem 1.5rem;
+  background: rgba(12, 12, 12, 0.95);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-@media (max-width: 680px) {
-  .section {
-    padding: 5rem 1.25rem 6rem;
+.lightboxCaption {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+@media (max-width: 1024px) {
+  .imageStrip {
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-left: 1rem;
+    scrollbar-width: none;
   }
-  .filmstripTrack {
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
-  }
-  .primaryCard .imageWrapper,
-  .secondaryCard .imageWrapper {
-    height: 230px;
-  }
-  .lightboxCard {
-    padding: 6px;
-  }
-  .lightboxImageWrapper {
-    width: 90vw;
-    height: 60vh;
+  .imageStrip::-webkit-scrollbar {
+    display: none;
   }
 }

@@ -1,385 +1,239 @@
-/* EventCard.module.css - Refined AMEYA '26 Engineered Card */
-.cardContainer {
-  position: relative;
-  border-radius: 2px;
-  cursor: pointer;
-  background: transparent;
-  outline: none;
-  display: flex;
-  flex-direction: column;
-}
+﻿/* ==========================================================================
+   GLOSSY INTERACTIVE EVENT CARD
+   Apple-grade near-black glass, cursor light reflection, subtle 3D tilt
+   ========================================================================== */
 
-.cardContainer:focus-visible .cardFrame {
-  outline: 2px solid var(--crimson-core, #E51D25);
-  outline-offset: 3px;
-}
-
-.cardFrame {
-  position: relative;
-  background: #0A0A0A;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  clip-path: polygon(
-    0 0,
-    100% 0,
-    100% 100%,
-    20px 100%,
-    0 calc(100% - 20px)
-  );
-  padding: 1.65rem 1.65rem 1.75rem;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.6);
-  transition: border-color 0.22s ease,
-              box-shadow 0.22s ease,
-              transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: visible;
+.cardWrapper {
+  perspective: 1000px;
+  width: 100%;
   height: 100%;
 }
 
-.cardContainer:hover .cardFrame {
-  border-color: rgba(229, 29, 37, 0.5);
-  box-shadow: 0 24px 54px rgba(0, 0, 0, 0.9), 0 0 28px rgba(229, 29, 37, 0.18);
-  transform: translateY(-4px);
-}
-
-.cardContainer:active .cardFrame {
-  transform: scale(0.98) !important;
-  transition: transform 100ms ease-out !important;
-}
-
-/* Corner Crosshairs */
-.crosshairTL {
-  position: absolute;
-  top: 4px;
-  left: 6px;
-  color: rgba(255, 255, 255, 0.25);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  line-height: 1;
-  pointer-events: none;
-  user-select: none;
-  transition: color 0.2s ease, text-shadow 0.2s ease;
-}
-
-.crosshairTR {
-  position: absolute;
-  top: 4px;
-  right: 6px;
-  color: rgba(255, 255, 255, 0.25);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  line-height: 1;
-  pointer-events: none;
-  user-select: none;
-  transition: color 0.2s ease, text-shadow 0.2s ease;
-}
-
-.crosshairBR {
-  position: absolute;
-  bottom: 6px;
-  right: 6px;
-  color: rgba(255, 255, 255, 0.25);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  line-height: 1;
-  pointer-events: none;
-  user-select: none;
-  transition: color 0.2s ease, text-shadow 0.2s ease;
-}
-
-.cardContainer:hover .crosshairTL,
-.cardContainer:hover .crosshairTR,
-.cardContainer:hover .crosshairBR {
-  color: var(--crimson-core, #E51D25);
-  text-shadow: 0 0 6px rgba(229, 29, 37, 0.7);
-}
-
-/* Top Technical Metadata Bar */
-.topHud {
+.card {
+  position: relative;
+  width: 100%;
+  height: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.25rem;
+  padding: 1.75rem;
+  border-radius: 18px;
+  
+  /* Near-black glass surface */
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.055) 0%,
+    rgba(255, 255, 255, 0.015) 100%
+  );
+  background-color: rgba(14, 14, 14, 0.65);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  
+  /* Specular edges */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  
+  cursor: pointer;
+  user-select: none;
+  transform-style: preserve-3d;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s ease,
+              box-shadow 0.25s ease;
+  overflow: hidden;
+  outline: none;
 }
 
-.categoryPill {
-  display: inline-flex;
+.card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  border-top-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.9),
+              0 0 30px rgba(229, 29, 37, 0.09);
+}
+
+.card:active {
+  transform: scale(0.98) !important;
+}
+
+/* Cursor-responsive light & red reflection layer */
+.specularReflection {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.card:hover .specularReflection {
+  opacity: 1;
+}
+
+/* Card Content: Elevated in Z-axis */
+.cardContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Top Metadata Bar */
+.metaRow {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0.25rem 0.65rem;
-  border-radius: 2px;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.categoryTag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .categoryDot {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  box-shadow: 0 0 6px rgba(229, 29, 37, 0.8);
-}
-
-.categoryText {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-secondary, #96908B);
-  font-weight: 700;
+  background: var(--accent);
 }
 
 .dayTag {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  color: var(--crimson-core, #E51D25);
-  letter-spacing: 0.1em;
-  background: rgba(229, 29, 37, 0.08);
-  border: 1px solid rgba(229, 29, 37, 0.25);
-  padding: 0.2rem 0.5rem;
-  border-radius: 2px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
-.dayIcon {
-  color: var(--crimson-core, #E51D25);
-}
-
-/* Header */
-.header {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.iconBox {
+/* Event Icon Area */
+.iconContainer {
+  margin-bottom: 1.25rem;
   width: 44px;
   height: 44px;
-  border-radius: 4px;
-  background: rgba(229, 29, 37, 0.08);
-  border: 1px solid rgba(229, 29, 37, 0.3);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  color: var(--text-primary);
+  transition: all 0.25s ease;
 }
 
-.cardContainer:hover .iconBox {
-  border-color: rgba(229, 29, 37, 0.6);
+.card:hover .iconContainer {
   background: rgba(229, 29, 37, 0.12);
+  border-color: rgba(229, 29, 37, 0.35);
+  color: var(--accent);
+  box-shadow: 0 0 16px rgba(229, 29, 37, 0.2);
 }
 
-.iconText {
-  font-size: 1.35rem;
-}
-
-.titleArea {
-  display: flex;
-  flex-direction: column;
-}
-
-.kickerText {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.12em;
-  color: var(--text-muted, #605B56);
-  text-transform: uppercase;
-  margin-bottom: 2px;
-}
-
+/* Titles */
 .title {
   font-family: var(--font-display);
-  font-size: 1.24rem;
-  font-weight: 800;
-  color: var(--text-primary, #F2EDE8);
-  margin: 0;
-  line-height: 1.22;
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: #FFFFFF;
+  margin-bottom: 0.4rem;
   transition: color 0.2s ease;
 }
 
-.cardContainer:hover .title {
+.card:hover .title {
   color: #FFFFFF;
 }
 
 .tagline {
-  font-size: 0.78rem;
-  color: var(--crimson-core, #E51D25);
-  font-family: var(--font-mono);
-  margin: 0.25rem 0 0 0;
-  font-weight: 600;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-bottom: 1rem;
 }
 
-/* Description */
 .description {
-  color: var(--text-secondary, #96908B);
-  font-family: var(--font-sans);
-  font-size: 0.9rem;
-  line-height: var(--leading-body, 1.6);
-  letter-spacing: var(--tracking-body, -0.005em);
-  margin-bottom: 1.25rem;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
 }
 
-/* Specs */
-.specsGrid {
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  background: rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 2px;
-  padding: 0.75rem 0.85rem;
+/* Subtle divider line */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
   margin-bottom: 1.25rem;
 }
 
-.specItem {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--text-secondary, #96908B);
-  letter-spacing: 0.05em;
-}
-
-.specItem strong {
-  color: var(--text-primary, #F2EDE8);
-}
-
-.specItemHighlight {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  padding-top: 0.4rem;
-  margin-top: 0.2rem;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: var(--text-muted, #605B56);
-  letter-spacing: 0.06em;
-}
-
-.statusDot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--text-muted, #605B56);
-}
-
-.specIcon {
-  color: var(--text-muted, #605B56);
-}
-
-/* Action Foot */
-.footer {
+/* Bottom Actions */
+.cardFooter {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-top: auto;
-  padding-top: 0.85rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.specBadge {
-  display: flex;
-  align-items: center;
-  gap: 5px;
+.participationTag {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: var(--text-muted, #605B56);
-  letter-spacing: 0.08em;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  text-transform: uppercase;
 }
 
-.shieldIcon {
-  color: var(--crimson-core, #E51D25);
-}
-
+/* Glossy Register CTA Button */
 .registerBtn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: var(--crimson-core, #E51D25);
-  color: #ffffff;
-  border: 1px solid var(--crimson-core, #E51D25);
-  border-radius: 2px;
+  gap: 0.4rem;
   padding: 0.45rem 1rem;
+  border-radius: 9999px;
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 0 12px rgba(229, 29, 37, 0.35);
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   outline: none;
 }
 
-.cardContainer:hover .registerBtn {
-  box-shadow: 0 0 18px rgba(229, 29, 37, 0.6);
-  background: #C4141B;
-  border-color: #C4141B;
+.card:hover .registerBtn {
+  background: var(--accent);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 16px rgba(229, 29, 37, 0.4);
+  transform: translateX(2px);
 }
 
-.registerBtn:hover {
-  background: #C4141B;
-  border-color: #C4141B;
-  box-shadow: 0 0 22px rgba(229, 29, 37, 0.75);
-}
-
-.registerBtn:active {
-  transform: scale(0.96);
-}
-
-.registerBtn:focus-visible {
-  outline: 2px solid #FFFFFF;
-  outline-offset: 2px;
-}
-
-.btnArrow {
+.registerArrow {
   transition: transform 0.2s ease;
 }
 
-.cardContainer:hover .btnArrow,
-.registerBtn:hover .btnArrow {
+.card:hover .registerArrow {
   transform: translateX(3px);
 }
 
-/* CAD Tail */
-.borderTailWrapper {
-  position: absolute;
-  bottom: 0px;
-  left: -20px;
-  display: flex;
-  align-items: center;
-  pointer-events: none;
-  z-index: 10;
-}
-
-.borderTailLine {
-  height: 2px;
-  width: 28px;
-  background: linear-gradient(to right, rgba(229, 29, 37, 0.95), rgba(229, 29, 37, 0.15));
-}
-
-.borderTailDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--crimson-core, #E51D25);
-  box-shadow: 0 0 10px var(--crimson-core, #E51D25), 0 0 20px rgba(229, 29, 37, 0.5);
-  margin-left: -2px;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, background-color 0.25s ease;
-}
-
-.cardContainer:hover .borderTailDot {
-  transform: translateX(4px);
-  box-shadow: 0 0 14px var(--crimson-core, #E51D25), 0 0 25px rgba(229, 29, 37, 0.8);
-  background: #ff3b3b;
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transform: none !important;
+    transition: opacity 0.2s ease !important;
+  }
+  .specularReflection {
+    display: none;
+  }
 }

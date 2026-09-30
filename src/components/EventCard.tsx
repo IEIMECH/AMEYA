@@ -1,6 +1,18 @@
 ﻿"use client";
 
-import { ArrowRight, User, Calendar, ShieldCheck } from "lucide-react";
+import { useRef, useState, MouseEvent } from "react";
+import {
+  ArrowRight,
+  Compass,
+  Wrench,
+  Gauge,
+  Sparkles,
+  PenTool,
+  Hammer,
+  MapPin,
+  Timer,
+  Layers,
+} from "lucide-react";
 import type { Event } from "@/data/events";
 import styles from "./EventCard.module.css";
 
@@ -10,101 +22,126 @@ interface Props {
   onRegister: () => void;
 }
 
-export default function EventCard({ event, index = 0, onRegister }: Props) {
+const iconMap: Record<string, typeof Compass> = {
+  Compass,
+  Wrench,
+  Gauge,
+  Sparkles,
+  PenTool,
+  Hammer,
+  MapPin,
+  Timer,
+};
+
+export default function EventCard({ event, onRegister }: Props) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [reflectionStyle, setReflectionStyle] = useState<string>("");
+  const [tiltTransform, setTiltTransform] = useState<string>("");
+
+  const IconComponent = (event.icon && iconMap[event.icon]) || Layers;
   const isTechnical = event.category.toLowerCase() === "technical";
 
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // 2-3 degree max tilt
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -2.5;
+    const rotateY = ((x - centerX) / centerX) * 2.5;
+
+    setTiltTransform(
+      `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-4px) scale(1.01)`
+    );
+
+    // Subtle specular light reflection following cursor
+    setReflectionStyle(
+      `radial-gradient(circle 260px at ${x}px ${y}px, rgba(255, 255, 255, 0.09) 0%, transparent 65%), radial-gradient(circle 340px at ${x}px ${y}px, rgba(229, 29, 37, 0.08) 0%, transparent 75%)`
+    );
+  };
+
+  const handleMouseLeave = () => {
+    setTiltTransform("");
+    setReflectionStyle("");
+  };
+
   return (
-    <article
-      id={event.id}
-      className={styles.cardContainer}
-      onClick={onRegister}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onRegister();
-        }
-      }}
-      aria-label={`Register for ${event.name} - ${event.category} - Day ${event.day}`}
-      onDragStart={(e) => e.preventDefault()}
-    >
-      {/* Outer Technical Chamfered Frame */}
-      <div className={styles.cardFrame}>
-        {/* Technical Corner Crosshairs (+) that illuminate on hover */}
-        <span className={styles.crosshairTL} aria-hidden="true">+</span>
-        <span className={styles.crosshairTR} aria-hidden="true">+</span>
-        <span className={styles.crosshairBR} aria-hidden="true">+</span>
+    <div className={styles.cardWrapper}>
+      <article
+        ref={cardRef}
+        id={event.id}
+        className={styles.card}
+        style={{ transform: tiltTransform }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        onClick={onRegister}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onRegister();
+          }
+        }}
+        aria-label={`Register for ${event.name} - ${event.category} - Day ${event.day}`}
+      >
+        {/* Dynamic Light Reflection Layer */}
+        <div
+          className={styles.specularReflection}
+          style={{ background: reflectionStyle }}
+          aria-hidden="true"
+        />
 
-        {/* Top Technical Metadata Bar */}
-        <div className={styles.topHud}>
-          <div className={styles.categoryPill}>
-            <span className={styles.categoryDot} style={{ background: isTechnical ? "var(--crimson-core, #E51D25)" : "#F2EDE8" }} />
-            <span className={styles.categoryText}>{event.category}</span>
+        <div className={styles.cardContent}>
+          {/* Top Bar: TECHNICAL ........ DAY 01 */}
+          <div className={styles.metaRow}>
+            <span className={styles.categoryTag}>
+              <span
+                className={styles.categoryDot}
+                style={{
+                  background: isTechnical ? "var(--accent)" : "#C7C2BC",
+                }}
+              />
+              {event.category}
+            </span>
+            <span className={styles.dayTag}>DAY 0{event.day}</span>
           </div>
-          <div className={styles.dayTag}>
-            <Calendar size={11} className={styles.dayIcon} />
-            <span className={styles.dayText}>DAY 0{event.day}</span>
+
+          {/* Centered Event Icon with soft glow on hover */}
+          <div className={styles.iconContainer} aria-hidden="true">
+            <IconComponent size={20} />
+          </div>
+
+          {/* Title & Editorial Descriptions */}
+          <h3 className={styles.title}>{event.name}</h3>
+          {event.tagline && <p className={styles.tagline}>{event.tagline}</p>}
+          <p className={styles.description}>
+            {event.description || "Technical championship arena."}
+          </p>
+
+          <div className={styles.divider} aria-hidden="true" />
+
+          {/* Bottom Bar: SOLO ........ REGISTER -> */}
+          <div className={styles.cardFooter}>
+            <span className={styles.participationTag}>SOLO</span>
+            <button
+              type="button"
+              className={styles.registerBtn}
+              onClick={(e) => {
+                e.stopPropagation();
+                onRegister();
+              }}
+              aria-label={`Register for ${event.name}`}
+            >
+              <span>REGISTER</span>
+              <ArrowRight size={13} className={styles.registerArrow} />
+            </button>
           </div>
         </div>
-
-        {/* Card Header */}
-        <div className={styles.header}>
-          <div className={styles.iconBox} aria-hidden="true">
-            <span className={styles.iconText}>{event.icon || "⚙️"}</span>
-          </div>
-          <div className={styles.titleArea}>
-            <span className={styles.kickerText}>EVENT 0{index + 1}</span>
-            <h3 className={styles.title}>{event.name}</h3>
-            {event.tagline && <p className={styles.tagline}>{event.tagline}</p>}
-          </div>
-        </div>
-
-        {/* Event Brief / Details */}
-        <p className={styles.description}>
-          {event.description || "Details to be announced."}
-        </p>
-
-        {/* Precision Telemetry Specs */}
-        <div className={styles.specsGrid}>
-          <div className={styles.specItem}>
-            <User size={12} className={styles.specIcon} />
-            <span>PARTICIPATION: <strong>SOLO (INDIVIDUAL)</strong></span>
-          </div>
-          <div className={styles.specItemHighlight}>
-            <span className={styles.statusDot} />
-            <span className={styles.statusText}>SCHEDULE &amp; VENUE: DETAILS TO BE ANNOUNCED</span>
-          </div>
-        </div>
-
-        {/* Action Foot */}
-        <div className={styles.footer}>
-          <div className={styles.specBadge}>
-            <ShieldCheck size={12} className={styles.shieldIcon} />
-            <span>IEI SAME // VVITU</span>
-          </div>
-
-          <button
-            suppressHydrationWarning
-            type="button"
-            className={styles.registerBtn}
-            onClick={(e) => {
-              e.stopPropagation();
-              onRegister();
-            }}
-            aria-label={`Register for ${event.name}`}
-          >
-            <span className={styles.registerBtnText}>REGISTER</span>
-            <ArrowRight size={13} className={styles.btnArrow} />
-          </button>
-        </div>
-
-        {/* CAD Technical Border-Tail Accent in Glowing Crimson */}
-        <div className={styles.borderTailWrapper} aria-hidden="true">
-          <div className={styles.borderTailLine} />
-          <div className={styles.borderTailDot} />
-        </div>
-      </div>
-    </article>
+      </article>
+    </div>
   );
 }
