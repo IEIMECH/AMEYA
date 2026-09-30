@@ -72,12 +72,8 @@ export default function SponsorSection() {
           viewport={{ once: true, amount: "some" }}
           transition={{ type: "spring", bounce: 0, duration: 0.45 }}
         >
-          <div className={styles.metaRow}>
-            <span className={styles.metaCategory}>PARTNERS &amp; SUPPORTERS</span>
-          </div>
-
           <h2 id="sponsors-heading" className={styles.title}>
-            SPONSORS &amp; SUPPORTERS
+            Our Valued Sponsors
           </h2>
           <p className={styles.subtitle}>
             Industry leaders, institutions, and professional engineering bodies supporting AMEYA &apos;26.

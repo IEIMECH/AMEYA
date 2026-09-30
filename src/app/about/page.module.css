@@ -1,10 +1,10 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    ABOUT PAGE: EDITORIAL PATTERN
-   Fewer containers, strong typography on background, interactive pillars
+   Fewer containers, strong typography directly on atmospheric background
    ========================================================================== */
 
 .page {
-  padding-top: var(--page-top-padding);
+  padding-top: var(--header-safe-space, clamp(8.5rem, 12vw, 11rem));
   padding-bottom: 6rem;
   background: transparent;
   min-height: 100vh;
@@ -12,16 +12,19 @@
   z-index: 1;
 }
 
-/* Header Area: Pattern A Editorial */
+/* Header Area: Completely Transparent, Direct on Background (Req 1 & 2) */
 .header {
   text-align: center;
   max-width: 820px;
   margin: 0 auto clamp(2.5rem, 5vw, 4rem) auto;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .title {
   font-family: var(--font-display);
-  font-size: var(--font-size-display);
+  font-size: clamp(2.2rem, 5vw, 4rem);
   line-height: var(--line-height-display);
   letter-spacing: var(--letter-spacing-display);
   font-weight: 700;
@@ -34,7 +37,7 @@
 }
 
 .leadIntro {
-  font-size: clamp(1.1rem, 1.5vw, 1.25rem);
+  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
   line-height: 1.65;
   color: var(--text-primary);
   margin-bottom: 1rem;
@@ -42,7 +45,7 @@
 
 .sub {
   color: var(--text-secondary);
-  font-size: 1.05rem;
+  font-size: clamp(0.95rem, 1.3vw, 1.05rem);
   line-height: 1.6;
 }
 
@@ -208,6 +211,10 @@
 }
 
 @media (max-width: 900px) {
+  .page {
+    padding-top: clamp(7rem, 14vw, 8.5rem);
+    padding-bottom: 4rem;
+  }
   .pillarsGrid {
     grid-template-columns: repeat(2, 1fr);
   }

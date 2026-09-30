@@ -461,8 +461,8 @@ export default function Venue3DViewer() {
         )}
       </div>
 
-      {/* Main View Area */}
-      <div style={{ position: "relative", height: "560px", width: "100%" }}>
+      {/* Main View Area (Req 23.11: Responsive Viewport Fit & Touch Orbit) */}
+      <div style={{ position: "relative", height: "clamp(340px, 58vh, 560px)", width: "100%", touchAction: "none" }}>
         {activeTab === "3d" ? (
           <canvas
             ref={canvasRef}
@@ -471,6 +471,7 @@ export default function Venue3DViewer() {
               height: "100%",
               display: "block",
               outline: "none",
+              touchAction: "none",
             }}
           />
         ) : (

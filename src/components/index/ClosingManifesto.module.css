@@ -2,11 +2,11 @@
   position: relative;
   width: 100%;
   padding: 8rem 5vw 6rem;
-  background-color: var(--machined-dark, #050505);
+  background: #050505;
   color: var(--text-primary, #F2EDE8);
   overflow: hidden;
   z-index: 2;
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  border-top: none;
 }
 
 .ambientGradients {
@@ -16,15 +16,7 @@
   pointer-events: none;
 }
 
-.gridOverlay {
-  position: absolute;
-  inset: 0;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-  background-size: 100px 100px;
-  pointer-events: none;
-}
+/* Grid overlay removed per Req 7 for clean cinematic atmosphere */
 
 .container {
   position: relative;

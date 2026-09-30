@@ -74,7 +74,8 @@ img,
 
   /* 3. SPACING & LAYOUT SYSTEM */
   --nav-height: 56px;
-  --page-top-padding: clamp(6.5rem, 9vw, 8.5rem);
+  --header-safe-space: clamp(8.5rem, 12vw, 11rem);
+  --page-top-padding: var(--header-safe-space);
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 16px;
@@ -473,12 +474,25 @@ main {
 
 @media (prefers-reduced-transparency: reduce) {
   .glass-card,
-  nav,
-  header {
-    background: var(--surface) !important;
+  .floatingBar,
+  .modal-surface {
+    background: #121212 !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
   }
+}
+
+/* Page Header Transparency Guarantee (Req 1 & 2) */
+.page-header-transparent,
+.page-header-editorial,
+.page-header-functional,
+.page-header-spatial,
+header.headerArea,
+header.header,
+header.heroHeader {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 @media (prefers-contrast: more) {

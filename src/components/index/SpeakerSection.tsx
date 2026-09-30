@@ -86,13 +86,11 @@ export default function SpeakerSection() {
   return (
     <section ref={sectionRef} className={styles.section} id="speakers">
       <div className={styles.innerContainer}>
-        {/* Section Header */}
+        {/* Section Header (Req 5: Meet Our Guests) */}
         <div className={styles.header}>
-          <h2 className={styles.title}>
-            Keynote Guests &amp; <span className={styles.titleAccent}>Speakers</span>
-          </h2>
+          <h2 className={styles.title}>Meet Our Guests</h2>
           <p className={styles.subtext}>
-            Meet the researchers, industry leaders, and engineering specialists sharing their insights at AMEYA &apos;26. Select a speaker to inspect their session dossier.
+            Meet the researchers, industry leaders, and engineering specialists sharing their insights at AMEYA &apos;26.
           </p>
         </div>
 

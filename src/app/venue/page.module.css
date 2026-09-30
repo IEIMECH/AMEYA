@@ -1,10 +1,10 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    VENUE & 3D CAMPUS MAP PAGE
    Clean spatial layout, 3D hero with breathing room, editorial venue cards
    ========================================================================== */
 
 .page {
-  padding-top: var(--page-top-padding);
+  padding-top: var(--header-safe-space, clamp(8.5rem, 12vw, 11rem));
   padding-bottom: 6rem;
   background: transparent;
   min-height: 100vh;
@@ -12,15 +12,18 @@
   z-index: 1;
 }
 
-/* Header Area: Functional / Spatial Pattern with Hierarchy */
+/* Header Area: Completely Transparent, Sitting Directly on Page Background */
 .header {
   margin-bottom: 2.5rem;
   max-width: 800px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .title {
   font-family: var(--font-display);
-  font-size: var(--font-size-section);
+  font-size: clamp(2rem, 4.5vw, 3.25rem);
   line-height: var(--line-height-section);
   letter-spacing: var(--letter-spacing-section);
   font-weight: 700;
@@ -34,7 +37,7 @@
 
 .sub {
   color: var(--text-secondary);
-  font-size: 1.05rem;
+  font-size: clamp(0.95rem, 1.4vw, 1.05rem);
   line-height: 1.6;
   max-width: 640px;
   margin: 0;
@@ -47,14 +50,14 @@
 
 .sectionTitle {
   font-family: var(--font-display);
-  font-size: 1.75rem;
+  font-size: clamp(1.4rem, 2.5vw, 1.75rem);
   font-weight: 700;
   letter-spacing: -0.015em;
   color: #FFFFFF;
   margin-bottom: 1.5rem;
 }
 
-/* Smaller, Editorial Venue Cards (Item 8) */
+/* Smaller, Editorial Venue Cards */
 .hallsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -215,6 +218,19 @@
 }
 
 @media (max-width: 768px) {
+  .page {
+    padding-top: clamp(7rem, 14vw, 8.5rem);
+    padding-bottom: 4rem;
+  }
+  .header {
+    margin-bottom: 1.75rem;
+  }
+  .hallsGrid {
+    grid-template-columns: 1fr;
+  }
+  .transitGrid {
+    grid-template-columns: 1fr;
+  }
   .travelCard {
     padding: 1.5rem;
   }

@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    EVENTS CATALOG PAGE
    Apple-grade whitespace, sliding filter pill, glossy grid
    ========================================================================== */
@@ -6,7 +6,7 @@
 .pageWrapper {
   position: relative;
   min-height: 100vh;
-  padding-top: var(--page-top-padding);
+  padding-top: var(--header-safe-space, clamp(8.5rem, 12vw, 11rem));
   padding-bottom: 6rem;
   background: transparent;
   z-index: 1;
@@ -17,15 +17,18 @@
   z-index: 2;
 }
 
-/* Header Area: Functional Pattern with Strong Typographic Hierarchy */
+/* Header Area: Completely Transparent, Direct on Background */
 .headerArea {
   margin-bottom: 3rem;
   max-width: 840px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .title {
   font-family: var(--font-display);
-  font-size: var(--font-size-section);
+  font-size: clamp(2rem, 4.5vw, 3.25rem);
   line-height: var(--line-height-section);
   letter-spacing: var(--letter-spacing-section);
   font-weight: 700;
@@ -38,25 +41,34 @@
 }
 
 .subtitle {
-  font-size: 1.05rem;
+  font-size: clamp(0.95rem, 1.4vw, 1.05rem);
   line-height: 1.6;
   color: var(--text-secondary);
   max-width: 680px;
   margin-bottom: 2rem;
 }
 
-/* Sliding Filter Pill Rail */
+/* Sliding Filter Pill Rail: Horizontally scrollable on touch */
 .filtersWrapper {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.3rem 0.35rem;
+  padding: 0.35rem 0.4rem;
   border-radius: 9999px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   position: relative;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.filtersWrapper::-webkit-scrollbar {
+  display: none;
 }
 
 .filterBtn {
@@ -64,7 +76,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.45rem 1.15rem;
+  min-height: 44px;
+  padding: 0.45rem 1.25rem;
   border-radius: 9999px;
   font-family: var(--font-mono);
   font-size: 0.72rem;
@@ -78,6 +91,7 @@
   z-index: 1;
   transition: color 0.18s ease;
   outline: none;
+  flex-shrink: 0;
 }
 
 .filterBtn:hover {
@@ -107,17 +121,20 @@
 }
 
 @media (max-width: 768px) {
+  .pageWrapper {
+    padding-top: clamp(7rem, 14vw, 8.5rem);
+    padding-bottom: 4rem;
+  }
+  .headerArea {
+    margin-bottom: 2rem;
+  }
   .eventsGrid {
     grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
   .filtersWrapper {
     display: flex;
-    overflow-x: auto;
-    max-width: 100%;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-  }
-  .filtersWrapper::-webkit-scrollbar {
-    display: none;
+    width: 100%;
+    border-radius: 14px;
   }
 }

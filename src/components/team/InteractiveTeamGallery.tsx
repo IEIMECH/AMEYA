@@ -1,93 +1,269 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
+
+function LinkedinIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg 
+      width={size} 
+      height={size} 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+      <rect x="2" y="9" width="4" height="12" />
+      <circle cx="4" cy="4" r="2" />
+    </svg>
+  );
+}
+
+function GithubIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg 
+      width={size} 
+      height={size} 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+    </svg>
+  );
+}
 import { teamMembers } from "@/data/team";
 import styles from "./InteractiveTeamGallery.module.css";
 
-const DIVISIONS = [
-  "ALL",
-  "Core Leadership",
-  "Technical Advisory",
-  "Social Media Council",
-  "Design Council",
-  "Public Relations Council",
-  "Drafting Council",
-];
+const TOTAL_MEMBERS = teamMembers.length;
 
 export default function InteractiveTeamGallery() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [selectedDivision, setSelectedDivision] = useState("ALL");
-  const dragStartX = useRef<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Continuous physical carousel state
+  const offsetRef = useRef<number>(0);
+  const velocityRef = useRef<number>(0);
+  const isDraggingRef = useRef<boolean>(false);
+  const isInteractingRef = useRef<boolean>(false);
+  const lastXRef = useRef<number>(0);
+  const lastTimeRef = useRef<number>(0);
+  const springTargetRef = useRef<number | null>(null);
+  const animFrameRef = useRef<number | null>(null);
+  const cardSpacingRef = useRef<number>(320);
 
-  // Filter members by division if selected
-  const visibleMembers = selectedDivision === "ALL"
-    ? teamMembers
-    : teamMembers.filter((m) => m.division === selectedDivision);
+  // UI Display states
+  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [isGrabbing, setIsGrabbing] = useState<boolean>(false);
+  const [renderSlots, setRenderSlots] = useState<Array<{
+    key: string;
+    member: typeof teamMembers[0];
+    xPos: number;
+    scale: number;
+    opacity: number;
+    zIndex: number;
+    isCenter: boolean;
+  }>>([]);
 
-  // Clamp active index when division filter changes
+  // Responsive card spacing
+  const updateSpacing = useCallback(() => {
+    if (typeof window === "undefined") return;
+    const w = window.innerWidth;
+    cardSpacingRef.current = w < 768 ? Math.min(270, w * 0.72) : 320;
+  }, []);
+
   useEffect(() => {
-    setActiveIndex(0);
-  }, [selectedDivision]);
+    updateSpacing();
+    window.addEventListener("resize", updateSpacing);
+    return () => window.removeEventListener("resize", updateSpacing);
+  }, [updateSpacing]);
 
-  const handleNext = useCallback(() => {
-    setActiveIndex((prev) => (prev < visibleMembers.length - 1 ? prev + 1 : 0));
-  }, [visibleMembers.length]);
+  // Compute active card & 7-slot continuous visual projection
+  const computeSlots = useCallback(() => {
+    const spacing = cardSpacingRef.current;
+    const currentOffset = offsetRef.current;
+    const centerFloat = -currentOffset / spacing;
+    const centerInt = Math.round(centerFloat);
+    
+    // Normalized active member index [0..17]
+    const normActiveIdx = ((centerInt % TOTAL_MEMBERS) + TOTAL_MEMBERS) % TOTAL_MEMBERS;
+    setActiveIndex(normActiveIdx);
 
-  const handlePrev = useCallback(() => {
-    setActiveIndex((prev) => (prev > 0 ? prev - 1 : visibleMembers.length - 1));
-  }, [visibleMembers.length]);
+    // 7 continuous virtual slots: -3, -2, -1, 0, 1, 2, 3
+    const slots = [];
+    for (let k = -3; k <= 3; k++) {
+      const slotIndex = centerInt + k;
+      const memberIdx = ((slotIndex % TOTAL_MEMBERS) + TOTAL_MEMBERS) % TOTAL_MEMBERS;
+      const member = teamMembers[memberIdx];
+      const xPos = slotIndex * spacing + currentOffset;
+      const dist = Math.abs(xPos);
 
-  // Keyboard navigation (ArrowLeft / ArrowRight)
+      // Depth calculations
+      const isCenter = k === 0 && dist < spacing * 0.5;
+      const scale = Math.max(0.74, 1.05 - (dist / (spacing * 2.2)) * 0.32);
+      const opacity = Math.max(0.20, 1.0 - (dist / (spacing * 2.2)) * 0.72);
+      const zIndex = Math.max(1, 50 - Math.round(dist / 8));
+
+      slots.push({
+        key: `slot-${slotIndex}`,
+        member,
+        xPos,
+        scale,
+        opacity,
+        zIndex,
+        isCenter,
+      });
+    }
+
+    setRenderSlots(slots);
+  }, []);
+
+  // Authoritative 60 FPS momentum & spring animation loop
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight") {
-        handleNext();
-      } else if (e.key === "ArrowLeft") {
-        handlePrev();
+    let lastTimestamp = performance.now();
+
+    const loop = (timestamp: number) => {
+      const dt = Math.min((timestamp - lastTimestamp) * 0.001, 0.05); // seconds
+      lastTimestamp = timestamp;
+
+      const spacing = cardSpacingRef.current;
+
+      if (!isDraggingRef.current) {
+        if (springTargetRef.current !== null) {
+          // Spring settling to nearest card
+          const target = springTargetRef.current;
+          const current = offsetRef.current;
+          const diff = target - current;
+
+          // Spring physics: stiffness 160, damping 20
+          const springForce = diff * 18.0;
+          velocityRef.current += springForce * dt;
+          velocityRef.current *= Math.pow(0.08, dt); // smooth deceleration
+          offsetRef.current += velocityRef.current * dt * 1000;
+
+          if (Math.abs(diff) < 0.3 && Math.abs(velocityRef.current) < 0.01) {
+            offsetRef.current = target;
+            velocityRef.current = 0;
+            springTargetRef.current = null;
+            isInteractingRef.current = false;
+          }
+        } else if (Math.abs(velocityRef.current) > 0.05) {
+          // Momentum coasting after gesture release
+          velocityRef.current *= Math.pow(0.12, dt);
+          offsetRef.current += velocityRef.current * dt * 1000;
+
+          if (Math.abs(velocityRef.current) <= 0.05) {
+            // Velocity decayed: lock target to closest card and snap
+            const closest = Math.round(offsetRef.current / spacing) * spacing;
+            springTargetRef.current = closest;
+          }
+        } else if (!isInteractingRef.current) {
+          // Gentle idle drift (Item 16)
+          offsetRef.current -= 0.18;
+        }
       }
+
+      computeSlots();
+      animFrameRef.current = requestAnimationFrame(loop);
     };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleNext, handlePrev]);
 
-  // Mouse wheel horizontal navigation
-  const handleWheel = (e: React.WheelEvent) => {
-    if (Math.abs(e.deltaX) > 30 || Math.abs(e.deltaY) > 40) {
-      if (e.deltaX > 30 || e.deltaY > 40) {
-        handleNext();
-      } else if (e.deltaX < -30 || e.deltaY < -40) {
-        handlePrev();
+    animFrameRef.current = requestAnimationFrame(loop);
+    return () => {
+      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+    };
+  }, [computeSlots]);
+
+  // Pointer Gesture Handlers (Direct manipulation, 1:1 response, immediate interruptibility)
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    // Interrupt any ongoing momentum or spring immediately (Item 15)
+    springTargetRef.current = null;
+    velocityRef.current = 0;
+    isDraggingRef.current = true;
+    isInteractingRef.current = true;
+    setIsGrabbing(true);
+
+    lastXRef.current = e.clientX;
+    lastTimeRef.current = performance.now();
+
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      // Safe fallback
+    }
+  };
+
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDraggingRef.current) return;
+
+    const currentX = e.clientX;
+    const now = performance.now();
+    const deltaX = currentX - lastXRef.current;
+    const dt = Math.max(now - lastTimeRef.current, 1);
+
+    // 1:1 direct horizontal movement
+    offsetRef.current += deltaX;
+
+    // Smoothed velocity estimation (pixels per ms)
+    const instantVelocity = deltaX / dt;
+    velocityRef.current = velocityRef.current * 0.35 + instantVelocity * 0.65;
+
+    lastXRef.current = currentX;
+    lastTimeRef.current = now;
+  };
+
+  const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
+    setIsGrabbing(false);
+
+    try {
+      if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+        e.currentTarget.releasePointerCapture(e.pointerId);
       }
+    } catch {
+      // Safe fallback
+    }
+
+    const spacing = cardSpacingRef.current;
+    const currentOffset = offsetRef.current;
+    const v = velocityRef.current;
+
+    // Momentum fling or nearest snap (Item 13)
+    if (Math.abs(v) > 0.25) {
+      // Projected coasting position
+      const projectedOffset = currentOffset + v * 280;
+      const targetCard = Math.round(projectedOffset / spacing) * spacing;
+      springTargetRef.current = targetCard;
+    } else {
+      // Gentle release: snap directly to nearest card
+      const nearestCard = Math.round(currentOffset / spacing) * spacing;
+      springTargetRef.current = nearestCard;
     }
   };
 
-  // Touch / Pointer Drag
-  const handlePointerDown = (e: React.PointerEvent) => {
-    dragStartX.current = e.clientX;
+  const onPointerCancel = (e: React.PointerEvent<HTMLDivElement>) => {
+    onPointerUp(e);
   };
 
-  const handlePointerUp = (e: React.PointerEvent) => {
-    if (dragStartX.current === null) return;
-    const deltaX = e.clientX - dragStartX.current;
-    dragStartX.current = null;
-
-    if (deltaX < -45) {
-      handleNext();
-    } else if (deltaX > 45) {
-      handlePrev();
-    }
+  // Direct card click to center
+  const snapToSlot = (xPos: number) => {
+    springTargetRef.current = offsetRef.current - xPos;
+    isInteractingRef.current = true;
   };
 
-  const activeMember = visibleMembers[activeIndex] || visibleMembers[0];
-  const CARD_SPACING = 310;
+  const activeMember = teamMembers[activeIndex] || teamMembers[0];
 
   return (
     <div className={styles.teamPageWrapper}>
-      {/* 1. Hero: Clean typography as requested in Item 9 */}
+      {/* 1. Header: Clean typography directly on background (No opaque boxes, No classification bar) */}
       <header className={styles.heroHeader}>
         <h1 className={styles.heroTitle}>
           THE <span className={styles.heroAccent}>TEAM</span>
@@ -96,91 +272,40 @@ export default function InteractiveTeamGallery() {
         <p className={styles.heroDepartment}>Department of Mechanical Engineering</p>
       </header>
 
-      {/* Division Quick Filter Pills */}
-      <nav className={styles.divisionFilterRail} aria-label="Team divisions filter">
-        {DIVISIONS.map((div) => {
-          const isActive = selectedDivision === div;
-          return (
-            <button
-              key={div}
-              type="button"
-              onClick={() => setSelectedDivision(div)}
-              className={`${styles.divisionPill} ${isActive ? styles.divisionPillActive : ""}`}
-            >
-              {div}
-            </button>
-          );
-        })}
-      </nav>
-
-      {/* 2. Horizontal Gallery Track with Apple Depth */}
+      {/* 2. Direct-Manipulation Infinite Carousel Viewport */}
       <div
         ref={containerRef}
-        className={styles.galleryViewport}
-        onWheel={handleWheel}
-        onPointerDown={handlePointerDown}
-        onPointerUp={handlePointerUp}
+        className={`${styles.galleryViewport} ${isGrabbing ? styles.grabbing : ""}`}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerCancel}
+        aria-label="Direct manipulation team cards carousel. Drag or swipe left and right to inspect members."
+        role="region"
       >
-        <div className={styles.galleryTrack}>
-          {visibleMembers.map((member, idx) => {
-            const offset = idx - activeIndex;
-            const absOffset = Math.abs(offset);
-
-            // Don't render cards that are too far out to preserve performance
-            if (absOffset > 3) return null;
-
-            // Center: 100% opacity, scale 1.05
-            // Adjacent: 75-85% opacity, scale 0.90
-            // Outer: 40-60% opacity, scale 0.78
-            let scale = 1.05;
-            let opacity = 1;
-            let zIndex = 10;
-
-            if (absOffset === 1) {
-              scale = 0.90;
-              opacity = 0.80;
-              zIndex = 8;
-            } else if (absOffset === 2) {
-              scale = 0.78;
-              opacity = 0.45;
-              zIndex = 5;
-            } else if (absOffset >= 3) {
-              scale = 0.70;
-              opacity = 0.20;
-              zIndex = 2;
-            }
-
-            const xPos = offset * CARD_SPACING;
-
+        <div className={styles.carouselTrack}>
+          {renderSlots.map((slot) => {
+            const { key, member, xPos, scale, opacity, zIndex, isCenter } = slot;
             return (
-              <motion.article
-                key={member.id}
-                className={`${styles.portraitCard} ${offset === 0 ? styles.portraitCardActive : ""}`}
-                onClick={() => setActiveIndex(idx)}
-                animate={{
-                  x: xPos,
-                  scale,
+              <article
+                key={key}
+                className={`${styles.portraitCard} ${isCenter ? styles.portraitCardActive : ""}`}
+                style={{
+                  transform: `translate3d(${xPos}px, -50%, 0) scale(${scale})`,
                   opacity,
                   zIndex,
                 }}
-                transition={{
-                  type: "spring",
-                  damping: 24,
-                  stiffness: 220,
-                  mass: 0.8,
-                }}
-                role="button"
-                tabIndex={0}
-                aria-label={`Select ${member.name}, ${member.role}`}
+                onClick={() => !isDraggingRef.current && snapToSlot(xPos)}
               >
                 <div className={styles.portraitImageWrapper}>
                   <Image
                     src={member.image || "/img/Hero/photo-wall-1.webp"}
                     alt={member.name}
                     fill
-                    sizes="(max-width: 768px) 260px, 320px"
+                    sizes="(max-width: 768px) 250px, 310px"
                     className={styles.portraitImage}
-                    priority={absOffset <= 1}
+                    priority={isCenter}
+                    draggable={false}
                   />
                   <div className={styles.portraitOverlay}>
                     <span className={styles.memberDivisionTag}>{member.division}</span>
@@ -188,82 +313,77 @@ export default function InteractiveTeamGallery() {
                     <p className={styles.memberRole}>{member.role}</p>
                   </div>
                 </div>
-              </motion.article>
+              </article>
             );
           })}
         </div>
-      </div>
 
-      {/* 3. Navigation Controls & Counter */}
-      <div className={styles.controlsRow}>
-        <button
-          type="button"
-          onClick={handlePrev}
-          className={styles.navArrowBtn}
-          aria-label="Previous team member"
-        >
-          <ChevronLeft size={20} />
-        </button>
-
-        <div className={styles.counterLabel}>
+        {/* Minimal Subtle Counter Metadata (Item 17: No arrows) */}
+        <div className={styles.counterMeta} aria-live="polite">
           <span className={styles.counterCurrent}>
             {String(activeIndex + 1).padStart(2, "0")}
           </span>
-          {" / "}
-          <span>{String(visibleMembers.length).padStart(2, "0")}</span>
+          <span className={styles.counterDivider}>/</span>
+          <span className={styles.counterTotal}>
+            {String(TOTAL_MEMBERS).padStart(2, "0")}
+          </span>
         </div>
-
-        <button
-          type="button"
-          onClick={handleNext}
-          className={styles.navArrowBtn}
-          aria-label="Next team member"
-        >
-          <ChevronRight size={20} />
-        </button>
       </div>
 
-      {/* 4. Active Member Editorial Profile Surface */}
-      {activeMember && (
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeMember.id}
-            className={styles.profileSurface}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
-          >
-            <p className={styles.profileBio}>{activeMember.bio}</p>
+      {/* 3. Detailed Profile Panel for Active Center Member */}
+      <section className={styles.activeDetailSection} aria-label="Selected Officer Dossier">
+        <div className={styles.detailContainer}>
+          <div className={styles.detailMetaRow}>
+            <span className={styles.detailCallsign}>{activeMember.callsign}</span>
+            <span className={styles.detailClearance}>{activeMember.clearance}</span>
+          </div>
 
-            <div className={styles.profileMetaGrid}>
-              <div>
-                <div className={styles.metaItemLabel}>SPECIALIZATION</div>
-                <div className={styles.metaItemValue}>{activeMember.specialization}</div>
-              </div>
+          <h2 className={styles.detailName}>{activeMember.name}</h2>
+          <p className={styles.detailRole}>{activeMember.role} &bull; {activeMember.department}</p>
+          <p className={styles.detailBio}>{activeMember.bio}</p>
 
-              <div>
-                <div className={styles.metaItemLabel}>YEAR &amp; STANDING</div>
-                <div className={styles.metaItemValue}>{activeMember.year}</div>
-              </div>
+          <div className={styles.detailFooter}>
+            <div className={styles.specializationBadge}>
+              <span className={styles.specLabel}>SPECIALIZATION</span>
+              <span className={styles.specValue}>{activeMember.specialization}</span>
+            </div>
 
+            <div className={styles.socialLinks}>
               {activeMember.socials?.email && (
-                <div>
-                  <div className={styles.metaItemLabel}>CONTACT</div>
-                  <a
-                    href={`mailto:${activeMember.socials.email}`}
-                    className={styles.metaItemValue}
-                    style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
-                  >
-                    <Mail size={12} color="var(--accent)" />
-                    <span>{activeMember.socials.email}</span>
-                  </a>
-                </div>
+                <a
+                  href={`mailto:${activeMember.socials.email}`}
+                  className={styles.socialIcon}
+                  aria-label={`Email ${activeMember.name}`}
+                >
+                  <Mail size={16} />
+                </a>
+              )}
+              {activeMember.socials?.linkedin && (
+                <a
+                  href={activeMember.socials.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.socialIcon}
+                  aria-label={`${activeMember.name} LinkedIn`}
+                >
+                  <LinkedinIcon size={16} />
+                </a>
+              )}
+              {activeMember.socials?.github && (
+                <a
+                  href={activeMember.socials.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.socialIcon}
+                  aria-label={`${activeMember.name} GitHub`}
+                >
+                  <GithubIcon size={16} />
+                </a>
               )}
             </div>
-          </motion.div>
-        </AnimatePresence>
-      )}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

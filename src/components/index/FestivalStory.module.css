@@ -212,7 +212,28 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+  .section {
+    padding: 4rem 1.25rem 5rem;
+  }
+  .editorialGrid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  /* Clean 2-column grid on mobile (Req 23.5) */
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  .statCard {
+    padding: 1.25rem 1rem;
+  }
+  .statNumber {
+    font-size: clamp(1.8rem, 6vw, 2.4rem);
+  }
+}
+
+@media (max-width: 360px) {
   .statsGrid {
     grid-template-columns: 1fr;
   }

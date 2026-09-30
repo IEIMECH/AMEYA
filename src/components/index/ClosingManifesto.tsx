@@ -19,12 +19,12 @@ export default function ClosingManifesto() {
         animate={isInView ? { opacity: 1 } : { opacity: 0 }}
         transition={{ duration: 1.0, ease: "easeOut" }}
       />
-      <div className={styles.gridOverlay} aria-hidden="true" />
+      
 
       <div className={styles.container}>
         {/* Terminal Title Sequence */}
         <div className={styles.titleSequence}>
-          {/* Top Telemetry Stamp */}
+          {/* Top Cinematic Brand Header (Req 7) */}
           <motion.div
             className={styles.chapterBadge}
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
@@ -32,8 +32,7 @@ export default function ClosingManifesto() {
             viewport={{ once: true, amount: "some" }}
             transition={{ type: "spring", bounce: 0, duration: 0.45 }}
           >
-            <span className={styles.redDot} />
-            <span>AMEYA &apos;26 // MECHANICAL ENGINEERING</span>
+            <span>AMEYA &apos;26</span>
           </motion.div>
 
           {/* Staggered Cinematic Title Sequence */}

@@ -1,34 +1,36 @@
-﻿/* ==========================================================================
-   INTERACTIVE HORIZONTAL TEAM GALLERY
-   Apple-grade spatial depth, smooth momentum, center-focus snapping
+/* ==========================================================================
+   INTERACTIVE HORIZONTAL TEAM CAROUSEL (DIRECT MANIPULATION & MOMENTUM)
    ========================================================================== */
 
 .teamPageWrapper {
   position: relative;
   min-height: 100vh;
-  padding-top: var(--page-top-padding);
+  padding-top: var(--header-safe-space, clamp(8.5rem, 12vw, 11rem));
   padding-bottom: 6rem;
-  background: var(--bg);
+  background: transparent;
   overflow: hidden;
   z-index: 1;
 }
 
-/* Hero Section */
+/* Header Area: Completely Transparent, Direct on Background (Req 1, 2, 8) */
 .heroHeader {
   text-align: center;
   max-width: 800px;
-  margin: 0 auto 3rem auto;
+  margin: 0 auto clamp(2rem, 4vw, 3rem) auto;
   padding: 0 1.5rem;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .heroTitle {
   font-family: var(--font-display);
-  font-size: var(--font-size-display);
+  font-size: clamp(2.4rem, 5.5vw, 4.2rem);
   line-height: var(--line-height-display);
   letter-spacing: var(--letter-spacing-display);
   font-weight: 700;
   color: #FFFFFF;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.65rem;
 }
 
 .heroAccent {
@@ -37,60 +39,20 @@
 
 .heroSubtitle {
   font-family: var(--font-mono);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  font-size: clamp(0.78rem, 1.2vw, 0.85rem);
+  font-weight: 700;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-primary);
   margin-bottom: 0.35rem;
 }
 
 .heroDepartment {
-  font-size: 0.95rem;
+  font-size: clamp(0.88rem, 1.2vw, 0.95rem);
   color: var(--text-secondary);
 }
 
-/* Division Filter Pills */
-.divisionFilterRail {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-bottom: 3rem;
-  padding: 0 1.5rem;
-}
-
-.divisionPill {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 0.45rem 1rem;
-  border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  outline: none;
-}
-
-.divisionPill:hover {
-  color: #FFFFFF;
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.divisionPillActive {
-  background: var(--accent) !important;
-  border-color: var(--accent) !important;
-  color: #FFFFFF !important;
-  box-shadow: 0 2px 14px rgba(229, 29, 37, 0.4);
-}
-
-/* Horizontal Gallery Track */
+/* Direct-Manipulation Carousel Viewport (Req 9, 10, 18) */
 .galleryViewport {
   position: relative;
   width: 100%;
@@ -98,44 +60,52 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: visible;
-  touch-action: pan-y;
+  overflow: hidden;
   user-select: none;
+  touch-action: pan-y;
+  cursor: grab;
+  margin-bottom: 2rem;
 }
 
-.galleryTrack {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
+.galleryViewport.grabbing {
+  cursor: grabbing !important;
 }
 
-/* Portrait Card: Apple Depth Scaling */
+.carouselTrack {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Portrait Card: 1:1 Direct Manipulation Card (Req 12, 14, 18) */
 .portraitCard {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 290px;
-  height: 430px;
+  height: 410px;
+  margin-left: -145px;
   border-radius: 20px;
   overflow: hidden;
-  background: var(--surface-elevated);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-top: 1px solid rgba(255, 255, 255, 0.22);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
-  cursor: pointer;
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  background: var(--surface-elevated, #121212);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.85);
+  pointer-events: auto;
   transform-origin: center center;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+  will-change: transform, opacity;
 }
 
 .portraitCardActive {
-  border-color: rgba(255, 255, 255, 0.25);
-  border-top-color: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 30px 70px -10px rgba(0, 0, 0, 0.95), 0 0 30px rgba(229, 29, 37, 0.15);
-  z-index: 10;
+  border-color: rgba(255, 255, 255, 0.22);
+  border-top-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.95), 0 0 32px rgba(229, 29, 37, 0.12);
 }
 
-/* Image container */
 .portraitImageWrapper {
   position: relative;
   width: 100%;
@@ -144,36 +114,28 @@
 
 .portraitImage {
   object-fit: cover;
-  object-position: center top;
-  filter: contrast(1.05) brightness(0.95);
-  transition: transform 0.4s ease;
+  pointer-events: none;
 }
 
-.portraitCard:hover .portraitImage {
-  transform: scale(1.03);
-}
-
-/* Gradient Vignette overlay on photo */
 .portraitOverlay {
   position: absolute;
-  inset: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5rem 1.25rem 1.25rem;
   background: linear-gradient(
     to bottom,
-    rgba(5, 5, 5, 0.1) 0%,
-    rgba(5, 5, 5, 0.2) 45%,
-    rgba(5, 5, 5, 0.85) 80%,
-    rgba(5, 5, 5, 0.98) 100%
+    transparent 0%,
+    rgba(5, 5, 5, 0.7) 40%,
+    rgba(5, 5, 5, 0.95) 100%
   );
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding: 1.5rem;
 }
 
-/* Member Info on Card */
 .memberDivisionTag {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -183,59 +145,40 @@
 
 .memberName {
   font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #FFFFFF;
   line-height: 1.15;
-  margin-bottom: 0.25rem;
+  margin: 0 0 0.2rem 0;
 }
 
 .memberRole {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--text-secondary);
-  line-height: 1.3;
+  line-height: 1.35;
+  margin: 0;
 }
 
-/* Gallery Navigation Controls & Counter */
-.controlsRow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1.5rem;
-  margin-top: 2.5rem;
-}
-
-.navArrowBtn {
+/* Subtle Metadata Counter (Req 17: No Arrows) */
+.counterMeta {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
+  align-items: baseline;
+  gap: 0.35rem;
+  padding: 0.35rem 0.9rem;
   border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border);
-  color: #FFFFFF;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  outline: none;
-}
-
-.navArrowBtn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.25);
-  transform: scale(1.05);
-}
-
-.navArrowBtn:active {
-  transform: scale(0.95) !important;
-}
-
-.counterLabel {
+  background: rgba(14, 14, 14, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   font-family: var(--font-mono);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  color: var(--text-secondary);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  pointer-events: none;
 }
 
 .counterCurrent {
@@ -243,64 +186,150 @@
   font-weight: 700;
 }
 
-/* Selected Member Editorial Profile Drawer/Surface */
-.profileSurface {
-  max-width: 680px;
-  margin: 3rem auto 0 auto;
-  padding: 1.75rem 2rem;
-  border-radius: 20px;
-  background: rgba(18, 18, 18, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+.counterDivider {
+  color: var(--accent);
+}
+
+.counterTotal {
+  color: var(--text-muted);
+}
+
+/* Active Member Dossier Panel */
+.activeDetailSection {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.detailContainer {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0.01) 100%);
   border: 1px solid var(--border);
-  border-top: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
-  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 2rem 2.25rem;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
-.profileBio {
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin-bottom: 1rem;
-}
-
-.profileMetaGrid {
+.detailMetaRow {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
 }
 
-.metaItemLabel {
+.detailCallsign {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.detailClearance {
   font-family: var(--font-mono);
   font-size: 0.65rem;
   letter-spacing: 0.1em;
-  text-transform: uppercase;
   color: var(--text-muted);
-  margin-bottom: 0.15rem;
+  text-transform: uppercase;
 }
 
-.metaItemValue {
+.detailName {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 0.35rem;
+  line-height: 1.15;
+}
+
+.detailRole {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.detailBio {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin-bottom: 1.75rem;
+}
+
+.detailFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 1.25rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.specializationBadge {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.specLabel {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.specValue {
+  font-size: 0.85rem;
   color: var(--text-primary);
+  font-weight: 600;
+}
+
+.socialLinks {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.socialIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.socialIcon:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #FFFFFF;
+  transform: translateY(-2px);
 }
 
 @media (max-width: 768px) {
-  .portraitCard {
-    width: 250px;
-    height: 380px;
+  .teamPageWrapper {
+    padding-top: clamp(7rem, 14vw, 8.5rem);
+    padding-bottom: 4rem;
   }
   .galleryViewport {
     height: 420px;
   }
-  .profileSurface {
-    margin: 2rem 1rem 0 1rem;
-    padding: 1.25rem;
+  .portraitCard {
+    width: 240px;
+    height: 350px;
+    margin-left: -120px;
+  }
+  .detailContainer {
+    padding: 1.5rem;
   }
 }

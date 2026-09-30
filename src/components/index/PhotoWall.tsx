@@ -63,11 +63,9 @@ export default function PhotoWall() {
   return (
     <section ref={containerRef} className={styles.section} id="experience">
       <div className={styles.innerContainer}>
-        {/* Section Header */}
+        {/* Section Header (Req 5: A Look Back) */}
         <div className={styles.header}>
-          <h2 className={styles.title}>
-            Moments From <span className={styles.titleAccent}>AMEYA &apos;25</span>
-          </h2>
+          <h2 className={styles.title}>A Look Back</h2>
           <p className={styles.subtitle}>
             A glimpse into the adrenaline, craft, and championship arenas of our previous national conclave.
           </p>

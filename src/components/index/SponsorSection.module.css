@@ -32,13 +32,13 @@
 }
 
 .title {
-  font-family: var(--font-display, "Playfair Display", Georgia, serif);
-  font-size: clamp(2.2rem, 4.2vw, 3.4rem);
-  font-weight: 800;
-  line-height: 1.05;
-  color: var(--steel-bright, #F2EDE8);
-  letter-spacing: -0.02em;
-  margin: 0 0 1rem;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.5vw, 3.1rem);
+  font-weight: 700;
+  line-height: var(--line-height-section, 1.1);
+  letter-spacing: var(--letter-spacing-section, -0.02em);
+  color: #FFFFFF;
+  margin: 0 0 0.75rem 0;
 }
 
 .subtitle {
