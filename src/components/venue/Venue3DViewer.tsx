@@ -29,106 +29,92 @@ export interface CameraPreset {
   lookAt: [number, number, number];
 }
 
-// Exactly the 6 core buildings forming the VVIT Central Complex
+// Exactly the central complex buildings: Central Block, Loyalty 1-4, H-Block, and OAT
 const campusBuildings: CampusBuilding[] = [
   {
-    id: "CENTRAL_BLOCK",
-    name: "Central Block & Main Auditorium",
+    id: "Central_Block",
+    name: "CENTRAL BLOCK",
     shortName: "Central Block",
     position: [0, 8, 0],
-    camPos: [0, 28, 36],
+    camPos: [0, 28, 38],
     lookAt: [0, 6, 0],
     photoCoords: { top: "45%", left: "48%" },
   },
   {
-    id: "LF_1",
-    name: "LF 1 — Academic Block",
-    shortName: "LF 1",
-    position: [28, 8, -22],
-    camPos: [44, 22, -6],
-    lookAt: [28, 6, -22],
-    photoCoords: { top: "35%", left: "60%" },
+    id: "Loyalty_1",
+    name: "LOYALTY 1",
+    shortName: "Loyalty 1",
+    position: [36, 8, -26],
+    camPos: [48, 24, -10],
+    lookAt: [36, 6, -26],
+    photoCoords: { top: "35%", left: "62%" },
   },
   {
-    id: "LF_2",
-    name: "LF 2 — Academic Block",
-    shortName: "LF 2",
-    position: [-28, 8, -22],
-    camPos: [-44, 22, -6],
-    lookAt: [-28, 6, -22],
+    id: "Loyalty_2",
+    name: "LOYALTY 2",
+    shortName: "Loyalty 2",
+    position: [36, 8, 26],
+    camPos: [48, 24, 42],
+    lookAt: [36, 6, 26],
+    photoCoords: { top: "58%", left: "62%" },
+  },
+  {
+    id: "Loyalty_3",
+    name: "LOYALTY 3",
+    shortName: "Loyalty 3",
+    position: [-36, 8, 26],
+    camPos: [-48, 24, 42],
+    lookAt: [-36, 6, 26],
+    photoCoords: { top: "58%", left: "36%" },
+  },
+  {
+    id: "Loyalty_4",
+    name: "LOYALTY 4",
+    shortName: "Loyalty 4",
+    position: [-36, 8, -26],
+    camPos: [-48, 24, -10],
+    lookAt: [-36, 6, -26],
     photoCoords: { top: "35%", left: "36%" },
   },
   {
-    id: "LF_3",
-    name: "LF 3 — Academic Block",
-    shortName: "LF 3",
-    position: [-28, 8, 22],
-    camPos: [-44, 22, 38],
-    lookAt: [-28, 6, 22],
-    photoCoords: { top: "58%", left: "38%" },
-  },
-  {
-    id: "LF_4",
-    name: "LF 4 — Academic Block",
-    shortName: "LF 4",
-    position: [28, 8, 22],
-    camPos: [44, 22, 38],
-    lookAt: [28, 6, 22],
-    photoCoords: { top: "58%", left: "60%" },
-  },
-  {
-    id: "H_BLOCK",
+    id: "H_Block",
     name: "H - BLOCK",
     shortName: "H - Block",
-    position: [0, 6, -58],
-    camPos: [0, 24, -28],
-    lookAt: [0, 6, -58],
-    photoCoords: { top: "25%", left: "48%" },
+    position: [0, 6, -66],
+    camPos: [0, 24, -36],
+    lookAt: [0, 6, -66],
+    photoCoords: { top: "24%", left: "48%" },
+  },
+  {
+    id: "OAT",
+    name: "OAT",
+    shortName: "OAT",
+    position: [0, 3, 38],
+    camPos: [0, 24, 62],
+    lookAt: [0, 3, 38],
+    photoCoords: { top: "66%", left: "48%" },
   },
 ];
 
+// Presets specified by user: Isometric 45°, Top View, Front View
 const cameraPresets: CameraPreset[] = [
   {
-    id: "overview",
+    id: "isometric",
     label: "Isometric 45°",
-    camPos: [0, 48, 60],
-    lookAt: [0, 4, -12],
+    camPos: [0, 56, 70],
+    lookAt: [0, 4, -8],
   },
   {
-    id: "central",
-    label: "Central Block",
-    camPos: [0, 28, 36],
-    lookAt: [0, 6, 0],
+    id: "topview",
+    label: "Top View",
+    camPos: [0, 108, 0.001],
+    lookAt: [0, 0, 0],
   },
   {
-    id: "hblock",
-    label: "H - Block",
-    camPos: [0, 24, -28],
-    lookAt: [0, 6, -58],
-  },
-  {
-    id: "lf1",
-    label: "LF 1",
-    camPos: [44, 22, -6],
-    lookAt: [28, 6, -22],
-  },
-  {
-    id: "lf2",
-    label: "LF 2",
-    camPos: [-44, 22, -6],
-    lookAt: [-28, 6, -22],
-  },
-  {
-    id: "lf3",
-    label: "LF 3",
-    camPos: [-44, 22, 38],
-    lookAt: [-28, 6, 22],
-  },
-  {
-    id: "lf4",
-    label: "LF 4",
-    camPos: [44, 22, 38],
-    lookAt: [28, 6, 22],
+    id: "frontview",
+    label: "Front View",
+    camPos: [0, 28, -96],
+    lookAt: [0, 6, -10],
   },
 ];
 
@@ -138,7 +124,7 @@ export default function Venue3DViewer() {
 
   const [activeTab, setActiveTab] = useState<"3d" | "photo">("3d");
   const [selectedBuilding, setSelectedBuilding] = useState<CampusBuilding>(campusBuildings[0]);
-  const [activePreset, setActivePreset] = useState<string>("overview");
+  const [activePreset, setActivePreset] = useState<string>("isometric");
   const [autoRotate, setAutoRotate] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hoveredBuilding, setHoveredBuilding] = useState<CampusBuilding | null>(null);
@@ -146,8 +132,8 @@ export default function Venue3DViewer() {
 
   const controlsRef = useRef<OrbitControls | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-  const targetCamPos = useRef<THREE.Vector3>(new THREE.Vector3(0, 48, 60));
-  const targetControlsTarget = useRef<THREE.Vector3>(new THREE.Vector3(0, 4, -12));
+  const targetCamPos = useRef<THREE.Vector3>(new THREE.Vector3(0, 56, 70));
+  const targetControlsTarget = useRef<THREE.Vector3>(new THREE.Vector3(0, 4, -8));
   const isTransitioning = useRef<boolean>(false);
   const highlightSpotlight = useRef<THREE.SpotLight | null>(null);
   const campusModelRef = useRef<THREE.Group | null>(null);
@@ -155,7 +141,7 @@ export default function Venue3DViewer() {
   // Focus Building Callback
   const handleFocusBuilding = useCallback((building: CampusBuilding) => {
     setSelectedBuilding(building);
-    setActivePreset(building.id.toLowerCase());
+    setActivePreset("");
 
     if (cameraRef.current && controlsRef.current && activeTab === "3d") {
       targetControlsTarget.current.set(...building.lookAt);
@@ -173,13 +159,9 @@ export default function Venue3DViewer() {
     }
   }, [activeTab]);
 
-  // Apply Camera Preset
+  // Apply Camera Preset (Isometric 45°, Top View, Front View)
   const handleApplyPreset = (preset: CameraPreset) => {
     setActivePreset(preset.id);
-    const match = campusBuildings.find((b) => b.id.toLowerCase() === preset.id.toLowerCase());
-    if (match) {
-      setSelectedBuilding(match);
-    }
     if (cameraRef.current && controlsRef.current) {
       targetCamPos.current.set(...preset.camPos);
       targetControlsTarget.current.set(...preset.lookAt);
@@ -187,7 +169,7 @@ export default function Venue3DViewer() {
     }
   };
 
-  // Reset Camera View
+  // Reset Camera View to Isometric 45°
   const handleResetCamera = () => {
     handleApplyPreset(cameraPresets[0]);
   };
@@ -204,10 +186,10 @@ export default function Venue3DViewer() {
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0a0a0d);
-    scene.fog = new THREE.FogExp2(0x0a0a0d, 0.005);
+    scene.fog = new THREE.FogExp2(0x0a0a0d, 0.0045);
 
     const camera = new THREE.PerspectiveCamera(38, width / height, 0.5, 600);
-    camera.position.set(0, 48, 60);
+    camera.position.set(0, 56, 70);
     cameraRef.current = camera;
 
     const renderer = new THREE.WebGLRenderer({
@@ -227,14 +209,14 @@ export default function Venue3DViewer() {
     const controls = new OrbitControls(camera, canvas);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.maxPolarAngle = Math.PI / 2.08;
+    controls.maxPolarAngle = Math.PI / 2.05;
     controls.minDistance = 15;
-    controls.maxDistance = 160;
-    controls.target.set(0, 4, -12);
+    controls.maxDistance = 180;
+    controls.target.set(0, 4, -8);
     controlsRef.current = controls;
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambientLight);
 
     const hemiLight = new THREE.HemisphereLight(0xdbeafe, 0x1e1e24, 0.85);
@@ -256,12 +238,12 @@ export default function Venue3DViewer() {
     scene.add(sunLight);
 
     // Accent directional fill from opposite side
-    const fillLight = new THREE.DirectionalLight(0x7dd3fc, 0.5);
+    const fillLight = new THREE.DirectionalLight(0x7dd3fc, 0.55);
     fillLight.position.set(-60, 40, -50);
     scene.add(fillLight);
 
     // Dynamic building highlight spotlight
-    const spot = new THREE.SpotLight(0xe51d25, 4.0, 75, Math.PI / 4.5, 0.35, 1.2);
+    const spot = new THREE.SpotLight(0xe51d25, 4.0, 80, Math.PI / 4.5, 0.35, 1.2);
     spot.position.set(0, 32, 0);
     spot.target.position.set(0, 8, 0);
     scene.add(spot);
@@ -270,7 +252,7 @@ export default function Venue3DViewer() {
 
     // Technical grid
     const grid = new THREE.GridHelper(180, 36, 0x331010, 0x141418);
-    grid.position.set(0, -0.05, -15);
+    grid.position.set(0, -0.05, -5);
     scene.add(grid);
 
     // Campus Root Group
@@ -307,6 +289,25 @@ export default function Venue3DViewer() {
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2();
 
+    const getMatchedBuilding = (hitObject: THREE.Object3D | null): CampusBuilding | null => {
+      let curr = hitObject;
+      while (curr && curr !== campusRoot && curr !== scene) {
+        const nameOrId = curr.userData?.buildingId || curr.name;
+        if (nameOrId) {
+          const lower = nameOrId.toLowerCase();
+          const match = campusBuildings.find(
+            (b) =>
+              b.id.toLowerCase() === lower ||
+              b.name.toLowerCase() === lower ||
+              lower.includes(b.id.toLowerCase())
+          );
+          if (match) return match;
+        }
+        curr = curr.parent;
+      }
+      return null;
+    };
+
     const handlePointerMove = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
       pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
@@ -318,18 +319,7 @@ export default function Venue3DViewer() {
 
       let foundBuilding: CampusBuilding | null = null;
       for (const hit of intersects) {
-        let curr: THREE.Object3D | null = hit.object;
-        while (curr && curr !== campusRoot && curr !== scene) {
-          if (curr.userData?.buildingId || curr.name) {
-            const bId = curr.userData?.buildingId || curr.name;
-            const match = campusBuildings.find((b) => b.id === bId);
-            if (match) {
-              foundBuilding = match;
-              break;
-            }
-          }
-          curr = curr.parent;
-        }
+        foundBuilding = getMatchedBuilding(hit.object);
         if (foundBuilding) break;
       }
 
@@ -342,15 +332,10 @@ export default function Venue3DViewer() {
       const intersects = raycaster.intersectObjects(campusRoot.children, true);
 
       for (const hit of intersects) {
-        let curr: THREE.Object3D | null = hit.object;
-        while (curr && curr !== campusRoot && curr !== scene) {
-          const bId = curr.userData?.buildingId || curr.name;
-          const match = campusBuildings.find((b) => b.id === bId);
-          if (match) {
-            handleFocusBuilding(match);
-            return;
-          }
-          curr = curr.parent;
+        const foundBuilding = getMatchedBuilding(hit.object);
+        if (foundBuilding) {
+          handleFocusBuilding(foundBuilding);
+          return;
         }
       }
     };
@@ -450,7 +435,7 @@ export default function Venue3DViewer() {
             <button
               type="button"
               onClick={handleResetCamera}
-              title="Reset Camera View"
+              title="Reset to Isometric View"
               className={styles.actionBtn}
             >
               <RotateCcw size={12} />
@@ -460,11 +445,11 @@ export default function Venue3DViewer() {
         )}
       </div>
 
-      {/* Preset Camera Viewpoints Bar (Upper Right) */}
+      {/* Preset Camera Viewpoints Bar: Isometric 45°, Top View, Front View */}
       {activeTab === "3d" && (
         <div className={styles.presetsBar}>
           <span style={{ fontSize: "0.65rem", fontFamily: "var(--font-mono)", color: "#71717a", padding: "4px 6px" }}>
-            PRESETS:
+            VIEW:
           </span>
           {cameraPresets.map((preset) => (
             <button
@@ -479,7 +464,7 @@ export default function Venue3DViewer() {
         </div>
       )}
 
-      {/* Main View Area */}
+      {/* Main View Area (Unobscured 3D Viewport) */}
       <div className={styles.viewportArea}>
         {activeTab === "3d" ? (
           <>
@@ -489,12 +474,12 @@ export default function Venue3DViewer() {
             {isLoading && (
               <div className={styles.loadingOverlay}>
                 <div className={styles.loadingSpinner} />
-                <div className={styles.loadingTitle}>GENERATING CENTRAL COMPLEX 3D MODEL</div>
-                <div className={styles.loadingSub}>Loading Central Block, LF 1–4 &amp; H - Block architecture...</div>
+                <div className={styles.loadingTitle}>GENERATING VVIT CENTRAL COMPLEX 3D MODEL</div>
+                <div className={styles.loadingSub}>Loading Central Block, Loyalty 1–4, H-Block &amp; OAT...</div>
               </div>
             )}
 
-            {/* Hover Tooltip HUD */}
+            {/* Minimal Hover Tooltip HUD */}
             {hoveredBuilding && (
               <div
                 className={styles.hoverTooltip}
@@ -517,7 +502,7 @@ export default function Venue3DViewer() {
               style={{ objectFit: "cover" }}
               priority
             />
-            {/* Hotspots overlay on 2D Aerial photo (6 Core Buildings Only) */}
+            {/* Hotspots overlay on 2D Aerial photo (Central Complex Only) */}
             {campusBuildings.map((building) => {
               if (!building.photoCoords) return null;
               const isSelected = selectedBuilding.id === building.id;
@@ -550,7 +535,7 @@ export default function Venue3DViewer() {
         )}
       </div>
 
-      {/* Quick Navigation Location Pills Strip (Bottom: Exactly 6 Core Buildings) */}
+      {/* Quick Navigation Location Pills Strip (Bottom: Central Block, Loyalty 1-4, H-Block, OAT) */}
       <div className={styles.locationStrip}>
         {campusBuildings.map((building) => {
           const isSelected = selectedBuilding.id === building.id;

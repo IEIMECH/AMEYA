@@ -1,4 +1,4 @@
-﻿import { Bus, Train, Plane } from "lucide-react";
+import { Bus, Train, Plane } from "lucide-react";
 import Venue3DViewer from "@/components/venue/Venue3DViewer";
 import styles from "./page.module.css";
 
@@ -12,38 +12,38 @@ export default function VenuePage() {
     {
       name: "MAIN AUDITORIUM",
       zone: "Central Block",
+      capacity: "800",
+      events: "Keynote • Inauguration • Valedictory Gala",
+    },
+    {
+      name: "OPEN-AIR THEATRE (OAT)",
+      zone: "OAT Stage & Arena",
+      capacity: "1,200",
+      events: "Cultural Showcases • Acoustic Sessions • Prize Distribution",
+    },
+    {
+      name: "CENTRAL REGISTRATION CONCOURSE",
+      zone: "H - Block",
       capacity: "500",
-      events: "Keynote · Inauguration · Valedictory",
+      events: "Fest Helpdesk • Delegate Check-In • Refreshments",
     },
     {
-      name: "KINETIC TRACK ARENA",
-      zone: "Mechanical Block",
+      name: "IEI SAME OPERATIONS & DRAFTING",
+      zone: "Loyalty 3",
       capacity: "350",
-      events: "RC Car Challenge · Speed Race",
+      events: "Engineering Drawing • Design Studio • Fest Coordination",
     },
     {
-      name: "COMPUTER SIMULATION LAB",
-      zone: "Technology Tower",
-      capacity: "120",
-      events: "AutoCAD Championship",
-    },
-    {
-      name: "DESIGN & DRAFTING STUDIO",
-      zone: "Design Block",
-      capacity: "80",
-      events: "Engineering Drawing Competition",
-    },
-    {
-      name: "MECHANICAL MACHINE SHOP",
-      zone: "Workshop Block",
-      capacity: "200",
-      events: "Assemble & Disassemble · Tools Identification",
-    },
-    {
-      name: "MAKERSPACE & DEMO ARENA",
-      zone: "Central Courtyard",
+      name: "TECHNICAL PRESENTATION SUITE",
+      zone: "Loyalty 1",
       capacity: "400",
-      events: "Treasure Hunt · Interactive Exhibits",
+      events: "Paper Presentations • Technical Symposium",
+    },
+    {
+      name: "COMPUTATIONAL & CAD LABS",
+      zone: "Loyalty 4",
+      capacity: "250",
+      events: "AutoCAD Championship • Digital Modeling",
     },
   ];
 
@@ -56,7 +56,7 @@ export default function VenuePage() {
             Venue &amp; <span className={styles.titleAccent}>Interactive 3D Map</span>
           </h1>
           <p className={styles.sub}>
-            Explore the VVITU Nambur campus in 3D, locate championship arenas, and plan your route.
+            Explore the VVIT Central Campus Complex in 3D, locate championship arenas, and plan your route.
           </p>
         </header>
 

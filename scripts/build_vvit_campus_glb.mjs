@@ -13,13 +13,13 @@ global.FileReader = class FileReader {
   }
 };
 
-console.log("Building VVIT Central Complex 3D Model (Focused 6-Building Architecture)...");
+console.log("Generating VVIT Central Complex 3D Model with Inward-Facing Loyalty Blocks & Straight OAT...");
 
 const scene = new THREE.Scene();
-scene.name = "VVIT_Central_Complex_Scene";
+scene.name = "VVIT_Central_Campus_Complex";
 
 // =========================================================================
-// 1. MATERIALS (Architectural Visualization Palette)
+// 1. MATERIALS (Curated Architectural Palette)
 // =========================================================================
 const matBrick = new THREE.MeshStandardMaterial({
   color: 0xb54334, // Terracotta red brick
@@ -87,10 +87,17 @@ const matPavement = new THREE.MeshStandardMaterial({
 });
 
 const matPlaza = new THREE.MeshStandardMaterial({
-  color: 0x4a4a52,
+  color: 0x44444c,
   roughness: 0.7,
   metalness: 0.12,
   name: "Mat_Entrance_Plaza"
+});
+
+const matStage = new THREE.MeshStandardMaterial({
+  color: 0x2e2e34,
+  roughness: 0.6,
+  metalness: 0.2,
+  name: "Mat_Stage_Wood"
 });
 
 const matTreeTrunk = new THREE.MeshStandardMaterial({
@@ -130,17 +137,13 @@ function createTree(x, z, scale = 1) {
   trunk.position.y = 1.1 * scale;
   tree.add(trunk);
   
-  const foliage1 = createCylinder(0, 1.6 * scale, 2.2 * scale, 7, matTreeLeaves, "Foliage_1");
-  foliage1.position.y = 2.6 * scale;
+  const foliage1 = createCylinder(0, 1.5 * scale, 2.0 * scale, 7, matTreeLeaves, "Foliage_1");
+  foliage1.position.y = 2.5 * scale;
   tree.add(foliage1);
   
-  const foliage2 = createCylinder(0, 1.2 * scale, 1.9 * scale, 7, matTreeLeaves, "Foliage_2");
-  foliage2.position.y = 3.6 * scale;
+  const foliage2 = createCylinder(0, 1.1 * scale, 1.7 * scale, 7, matTreeLeaves, "Foliage_2");
+  foliage2.position.y = 3.4 * scale;
   tree.add(foliage2);
-
-  const foliage3 = createCylinder(0, 0.7 * scale, 1.5 * scale, 6, matTreeLeaves, "Foliage_3");
-  foliage3.position.y = 4.4 * scale;
-  tree.add(foliage3);
 
   tree.position.set(x, 0, z);
   return tree;
@@ -168,74 +171,68 @@ function createSolarArray(w, d, angleDeg = 15) {
 }
 
 // =========================================================================
-// 2. CENTRAL COMPLEX TERRAIN PLINTH & PLAZA
+// 2. GROUND & WALKWAYS (Clean Architectural Plinth)
 // =========================================================================
-const campusGround = new THREE.Group();
-campusGround.name = "CAMPUS_GROUND";
+const groundGroup = new THREE.Group();
+groundGroup.name = "Ground";
 
-// Base terrain plinth (150m x 170m) sized precisely for the 6 buildings
-const groundMesh = createBox(150, 1.5, 170, new THREE.MeshStandardMaterial({
+// Base terrain plinth (135m x 175m)
+const basePlinth = createBox(135, 1.5, 175, new THREE.MeshStandardMaterial({
   color: 0x121215,
   roughness: 0.95
-}), "Base_Terrain");
-groundMesh.position.y = -0.75;
-groundMesh.position.z = -15;
-campusGround.add(groundMesh);
+}), "Base_Plinth");
+basePlinth.position.set(0, -0.75, -5);
+groundGroup.add(basePlinth);
 
-// Central manicured lawn (120m x 140m)
-const centralLawn = createBox(130, 0.1, 150, matLawn, "Central_Complex_Lawn");
-centralLawn.position.set(0, 0.05, -15);
-campusGround.add(centralLawn);
+// Manicured campus lawn
+const lawn = createBox(125, 0.1, 165, matLawn, "Campus_Lawn");
+lawn.position.set(0, 0.05, -5);
+groundGroup.add(lawn);
 
-// Grand Entrance Plaza between Central Block and H-Block (from z = -16 to z = -48)
-const entrancePlaza = createBox(46, 0.16, 32, matPlaza, "Entrance_Plaza");
-entrancePlaza.position.set(0, 0.08, -36);
-campusGround.add(entrancePlaza);
+scene.add(groundGroup);
 
-// Peripheral loop road
-const northRoad = createBox(110, 0.15, 10, matRoad, "North_Road");
-northRoad.position.set(0, 0.08, -75);
-campusGround.add(northRoad);
+const walkwaysGroup = new THREE.Group();
+walkwaysGroup.name = "Walkways";
 
-const southRoad = createBox(110, 0.15, 10, matRoad, "South_Road");
-southRoad.position.set(0, 0.08, 48);
-campusGround.add(southRoad);
+// OPEN PLAZA between Central Block and H - BLOCK (from z = -17 to z = -56)
+const openPlaza = createBox(50, 0.15, 38, matPlaza, "Open_Plaza");
+openPlaza.position.set(0, 0.08, -37);
+walkwaysGroup.add(openPlaza);
 
-const westRoad = createBox(10, 0.15, 130, matRoad, "West_Road");
-westRoad.position.set(-60, 0.08, -14);
-campusGround.add(westRoad);
+// Courtyard paved crossways surrounding Central Block
+const quadPathNS = createBox(8, 0.16, 50, matPavement, "Quad_Path_NS");
+quadPathNS.position.set(0, 0.08, 0);
+walkwaysGroup.add(quadPathNS);
 
-const eastRoad = createBox(10, 0.15, 130, matRoad, "East_Road");
-eastRoad.position.set(60, 0.08, -14);
-campusGround.add(eastRoad);
+const quadPathEW = createBox(76, 0.16, 8, matPavement, "Quad_Path_EW");
+quadPathEW.position.set(0, 0.08, 0);
+walkwaysGroup.add(quadPathEW);
 
-// Courtyard paved crossways linking Central Block to LF blocks
-const quadPathNS = createBox(7, 0.18, 70, matPavement, "Quad_Path_NS");
-quadPathNS.position.set(0, 0.1, 8);
-campusGround.add(quadPathNS);
+// Perimeter access loop
+const northPave = createBox(90, 0.15, 8, matRoad, "North_Access_Road");
+northPave.position.set(0, 0.08, -80);
+walkwaysGroup.add(northPave);
 
-const quadPathEW = createBox(76, 0.18, 7, matPavement, "Quad_Path_EW");
-quadPathEW.position.set(0, 0.1, 0);
-campusGround.add(quadPathEW);
+const southPave = createBox(90, 0.15, 8, matRoad, "South_Access_Road");
+southPave.position.set(0, 0.08, 70);
+walkwaysGroup.add(southPave);
 
-scene.add(campusGround);
+scene.add(walkwaysGroup);
 
 // =========================================================================
-// 3. CENTRAL BLOCK (Exact Square Geometry, 4 Stories)
+// 3. CENTRAL BLOCK (Exact Square Building, 34m x 34m, 4 Stories)
 // =========================================================================
 const centralBlock = new THREE.Group();
-centralBlock.name = "CENTRAL_BLOCK";
+centralBlock.name = "Central_Block";
 centralBlock.userData = {
   buildingId: "CENTRAL_BLOCK",
-  name: "Central Block & Main Auditorium",
-  zone: "Central Academic Complex",
+  name: "CENTRAL BLOCK",
+  zone: "Central Academic Core",
   floors: 4,
-  description: "Square administrative and central plenary complex. Houses the VVIT Main Plenary Auditorium, Vice-Chancellor chambers, central library, and inaugural arenas.",
-  capacity: "800 Seats",
-  events: "Inaugural Ceremony, Keynote Plenary, Valedictory Gala"
+  description: "Exact square administrative nucleus and plenary auditorium. Sits at the geometric center of the complex."
 };
 
-const CB_SIZE = 32;
+const CB_SIZE = 34; // Exact square footprint
 const CB_FLOOR_H = 4.2;
 
 for (let f = 0; f < 4; f++) {
@@ -243,39 +240,41 @@ for (let f = 0; f < 4; f++) {
   floorGroup.name = `Floor_${f}`;
   const y = f * CB_FLOOR_H + CB_FLOOR_H / 2;
   
-  // Core brick block
-  const core = createBox(CB_SIZE, CB_FLOOR_H - 0.4, CB_SIZE, matBrick, `Core_F${f}`);
+  // Square brick core
+  const core = createBox(CB_SIZE, CB_FLOOR_H - 0.4, CB_SIZE, matBrick, `CB_Core_F${f}`);
   core.position.y = y;
   floorGroup.add(core);
 
-  // Floor slab / white cornice band
-  const slab = createBox(CB_SIZE + 0.8, 0.4, CB_SIZE + 0.8, matWhiteTrim, `Slab_F${f}`);
+  // White floor slab band
+  const slab = createBox(CB_SIZE + 0.8, 0.4, CB_SIZE + 0.8, matWhiteTrim, `CB_Slab_F${f}`);
   slab.position.y = f * CB_FLOOR_H + 0.2;
   floorGroup.add(slab);
 
-  // Window bands on East & West facades
-  const winEast = createBox(0.4, CB_FLOOR_H * 0.45, CB_SIZE * 0.75, matGlass, `Win_East_F${f}`);
+  // Facade ribbon windows on East (+X) and West (-X)
+  const winEast = createBox(0.4, CB_FLOOR_H * 0.45, CB_SIZE * 0.75, matGlass, `CB_WinE_F${f}`);
   winEast.position.set(CB_SIZE / 2 + 0.1, y, 0);
   floorGroup.add(winEast);
 
-  const winWest = createBox(0.4, CB_FLOOR_H * 0.45, CB_SIZE * 0.75, matGlass, `Win_West_F${f}`);
+  const winWest = createBox(0.4, CB_FLOOR_H * 0.45, CB_SIZE * 0.75, matGlass, `CB_WinW_F${f}`);
   winWest.position.set(-CB_SIZE / 2 - 0.1, y, 0);
   floorGroup.add(winWest);
 
-  // South facade (+Z) window bands
-  const winSouth = createBox(CB_SIZE * 0.75, CB_FLOOR_H * 0.45, 0.4, matGlass, `Win_South_F${f}`);
-  winSouth.position.set(0, y, CB_SIZE / 2 + 0.1);
-  floorGroup.add(winSouth);
-
-  // North facade (-Z) upper floor windows flanking the entrance portal
+  // Facade windows on North (-Z, flanking entrance)
   if (f >= 1) {
-    const curtainLeft = createBox(CB_SIZE * 0.26, CB_FLOOR_H * 0.65, 0.4, matGlass, `Glass_N_Left_F${f}`);
+    const curtainLeft = createBox(CB_SIZE * 0.28, CB_FLOOR_H * 0.65, 0.4, matGlass, `CB_WinN_L_F${f}`);
     curtainLeft.position.set(-CB_SIZE * 0.3, y, -CB_SIZE / 2 - 0.1);
     floorGroup.add(curtainLeft);
 
-    const curtainRight = createBox(CB_SIZE * 0.26, CB_FLOOR_H * 0.65, 0.4, matGlass, `Glass_N_Right_F${f}`);
+    const curtainRight = createBox(CB_SIZE * 0.28, CB_FLOOR_H * 0.65, 0.4, matGlass, `CB_WinN_R_F${f}`);
     curtainRight.position.set(CB_SIZE * 0.3, y, -CB_SIZE / 2 - 0.1);
     floorGroup.add(curtainRight);
+  }
+
+  // Facade windows on South (+Z, above stage connection)
+  if (f >= 1) {
+    const winSouth = createBox(CB_SIZE * 0.75, CB_FLOOR_H * 0.45, 0.4, matGlass, `CB_WinS_F${f}`);
+    winSouth.position.set(0, y, CB_SIZE / 2 + 0.1);
+    floorGroup.add(winSouth);
   }
 
   centralBlock.add(floorGroup);
@@ -284,11 +283,11 @@ for (let f = 0; f < 4; f++) {
 // Rooftop parapet & skylight
 const cbRoof = new THREE.Group();
 cbRoof.name = "Roof_Structure";
-const roofBase = createBox(CB_SIZE + 0.4, 0.9, CB_SIZE + 0.4, matRoofDark, "Roof_Slab");
+const roofBase = createBox(CB_SIZE + 0.4, 0.9, CB_SIZE + 0.4, matRoofDark, "CB_Roof_Slab");
 roofBase.position.y = 4 * CB_FLOOR_H + 0.45;
 cbRoof.add(roofBase);
 
-// Curved white canopy / vaulted skylight structure
+// Curved white skylight canopy
 const skylightGeom = new THREE.CylinderGeometry(5.5, 5.5, 14, 16, 1, false, 0, Math.PI);
 const skylight = new THREE.Mesh(skylightGeom, matWhiteTrim);
 skylight.rotation.z = Math.PI / 2;
@@ -297,17 +296,16 @@ skylight.position.set(0, 4 * CB_FLOOR_H + 0.9, 0);
 cbRoof.add(skylight);
 
 // White penthouse elevator room
-const penthouse = createBox(8, 3.2, 8, matWhiteTrim, "Elevator_Penthouse");
-penthouse.position.set(6, 4 * CB_FLOOR_H + 2.5, 6);
+const penthouse = createBox(8, 3.2, 8, matWhiteTrim, "CB_Elevator_Penthouse");
+penthouse.position.set(7, 4 * CB_FLOOR_H + 2.5, 7);
 cbRoof.add(penthouse);
 
 centralBlock.add(cbRoof);
 
-// MAIN ENTRANCE PORTAL on North Facade (-Z) facing H - BLOCK!
+// MAIN ENTRANCE PORTAL on North Facade (-Z) facing H - BLOCK across Open Plaza
 const portal = new THREE.Group();
 portal.name = "Central_Main_Entrance";
 
-// Portico monumental white frame
 const portalPillars = createBox(11, 11, 3.2, matWhiteTrim, "Portal_Frame");
 portalPillars.position.set(0, 5.5, -CB_SIZE / 2 - 1.6);
 portal.add(portalPillars);
@@ -316,7 +314,7 @@ const portalGlass = createBox(7, 8, 3.4, matGlass, "Portal_Glass");
 portalGlass.position.set(0, 4.5, -CB_SIZE / 2 - 1.65);
 portal.add(portalGlass);
 
-// Entrance stair steps descending to the entrance plaza towards H - Block
+// Entrance stair steps descending to the open plaza
 for (let s = 0; s < 4; s++) {
   const step = createBox(13 - s * 0.8, 0.25, 1.2, matConcrete, `Step_${s}`);
   step.position.set(0, 0.125 + s * 0.25, -CB_SIZE / 2 - 3.6 - s * 0.8);
@@ -324,30 +322,118 @@ for (let s = 0; s < 4; s++) {
 }
 
 centralBlock.add(portal);
+
+// Rear stage portal on South Facade (+Z) connecting directly into the OAT Stage
+const rearPortal = createBox(12, 6, 1.5, matWhiteTrim, "Central_Rear_Portal");
+rearPortal.position.set(0, 3, CB_SIZE / 2 + 0.75);
+centralBlock.add(rearPortal);
+
 centralBlock.position.set(0, 0, 0);
 scene.add(centralBlock);
 
 // =========================================================================
-// 4. H - BLOCK (Directly Opposite Central Block's Main Entrance)
+// 4. OAT STAGE (Attached Directly to Back of Central Block)
+// =========================================================================
+const oatStage = new THREE.Group();
+oatStage.name = "OAT_Stage";
+oatStage.userData = {
+  buildingId: "OAT",
+  name: "OAT STAGE",
+  description: "Performance stage attached directly to the rear of Central Block."
+};
+
+const STAGE_W = 24;
+const STAGE_D = 8;
+const STAGE_H = 1.2;
+
+// Elevated stage platform
+const stagePlatform = createBox(STAGE_W, STAGE_H, STAGE_D, matStage, "Stage_Platform");
+stagePlatform.position.set(0, STAGE_H / 2, CB_SIZE / 2 + STAGE_D / 2);
+oatStage.add(stagePlatform);
+
+// Stage concrete base foundation
+const stageBase = createBox(STAGE_W + 0.8, 0.4, STAGE_D + 0.8, matConcrete, "Stage_Base");
+stageBase.position.set(0, 0.2, CB_SIZE / 2 + STAGE_D / 2);
+oatStage.add(stageBase);
+
+// Stage backdrop columns flanking the rear entrance
+const stageColL = createBox(1.2, 5.5, 1.2, matWhiteTrim, "Stage_Col_L");
+stageColL.position.set(-STAGE_W / 2 + 1, 2.75, CB_SIZE / 2 + 1);
+oatStage.add(stageColL);
+
+const stageColR = createBox(1.2, 5.5, 1.2, matWhiteTrim, "Stage_Col_R");
+stageColR.position.set(STAGE_W / 2 - 1, 2.75, CB_SIZE / 2 + 1);
+oatStage.add(stageColR);
+
+scene.add(oatStage);
+
+// =========================================================================
+// 5. STRAIGHT OAT (Open-Air Theatre Stepped Seating Aligned with Central Block)
+// =========================================================================
+const oat = new THREE.Group();
+oat.name = "OAT";
+oat.userData = {
+  buildingId: "OAT",
+  name: "OAT",
+  description: "Straight Open-Air Theatre with stepped seating, aligned directly behind Central Block and stage."
+};
+
+const OAT_W = 32;
+const NUM_TIERS = 8;
+const TIER_DEPTH = 3.6;
+const TIER_RISE = 0.45;
+const OAT_START_Z = CB_SIZE / 2 + STAGE_D + 2; // Starts right behind the stage
+
+// 8 Straight terraced seating tiers
+for (let t = 0; t < NUM_TIERS; t++) {
+  const tierZ = OAT_START_Z + t * TIER_DEPTH + TIER_DEPTH / 2;
+  const tierY = (t + 1) * TIER_RISE;
+  
+  // Left seating bank
+  const seatL = createBox((OAT_W - 4) / 2, tierY, TIER_DEPTH, matBrick, `OAT_Tier_${t}_L`);
+  seatL.position.set(-(OAT_W - 4) / 4 - 2, tierY / 2, tierZ);
+  oat.add(seatL);
+
+  const seatCapL = createBox((OAT_W - 4) / 2 + 0.2, 0.15, TIER_DEPTH + 0.2, matWhiteTrim, `OAT_Cap_${t}_L`);
+  seatCapL.position.set(-(OAT_W - 4) / 4 - 2, tierY + 0.075, tierZ);
+  oat.add(seatCapL);
+
+  // Right seating bank
+  const seatR = createBox((OAT_W - 4) / 2, tierY, TIER_DEPTH, matBrick, `OAT_Tier_${t}_R`);
+  seatR.position.set((OAT_W - 4) / 4 + 2, tierY / 2, tierZ);
+  oat.add(seatR);
+
+  const seatCapR = createBox((OAT_W - 4) / 2 + 0.2, 0.15, TIER_DEPTH + 0.2, matWhiteTrim, `OAT_Cap_${t}_R`);
+  seatCapR.position.set((OAT_W - 4) / 4 + 2, tierY + 0.075, tierZ);
+  oat.add(seatCapR);
+
+  // Central stepped aisle stairs
+  const stair = createBox(3.6, (t + 1) * TIER_RISE * 0.9, TIER_DEPTH, matConcrete, `OAT_Stair_${t}`);
+  stair.position.set(0, ((t + 1) * TIER_RISE * 0.9) / 2, tierZ);
+  oat.add(stair);
+}
+
+scene.add(oat);
+
+// =========================================================================
+// 6. H - BLOCK (Directly Opposite Central Block's Main Entrance)
 // =========================================================================
 const hBlock = new THREE.Group();
-hBlock.name = "H_BLOCK";
+hBlock.name = "H_Block";
 hBlock.userData = {
   buildingId: "H_BLOCK",
   name: "H - BLOCK",
-  zone: "Northern Academic & Services Sector",
+  zone: "North Academic Sector",
   floors: 3,
-  description: "Northern academic and student services block directly opposite Central Block's main entrance. Features open event halls, hospitality suites, and curved roof canopy.",
-  capacity: "500 Occupants",
-  events: "Technical Registration, Help Desk, Refreshment Concourse"
+  description: "Northern academic and student services block directly opposite Central Block's main entrance across the Open Plaza."
 };
 
-const HB_W = 52;
+const HB_W = 54;
 const HB_D = 20;
 const HB_H = 13.5;
 
 // Main 3-story core
-const hbCore = createBox(HB_W, HB_H, HB_D, matBrick, "H_Block_Core");
+const hbCore = createBox(HB_W, HB_H, HB_D, matBrick, "HB_Core");
 hbCore.position.set(0, HB_H / 2, 0);
 hBlock.add(hbCore);
 
@@ -376,30 +462,33 @@ for (let f = 0; f < 3; f++) {
   hBlock.add(winSouth);
 }
 
-// Front entrance portico facing Central Block across the entrance plaza
+// Front entrance portico facing Central Block across the Open Plaza
 const hbPortico = createBox(10, 6, 3, matWhiteTrim, "HB_Portico");
 hbPortico.position.set(0, 3, HB_D / 2 + 1.5);
 hBlock.add(hbPortico);
 
-// Position H - BLOCK directly opposite Central Block's Main Entrance (z = -58)
-hBlock.position.set(0, 0, -58);
+// Position H - BLOCK opposite Central Block's entrance (z = -66)
+hBlock.position.set(0, 0, -66);
 scene.add(hBlock);
 
 // =========================================================================
-// 5. FOUR L-SHAPED BUILDINGS (LF 1, LF 2, LF 3, LF 4)
-//    WITH OUTWARD-FACING L-GEOMETRY
+// 7. MASTER L-SHAPED LOYALTY BUILDING GENERATOR
+//    (ALL 4 LOYALTY BLOCKS MUST FACE INWARD TOWARD CENTRAL BLOCK)
 // =========================================================================
-// Each LF building is an L-shaped structure:
-// Wing A (Long arm): length 36m, width 13m, height 16.8m (4 stories)
-// Wing B (Short arm): length 24m, width 13m, height 16.8m (4 stories)
+// Master L-shape geometry:
 // In local coordinates:
-// Corner elbow is at (0, 0).
-// Wing A extends along +X, Wing B extends along +Z.
-// The open / concave side faces (+X, +Z).
-// By rotating each LF building, its open side faces OUTWARD into the world,
-// while its elbow points inward towards the Central Block.
+// Outer corner/elbow is at (0, 0, 0).
+// Wing A extends along +X (length 30m, width 13m).
+// Wing B extends along +Z (length 32m, width 13m).
+// The inner concave corner is at (13, 0, 13).
+// The open nook of the L opens toward (+X, +Z).
+// By placing the outer elbow at the outer quadrant corner and rotating:
+// - Loyalty 4 (Upper-Left): rotY = 0 -> open nook faces (+X, +Z) = Southeast (directly toward Central Block!)
+// - Loyalty 1 (Upper-Right): rotY = 270 (-90) -> open nook faces (-X, +Z) = Southwest (directly toward Central Block!)
+// - Loyalty 2 (Lower-Right): rotY = 180 -> open nook faces (-X, -Z) = Northwest (directly toward Central Block!)
+// - Loyalty 3 (Lower-Left): rotY = 90 -> open nook faces (+X, -Z) = Northeast (directly toward Central Block!)
 
-function createLFBuilding(id, name, posX, posZ, rotYDeg) {
+function createMasterLoyaltyBlock(id, name, posX, posZ, rotYDeg) {
   const lf = new THREE.Group();
   lf.name = id;
   lf.userData = {
@@ -407,14 +496,12 @@ function createLFBuilding(id, name, posX, posZ, rotYDeg) {
     name: name,
     zone: "Central Academic Quadrant",
     floors: 4,
-    description: "4-Story L-shaped academic block with outward-facing wings. Features smart lecture halls, departmental laboratories, and rooftop solar microgrid arrays.",
-    capacity: "600 Students",
-    events: "Technical Paper Presentation, PPT Championships, CAD Arenas"
+    description: "4-Story L-shaped academic block facing inward toward the Central Block."
   };
 
-  const WING_A_L = 36;
-  const WING_W = 13;
-  const WING_B_L = 24;
+  const WING_A_L = 30; // Wing extending along X
+  const WING_W = 13;   // Standard wing thickness
+  const WING_B_L = 32; // Wing extending along Z
   const FLOOR_H = 4.2;
 
   for (let f = 0; f < 4; f++) {
@@ -422,68 +509,72 @@ function createLFBuilding(id, name, posX, posZ, rotYDeg) {
     floorGroup.name = `Floor_${f}`;
     const y = f * FLOOR_H + FLOOR_H / 2;
 
-    // Wing A: Extends along +X from elbow (0, 0) to (WING_A_L, 0)
+    // Wing A: from x = 0 to x = WING_A_L, z = [0, WING_W]
     const wingA = createBox(WING_A_L, FLOOR_H - 0.4, WING_W, matBrick, `WingA_F${f}`);
-    wingA.position.set(WING_A_L / 2, y, 0);
+    wingA.position.set(WING_A_L / 2, y, WING_W / 2);
     floorGroup.add(wingA);
 
-    // Wing B: Extends along +Z from elbow (0, 0) to (0, WING_B_L)
+    // Wing B: from x = [0, WING_W], z = [0, WING_B_L]
     const wingB = createBox(WING_W, FLOOR_H - 0.4, WING_B_L, matBrick, `WingB_F${f}`);
-    wingB.position.set(0, y, WING_B_L / 2);
+    wingB.position.set(WING_W / 2, y, WING_B_L / 2);
     floorGroup.add(wingB);
 
-    // Continuous white floor slabs
+    // Continuous floor slabs
     const slabA = createBox(WING_A_L + 0.6, 0.4, WING_W + 0.6, matWhiteTrim, `SlabA_F${f}`);
-    slabA.position.set(WING_A_L / 2, f * FLOOR_H + 0.2, 0);
+    slabA.position.set(WING_A_L / 2, f * FLOOR_H + 0.2, WING_W / 2);
     floorGroup.add(slabA);
 
     const slabB = createBox(WING_W + 0.6, 0.4, WING_B_L + 0.6, matWhiteTrim, `SlabB_F${f}`);
-    slabB.position.set(0, f * FLOOR_H + 0.2, WING_B_L / 2);
+    slabB.position.set(WING_W / 2, f * FLOOR_H + 0.2, WING_B_L / 2);
     floorGroup.add(slabB);
 
-    // Courtyard open balconies along the inner elbow
+    // Balcony colonnade on inside courtyard face (facing Central Block)
     const balconyA = createBox(WING_A_L - WING_W, FLOOR_H * 0.35, 1.2, matWhiteTrim, `BalconyA_F${f}`);
-    balconyA.position.set(WING_A_L / 2 + WING_W / 4, y - FLOOR_H * 0.2, WING_W / 2 + 0.6);
+    balconyA.position.set(WING_A_L / 2 + WING_W / 4, y - FLOOR_H * 0.2, WING_W + 0.6);
     floorGroup.add(balconyA);
 
-    // Outer windows
-    const winA = createBox(WING_A_L * 0.75, FLOOR_H * 0.45, 0.3, matGlass, `WinA_F${f}`);
-    winA.position.set(WING_A_L / 2, y, -WING_W / 2 - 0.15);
-    floorGroup.add(winA);
+    const balconyB = createBox(1.2, FLOOR_H * 0.35, WING_B_L - WING_W, matWhiteTrim, `BalconyB_F${f}`);
+    balconyB.position.set(WING_W + 0.6, y - FLOOR_H * 0.2, WING_B_L / 2 + WING_W / 4);
+    floorGroup.add(balconyB);
 
-    const winB = createBox(0.3, FLOOR_H * 0.45, WING_B_L * 0.75, matGlass, `WinB_F${f}`);
-    winB.position.set(-WING_W / 2 - 0.15, y, WING_B_L / 2);
-    floorGroup.add(winB);
+    // Outer facade ribbon windows
+    const winOuterA = createBox(WING_A_L * 0.8, FLOOR_H * 0.45, 0.3, matGlass, `WinOuterA_F${f}`);
+    winOuterA.position.set(WING_A_L / 2, y, -0.15);
+    floorGroup.add(winOuterA);
+
+    const winOuterB = createBox(0.3, FLOOR_H * 0.45, WING_B_L * 0.8, matGlass, `WinOuterB_F${f}`);
+    winOuterB.position.set(-0.15, y, WING_B_L / 2);
+    floorGroup.add(winOuterB);
 
     lf.add(floorGroup);
   }
 
-  // Rooftop slabs & solar arrays
+  // Roof slabs & solar panel arrays
   const roof = new THREE.Group();
   roof.name = "Roof_Structure";
   const rY = 4 * FLOOR_H + 0.35;
 
   const roofSlabA = createBox(WING_A_L + 0.4, 0.7, WING_W + 0.4, matRoofDark, "Roof_SlabA");
-  roofSlabA.position.set(WING_A_L / 2, rY, 0);
+  roofSlabA.position.set(WING_A_L / 2, rY, WING_W / 2);
   roof.add(roofSlabA);
 
   const roofSlabB = createBox(WING_W + 0.4, 0.7, WING_B_L + 0.4, matRoofDark, "Roof_SlabB");
-  roofSlabB.position.set(0, rY, WING_B_L / 2);
+  roofSlabB.position.set(WING_W / 2, rY, WING_B_L / 2);
   roof.add(roofSlabB);
 
-  // Solar arrays on Wing A and Wing B
+  // Solar arrays along both wings
   const solarsA = createSolarArray(WING_A_L * 0.65, WING_W * 0.6, 18);
-  solarsA.position.set(WING_A_L / 2, rY + 0.35, 0);
+  solarsA.position.set(WING_A_L / 2 + 2, rY + 0.35, WING_W / 2);
   roof.add(solarsA);
 
   const solarsB = createSolarArray(WING_W * 0.6, WING_B_L * 0.65, 18);
-  solarsB.position.set(0, rY + 0.35, WING_B_L / 2);
+  solarsB.position.set(WING_W / 2, rY + 0.35, WING_B_L / 2 + 2);
   solarsB.rotation.y = Math.PI / 2;
   roof.add(solarsB);
 
-  // Stair tower at corner elbow
-  const stairTower = createBox(WING_W * 0.6, 4 * FLOOR_H + 3.8, WING_W * 0.6, matWhiteTrim, "Stair_Tower");
-  stairTower.position.set(0, (4 * FLOOR_H + 3.8) / 2, 0);
+  // Corner elbow stair tower
+  const stairTower = createBox(WING_W * 0.65, 4 * FLOOR_H + 3.8, WING_W * 0.65, matWhiteTrim, "Stair_Tower");
+  stairTower.position.set(WING_W * 0.35, (4 * FLOOR_H + 3.8) / 2, WING_W * 0.35);
   roof.add(stairTower);
 
   lf.add(roof);
@@ -496,106 +587,114 @@ function createLFBuilding(id, name, posX, posZ, rotYDeg) {
 }
 
 // -------------------------------------------------------------------------
-// Four Outward-Oriented LF Buildings:
+// Positioning the 4 Inward-Facing Loyalty Blocks:
 //
-// LF 1: Top-Right (Northeast) -> Elbow at inner corner, open side faces NORTHEAST (+X, -Z)
-// LF 2: Top-Left (Northwest)  -> Elbow at inner corner, open side faces NORTHWEST (-X, -Z)
-// LF 3: Bottom-Left (Southwest)-> Elbow at inner corner, open side faces SOUTHWEST (-X, +Z)
-// LF 4: Bottom-Right (Southeast)-> Elbow at inner corner, open side faces SOUTHEAST (+X, +Z)
+// LOYALTY 4: Upper-Left (Elbow at outer corner X = -52, Z = -42)
+//            rotY = 0 -> L faces Southeast toward Central Block
+// LOYALTY 1: Upper-Right (Elbow at outer corner X = +52, Z = -42)
+//            rotY = 270 (-90) -> L faces Southwest toward Central Block
+// LOYALTY 2: Lower-Right (Elbow at outer corner X = +52, Z = +42)
+//            rotY = 180 -> L faces Northwest toward Central Block
+// LOYALTY 3: Lower-Left (Elbow at outer corner X = -52, Z = +42)
+//            rotY = 90 -> L faces Northeast toward Central Block
 // -------------------------------------------------------------------------
 
-// LF 1 (Northeast): rotY = 90 deg -> open side faces Northeast
-const lf1 = createLFBuilding("LF_1", "LF 1 — Academic Block", 28, -22, 90);
-scene.add(lf1);
+const loyalty4 = createMasterLoyaltyBlock("Loyalty_4", "LOYALTY 4", -52, -42, 0);
+scene.add(loyalty4);
 
-// LF 2 (Northwest): rotY = 180 deg -> open side faces Northwest
-const lf2 = createLFBuilding("LF_2", "LF 2 — Academic Block", -28, -22, 180);
-scene.add(lf2);
+const loyalty1 = createMasterLoyaltyBlock("Loyalty_1", "LOYALTY 1", 52, -42, 270);
+scene.add(loyalty1);
 
-// LF 3 (Southwest): rotY = 270 deg -> open side faces Southwest
-const lf3 = createLFBuilding("LF_3", "LF 3 — Academic Block", -28, 22, 270);
-scene.add(lf3);
+const loyalty2 = createMasterLoyaltyBlock("Loyalty_2", "LOYALTY 2", 52, 42, 180);
+scene.add(loyalty2);
 
-// LF 4 (Southeast): rotY = 0 deg -> open side faces Southeast
-const lf4 = createLFBuilding("LF_4", "LF 4 — Academic Block", 28, 22, 0);
-scene.add(lf4);
+const loyalty3 = createMasterLoyaltyBlock("Loyalty_3", "LOYALTY 3", -52, 42, 90);
+scene.add(loyalty3);
 
 // =========================================================================
-// 6. CONNECTING SKYBRIDGES (Linking LF Blocks to Central Block)
+// 8. BRIDGES (ONLY LOYALTY 1 <-> 2 AND LOYALTY 3 <-> 4)
+//    NO BRIDGES TO CENTRAL BLOCK!
 // =========================================================================
-const bridgesGroup = new THREE.Group();
-bridgesGroup.name = "CONNECTING_BRIDGES";
-
-function createBridge(x1, z1, x2, z2, y = 7.5) {
+function createPedestrianBridge(x1, z1, x2, z2, name, y = 7.5) {
   const dx = x2 - x1;
   const dz = z2 - z1;
   const len = Math.sqrt(dx * dx + dz * dz);
   const angle = Math.atan2(dx, dz);
 
   const bridge = new THREE.Group();
-  const walk = createBox(3.2, 0.4, len, matWhiteTrim);
+  bridge.name = name;
+
+  // Walkway floor
+  const walk = createBox(3.2, 0.4, len, matWhiteTrim, `${name}_Floor`);
   walk.position.set(0, y, 0);
   bridge.add(walk);
 
-  const railL = createBox(0.1, 1.4, len, matGlass);
+  // Tinted glass railings
+  const railL = createBox(0.1, 1.4, len, matGlass, `${name}_Rail_L`);
   railL.position.set(-1.6, y + 0.8, 0);
   bridge.add(railL);
-  const railR = createBox(0.1, 1.4, len, matGlass);
+
+  const railR = createBox(0.1, 1.4, len, matGlass, `${name}_Rail_R`);
   railR.position.set(1.6, y + 0.8, 0);
   bridge.add(railR);
 
-  const pillar1 = createCylinder(0.35, 0.35, y, 8, matConcrete);
-  pillar1.position.set(0, y / 2, 0);
-  bridge.add(pillar1);
+  // Support pillar
+  const pillar = createCylinder(0.35, 0.35, y, 8, matConcrete, `${name}_Pillar`);
+  pillar.position.set(0, y / 2, 0);
+  bridge.add(pillar);
 
   bridge.position.set((x1 + x2) / 2, 0, (z1 + z2) / 2);
   bridge.rotation.y = angle;
   return bridge;
 }
 
-// Skybridges connecting the four LF blocks to Central Block
-bridgesGroup.add(createBridge(24, -18, 16, -12)); // LF1 to Central
-bridgesGroup.add(createBridge(-24, -18, -16, -12)); // LF2 to Central
-bridgesGroup.add(createBridge(-24, 18, -16, 12)); // LF3 to Central
-bridgesGroup.add(createBridge(24, 18, 16, 12)); // LF4 to Central
+// Bridge between LOYALTY 1 and LOYALTY 2 on East Side
+// Loyalty 1 southern tip: X ≈ 45.5, Z = -10
+// Loyalty 2 northern tip: X ≈ 45.5, Z = +10
+const bridgeL1L2 = createPedestrianBridge(45.5, -10, 45.5, 10, "Bridge_L1_L2");
+scene.add(bridgeL1L2);
 
-scene.add(bridgesGroup);
+// Bridge between LOYALTY 4 and LOYALTY 3 on West Side
+// Loyalty 4 southern tip: X ≈ -45.5, Z = -10
+// Loyalty 3 northern tip: X ≈ -45.5, Z = +10
+const bridgeL3L4 = createPedestrianBridge(-45.5, -10, -45.5, 10, "Bridge_L3_L4");
+scene.add(bridgeL3L4);
 
 // =========================================================================
-// 7. PERIMETER VEGETATION (Subtle Trees Framing the 6 Buildings)
+// 9. MINIMAL LANDSCAPING (Subtle trees that never block top view)
 // =========================================================================
-const vegetation = new THREE.Group();
-vegetation.name = "CAMPUS_VEGETATION";
+const landscaping = new THREE.Group();
+landscaping.name = "Landscaping";
 
-// Trees framing the entrance boulevard
-for (let z = -25; z >= -48; z -= 11) {
-  vegetation.add(createTree(-26, z, 1.1));
-  vegetation.add(createTree(26, z, 1.1));
+// Boulevard trees flanking the Open Plaza
+for (let z = -25; z >= -55; z -= 10) {
+  landscaping.add(createTree(-28, z, 1.0));
+  landscaping.add(createTree(28, z, 1.0));
 }
 
-// Trees in the 4 quad courtyards
-vegetation.add(createTree(-18, -10, 0.9));
-vegetation.add(createTree(18, -10, 0.9));
-vegetation.add(createTree(-18, 10, 0.9));
-vegetation.add(createTree(18, 10, 0.9));
+// Subtle corner courtyard trees
+landscaping.add(createTree(-18, -10, 0.85));
+landscaping.add(createTree(18, -10, 0.85));
+landscaping.add(createTree(-18, 10, 0.85));
+landscaping.add(createTree(18, 10, 0.85));
 
-// Boundary framing trees
-for (let x = -60; x <= 60; x += 20) {
-  vegetation.add(createTree(x, -72, 1.2));
-  vegetation.add(createTree(x, 46, 1.2));
+// Trees flanking the OAT seating area
+for (let z = 32; z <= 56; z += 12) {
+  landscaping.add(createTree(-20, z, 0.9));
+  landscaping.add(createTree(20, z, 0.9));
 }
 
-scene.add(vegetation);
+scene.add(landscaping);
 
 // =========================================================================
-// 8. EXPORT TO BINARY GLB
+// 10. EXPORT TO BINARY GLB
 // =========================================================================
 const outputPath = path.resolve('public/models/vvit-campus.glb');
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 
 const exporter = new GLTFExporter();
 
-console.log("Parsing VVIT Central Complex geometry into binary GLB format...");
+console.log("Parsing VVIT Central Complex scene into binary GLB format...");
 exporter.parse(
   scene,
   (glbBuffer) => {
