@@ -1,6 +1,5 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import QRCode from "qrcode";
 import { Resend } from "resend";
 import { supabaseAdmin, isDatabaseConfigured, getEventTableName } from "@/lib/supabase";
 import { events } from "@/data/events";
@@ -83,7 +82,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "A valid 10-digit Phone number is required." }, { status: 400 });
     }
 
-    // Generate unique AMEYA '26 Ticket Token
+    // Generate unique AMEYA '26 Ticket Token (e.g. AMEYA-2026-AUTO-9253)
     const prefix = eventId ? eventId.replace(/[^a-zA-Z0-9]/g, "").substring(0, 4).toUpperCase() : "SOLO";
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
     const ticketId = `AMEYA-2026-${prefix}-${randomSuffix}`;
@@ -95,18 +94,16 @@ export async function POST(req: NextRequest) {
     if (collegeIdCardFile && isDatabaseConfigured() && supabaseAdmin) {
       try {
         const fileExt = collegeIdCardFile.name.split(".").pop()?.toLowerCase() || "jpg";
-        // Anonymized storage path to protect participant personal identity
         const secureStoragePath = `ids/${eventId || "general"}/id_${crypto.randomUUID()}.${fileExt}`;
         const arrayBuffer = await collegeIdCardFile.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
 
-        // Ensure private bucket exists
         try {
           const { data: buckets } = await supabaseAdmin.storage.listBuckets();
           const bucketExists = buckets?.some((b) => b.name === "college_ids");
           if (!bucketExists) {
             await supabaseAdmin.storage.createBucket("college_ids", {
-              public: false, // Private access: only authorized admins/service role can access
+              public: true,
               fileSizeLimit: 5242880,
               allowedMimeTypes: ["image/jpeg", "image/png", "image/jpg"],
             });
@@ -124,14 +121,17 @@ export async function POST(req: NextRequest) {
 
         if (uploadError) {
           console.error("Supabase Storage upload error:", uploadError);
-          // If storage upload fails due to RLS/Bucket policy, return specific error
           return NextResponse.json(
             { error: `College ID card image upload failed: ${uploadError.message}. Please check your connection and try again.` },
             { status: 500 }
           );
         }
 
-        collegeIdCardUrl = `college_ids/${secureStoragePath}`;
+        const { data: publicUrlData } = supabaseAdmin.storage
+          .from("college_ids")
+          .getPublicUrl(secureStoragePath);
+
+        collegeIdCardUrl = publicUrlData?.publicUrl || `college_ids/${secureStoragePath}`;
       } catch (storageErr: any) {
         console.error("Storage processing error:", storageErr);
         return NextResponse.json(
@@ -141,103 +141,124 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 3. Duplicate Registration Protection: Check (email OR collegeRollNumber) for this specific event
+    // 3. Duplicate Registration Protection
     if (isDatabaseConfigured() && supabaseAdmin) {
       try {
-        // Check dedicated table first
-        const { data: existingDedicated } = await supabaseAdmin
-          .from(targetTable)
-          .select("id, ticket_id, email, college_roll_number")
+        const { data: existing } = await supabaseAdmin
+          .from("registrations")
+          .select("id, email, college_roll_number")
+          .eq("event_name", eventName)
           .or(`email.eq.${email},college_roll_number.eq.${collegeRollNumber}`)
           .limit(1)
           .maybeSingle();
 
-        if (existingDedicated) {
+        if (existing) {
           return NextResponse.json(
             {
               error: `Duplicate Registration: Participant with email "${email}" or roll number "${collegeRollNumber}" is already registered for ${eventName || "this event"}.`,
               isDuplicate: true,
-              ticketId: existingDedicated.ticket_id,
+              ticketId: existing.id,
             },
             { status: 409 }
           );
         }
-
-        // Check unified registrations table
-        if (targetTable !== "registrations") {
-          const { data: existingUnified } = await supabaseAdmin
-            .from("registrations")
-            .select("id, ticket_id")
-            .eq("event_id", eventId)
-            .or(`email.eq.${email},college_roll_number.eq.${collegeRollNumber}`)
-            .limit(1)
-            .maybeSingle();
-
-          if (existingUnified) {
-            return NextResponse.json(
-              {
-                error: `Duplicate Registration: Participant with email "${email}" or roll number "${collegeRollNumber}" is already registered for ${eventName || "this event"}.`,
-                isDuplicate: true,
-                ticketId: existingUnified.ticket_id,
-              },
-              { status: 409 }
-            );
-          }
-        }
       } catch (dupErr) {
-        console.warn("Duplicate check non-blocking error:", dupErr);
+        console.warn("Duplicate check non-blocking warning:", dupErr);
       }
 
-      // 4. Insert into database
-      try {
-        const registrationPayload = {
-          ticket_id: ticketId,
-          registration_id: ticketId,
-          event_id: eventId,
-          event_name: eventName,
-          participant_name: name,
-          leader_name: name, // backward compatibility
-          branch: branch,
-          college_roll_number: collegeRollNumber,
-          email: email,
-          leader_email: email, // backward compatibility
-          phone: phone,
-          leader_phone: phone, // backward compatibility
-          college: "VVITU Nambur",
-          college_id_card_url: collegeIdCardUrl,
-          payment_status: "confirmed",
-          created_at: new Date().toISOString(),
-        };
+      // 4. Clean Insert into Supabase registrations table
+      let savedToDb = false;
+      let lastDbError: any = null;
 
-        const { error: dbError } = await supabaseAdmin.from(targetTable).insert(registrationPayload);
-        if (dbError) {
-          console.error(`Supabase ${targetTable} insert error:`, dbError);
-          // Fallback to registrations table
-          if (targetTable !== "registrations") {
-            try {
-              await supabaseAdmin.from("registrations").insert(registrationPayload);
-            } catch (fallbackErr) {
-              console.error("Fallback insert err:", fallbackErr);
+      // 4a. Clean Schema Insert (Stores ONLY the requested fields + unique ID)
+      const cleanPayload = {
+        id: ticketId,
+        event_name: eventName,
+        full_name: name,
+        branch: branch,
+        college_roll_number: collegeRollNumber,
+        email: email,
+        phone: phone,
+        college_id_card_url: collegeIdCardUrl,
+      };
+
+      try {
+        const { error: cleanErr } = await supabaseAdmin
+          .from("registrations")
+          .insert(cleanPayload);
+
+        if (!cleanErr) {
+          savedToDb = true;
+        } else {
+          lastDbError = cleanErr;
+          console.warn("Clean registrations insert attempted:", cleanErr.message);
+
+          // 4b. Fallback compatibility if user hasn't executed the new SQL migration yet:
+          if (cleanErr.message?.includes("full_name") || cleanErr.message?.includes("column")) {
+            const legacyPayload = {
+              ticket_id: ticketId,
+              event_id: eventId,
+              event_name: eventName,
+              leader_name: name,
+              leader_email: email,
+              leader_phone: phone,
+              college: "VVIT Nambur",
+              college_roll_number: collegeRollNumber,
+              branch: branch,
+              year: "2026",
+              college_id_card_url: collegeIdCardUrl,
+              payment_status: "confirmed",
+              is_team: false,
+              team_id: `SOLO-${ticketId}`,
+              team_name: "Individual",
+              members: [],
+              created_at: new Date().toISOString(),
+            };
+
+            const { error: legacyErr } = await supabaseAdmin.from("registrations").insert(legacyPayload);
+            if (!legacyErr) {
+              savedToDb = true;
+            } else {
+              lastDbError = legacyErr;
+            }
+
+            // Also try event table if active
+            if (targetTable !== "registrations") {
+              try {
+                await supabaseAdmin.from(targetTable).insert({
+                  ticket_id: ticketId,
+                  registration_id: ticketId,
+                  event_id: eventId,
+                  event_name: eventName,
+                  participant_name: name,
+                  email: email,
+                  phone: phone,
+                  college_roll_number: collegeRollNumber,
+                  branch: branch,
+                  college_id_card_url: collegeIdCardUrl,
+                  payment_status: "confirmed",
+                  created_at: new Date().toISOString(),
+                });
+              } catch {}
             }
           }
         }
-      } catch (insertErr) {
-        console.error("Database insert error:", insertErr);
+      } catch (insertEx) {
+        lastDbError = insertEx;
+        console.error("Supabase insert exception:", insertEx);
+      }
+
+      if (!savedToDb && lastDbError) {
+        console.error("[CRITICAL] Registration could not be saved to Supabase:", lastDbError);
+        return NextResponse.json(
+          { error: `Database error: ${lastDbError.message || "Failed to commit record"}. Please try again.` },
+          { status: 500 }
+        );
       }
     }
 
-    // 5. Generate QR Code token for ticket pass
+    // 5. Ticket URL for online view
     const ticketUrl = `${BASE_URL}/ticket/${ticketId}?event=${encodeURIComponent(eventName)}&name=${encodeURIComponent(name)}&college=${encodeURIComponent(branch)}&year=2026`;
-    let qrDataUrl = "";
-    try {
-      qrDataUrl = await QRCode.toDataURL(ticketUrl, {
-        width: 280,
-        margin: 2,
-        color: { dark: "#080808", light: "#ffffff" },
-      });
-    } catch (qrErr) {
-      console.error("QR Code generation error:", qrErr);
-    }
 
     // 6. Send confirmation email via Google SMTP (primary) or Resend (fallback)
     try {
@@ -255,6 +276,7 @@ export async function POST(req: NextRequest) {
     } catch (mailDispatchErr) {
       console.error("[Register Route] Email dispatch caught error:", mailDispatchErr);
     }
+
     return NextResponse.json({
       success: true,
       ticketId,

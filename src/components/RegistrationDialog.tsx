@@ -3,12 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { X, Upload, CheckCircle2, AlertCircle, Loader2, ArrowRight, RefreshCw, FileText, Image as ImageIcon, ShieldCheck } from "lucide-react";
-import QRCode from "qrcode";
 import { events, Event } from "@/data/events";
 import styles from "./RegistrationDialog.module.css";
 
 interface RegistrationDialogProps {
   event: Event;
+  availableEvents?: Event[];
   onClose: () => void;
 }
 
@@ -38,10 +38,10 @@ interface SuccessPayload {
   category: string;
   participantName: string;
   email: string;
-  qrDataUrl: string;
 }
 
-export default function RegistrationDialog({ event: initialEvent, onClose }: RegistrationDialogProps) {
+export default function RegistrationDialog({ event: initialEvent, availableEvents, onClose }: RegistrationDialogProps) {
+  const activeOptions = availableEvents && availableEvents.length > 0 ? availableEvents : events;
   const [currentEvent, setCurrentEvent] = useState<Event>(initialEvent);
   const [form, setForm] = useState<RegistrationFormData>({
     name: "",
@@ -216,14 +216,6 @@ export default function RegistrationDialog({ event: initialEvent, onClose }: Reg
       if (!res.ok) {
         throw new Error(data.error || "Failed to complete registration.");
       }
-
-      // Generate local QR code for confirmation view
-      const qrDataUrl = await QRCode.toDataURL(data.ticketId || "AMEYA-2026-REGISTERED", {
-        width: 200,
-        margin: 1,
-        color: { dark: "#050505", light: "#FFFFFF" },
-      });
-
       setSuccessData({
         ticketId: data.ticketId,
         eventName: currentEvent.name,
@@ -231,7 +223,6 @@ export default function RegistrationDialog({ event: initialEvent, onClose }: Reg
         category: currentEvent.category,
         participantName: form.name.trim(),
         email: form.email.trim(),
-        qrDataUrl,
       });
     } catch (err: any) {
       console.error("Registration error:", err);
@@ -284,11 +275,11 @@ export default function RegistrationDialog({ event: initialEvent, onClose }: Reg
                   className={styles.switchSelect}
                   value={currentEvent.id}
                   onChange={(e) => {
-                    const found = events.find((ev) => ev.id === e.target.value);
+                    const found = (activeOptions as Event[]).find((ev: Event) => ev.id === e.target.value);
                     if (found) setCurrentEvent(found);
                   }}
                 >
-                  {events.map((ev) => (
+                  {(activeOptions as Event[]).map((ev: Event) => (
                     <option key={ev.id} value={ev.id}>
                       {ev.name} ({ev.category} - Day {ev.day})
                     </option>
@@ -326,17 +317,14 @@ export default function RegistrationDialog({ event: initialEvent, onClose }: Reg
                     <strong className={styles.docketVal}>{successData.email}</strong>
                   </div>
 
-                  <div className={styles.qrContainer}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={successData.qrDataUrl}
-                      alt="Check-in QR code token"
-                      width={140}
-                      height={140}
-                      className={styles.qrImage}
-                      draggable={false}
-                    />
-                    <span className={styles.qrHint}>PRESENT AT ACCESS GATES FOR ENTRY CLEARANCE</span>
+                  <div className={styles.confirmationBadgeBox}>
+                    <ShieldCheck size={28} className={styles.confirmationBadgeIcon} />
+                    <span className={styles.confirmationBadgeText}>
+                      ENTRY CONFIRMED // NO QR SCAN NEEDED
+                    </span>
+                    <span className={styles.confirmationBadgeSubtext}>
+                      Present your Registration ID or College ID card at the venue desk. Event coordinators will mark your attendance directly in the portal.
+                    </span>
                   </div>
                 </div>
 

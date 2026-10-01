@@ -6,7 +6,6 @@ import Footer from "@/components/Footer";
 import MobileStickyCTA from "@/components/common/MobileStickyCTA";
 import CookieConsent from "@/components/common/CookieConsent";
 import MotionBackground from "@/components/common/MotionBackground";
-import WrenchCursor from "@/components/common/WrenchCursor";
 
 const syne = Syne({
   subsets: ["latin"],
@@ -100,8 +99,7 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         <Nav />
         <MotionBackground />
-        <WrenchCursor />
-        <main>{children}</main>
+                <main>{children}</main>
         <MobileStickyCTA />
         <CookieConsent />
         <Footer />

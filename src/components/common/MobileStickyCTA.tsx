@@ -1,12 +1,17 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, Ticket, Zap } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import styles from "./MobileStickyCTA.module.css";
 
 export default function MobileStickyCTA() {
   const pathname = usePathname();
+
+  // Exclude from admin portal
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   // Context-aware mobile CTA configuration (Item 11)
   let label = "EXPLORE EVENTS";

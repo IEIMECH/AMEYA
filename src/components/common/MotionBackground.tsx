@@ -8,8 +8,8 @@ export default function MotionBackground() {
   const pathname = usePathname();
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Exclude Home ('/') and all Team routes ('/team', '/team/explore', etc.)
-  const isExcluded = pathname === "/" || pathname?.startsWith("/team");
+  // Exclude Home ('/'), all Team routes ('/team', etc.), and Admin routes ('/admin', etc.)
+  const isExcluded = pathname === "/" || pathname?.startsWith("/team") || pathname?.startsWith("/admin");
 
   // Ensure autoplay and muted state work reliably across all desktop and mobile browsers
   useEffect(() => {

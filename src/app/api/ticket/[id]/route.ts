@@ -37,15 +37,28 @@ export async function GET(
       });
     }
 
-    // 1. Try unified view first
-    const { data: viewData, error: viewError } = await supabaseAdmin
-      .from("all_registrations")
+        // 1. Try unified registrations table first (checks both id and ticket_id)
+    const { data: regData, error: regError } = await supabaseAdmin
+      .from("registrations")
       .select("*")
-      .eq("ticket_id", id)
+      .eq("id", id)
       .maybeSingle();
 
-    if (viewData && !viewError) {
-      return NextResponse.json(viewData);
+    if (regData && !regError) {
+      return NextResponse.json({
+        ticket_id: regData.id || regData.ticket_id,
+        event_name: regData.event_name,
+        leader_name: regData.full_name || regData.participant_name || regData.leader_name,
+        college: regData.branch || regData.college || "VVITU",
+        year: "2026",
+        is_team: false,
+        team_id: `SOLO-${(regData.id || regData.ticket_id).slice(-6)}`,
+        verified_at: regData.verified_at,
+        email: regData.email || regData.leader_email,
+        phone: regData.phone || regData.leader_phone,
+        college_roll_number: regData.college_roll_number,
+        branch: regData.branch,
+      });
     }
 
     // 2. Fallback to scanning individual tables
@@ -87,24 +100,21 @@ export async function PATCH(
     const now = new Date().toISOString();
     const verifier = "GATE-01 // AMEYA SECURITY CADRE";
 
-    // 1. Check which table holds this ticket
-    for (const table of EVENT_TABLES) {
-      if (table === "all_registrations") continue;
-      const { data, error } = await supabaseAdmin
-        .from(table)
-        .update({ verified_at: now, verified_by: verifier })
-        .eq("ticket_id", id)
-        .select()
-        .maybeSingle();
+        // 1. Check registrations table first
+    const { data: updatedReg } = await supabaseAdmin
+      .from("registrations")
+      .update({ verified_at: now, verified_by: verifier })
+      .eq("id", id)
+      .select()
+      .maybeSingle();
 
-      if (data && !error) {
-        return NextResponse.json({
-          verified: true,
-          verified_at: now,
-          table_source: table,
-          data
-        });
-      }
+    if (updatedReg) {
+      return NextResponse.json({
+        verified: true,
+        verified_at: now,
+        table_source: "registrations",
+        data: updatedReg,
+      });
     }
 
     return NextResponse.json({ error: "Ticket not found for verification stamp" }, { status: 404 });

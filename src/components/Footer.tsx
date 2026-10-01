@@ -1,13 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ArrowUp, Phone } from "lucide-react";
 import styles from "./Footer.module.css";
 
 export default function Footer() {
+  const pathname = usePathname();
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  // Do not render public footer on admin routes
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   return (
     <footer className={styles.footer} aria-label="Site Footer">

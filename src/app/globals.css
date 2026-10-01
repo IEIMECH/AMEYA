@@ -441,13 +441,17 @@ main {
   z-index: 1;
 }
 
-/* Precision Mechanical Wrench Cursor */
-@media (hover: hover) and (pointer: fine) {
-  *,
-  *::before,
-  *::after {
-    cursor: none !important;
-  }
+/* Standard Hardware-Accelerated Native Pointer - Always on top */
+html, body {
+  cursor: default;
+}
+
+button, a, select, [role="button"], input[type="submit"], input[type="button"], input[type="checkbox"] {
+  cursor: pointer;
+}
+
+input[type="text"], input[type="email"], input[type="password"], textarea {
+  cursor: text;
 }
 
 /* ==========================================================================

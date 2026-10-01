@@ -64,7 +64,7 @@ const transitOptions = [
 
 const rules = [
   "Valid institutional college identity card is mandatory for security clearance at the main gate.",
-  "Present your digital ticket QR code or registration ID at the Mechanical Department registration desk upon entry.",
+  "Present your registration ID or student ID card at the Mechanical Department registration desk upon entry.",
   "Badging desk opens at 08:00 AM. Opening inaugural ceremony commences promptly at 09:15 AM in the Main Auditorium.",
   "Participants in AutoCAD, RC Car Challenge, and Assemble & Disassemble must report 20 minutes prior for technical inspection.",
   "High-speed campus Wi-Fi access credentials will be provided upon credential verification at check-in.",

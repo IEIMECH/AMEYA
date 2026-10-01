@@ -3,7 +3,6 @@
 import { useEffect, useState, use } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import QRCode from "qrcode";
 import { Printer, Share2, Check, ArrowRight, ShieldCheck, Clock } from "lucide-react";
 import styles from "./page.module.css";
 
@@ -31,7 +30,6 @@ export default function TicketPage({
 
   const [loading, setLoading] = useState(true);
   const [ticket, setTicket] = useState<TicketData | null>(null);
-  const [qrSrc, setQrSrc] = useState<string>("");
   const [copied, setCopied] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
 
@@ -84,19 +82,6 @@ export default function TicketPage({
 
     loadTicket();
   }, [ticketId, searchParams]);
-
-  useEffect(() => {
-    if (ticketId) {
-      QRCode.toDataURL(ticketId, {
-        width: 220,
-        margin: 1,
-        color: {
-          dark: "#050505",
-          light: "#FFFFFF",
-        },
-      }).then(setQrSrc);
-    }
-  }, [ticketId]);
 
   const handleShare = () => {
     if (typeof window !== "undefined") {
@@ -209,24 +194,17 @@ export default function TicketPage({
               </div>
             )}
 
-            <div className={styles.qrContainer}>
-              {qrSrc ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={qrSrc}
-                  alt="Cryptographic check-in QR code token for delegate credential verification"
-                  draggable={false}
-                  onDragStart={(e) => e.preventDefault()}
-                  width={140}
-                  height={140}
-                  className={styles.qrImage}
-                />
-              ) : (
-                <div style={{ width: 140, height: 140, background: "rgba(255,255,255,0.05)", borderRadius: 2 }} />
-              )}
-              <span className={styles.qrHint}>
-                PRESENT AT ACCESS CONTROL / ARENA GATES
-              </span>
+            <div className={styles.verificationCard}>
+              <div className={styles.verificationBadge}>
+                <ShieldCheck size={22} className={styles.badgeIcon} />
+                <span className={styles.badgeTitle}>OFFICIAL ENTRY CLEARANCE</span>
+              </div>
+              <p className={styles.verificationText}>
+                No QR scan required. Present your Registration ID (<strong>{ticket?.ticket_id || ticketId}</strong>) or College ID Card at the arena entrance.
+              </p>
+              <div className={styles.coordinatorNote}>
+                Event coordinators will verify and record your attendance directly in the admin portal.
+              </div>
             </div>
 
             <div className={styles.actions}>

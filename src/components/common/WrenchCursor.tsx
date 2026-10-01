@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import styles from "./WrenchCursor.module.css";
 
 export default function WrenchCursor() {
+  const pathname = usePathname();
   const containerRef = useRef<HTMLDivElement>(null);
   const wrenchRef = useRef<HTMLDivElement>(null);
 
@@ -31,21 +33,19 @@ export default function WrenchCursor() {
     let pointerX = -100;
     let pointerY = -100;
     let prevPointerX = -100;
-    let currentAngle = 0;
-    let currentScale = 1;
-
-    // Interaction & drag states
-    let isPointerDown = false;
-    let isDragging = false;
-    let isTightened = false;
-    let tightenProgress = 0; // 0.0 to 1.0
-    let releaseStartTime = 0;
-    const RELEASE_DURATION = 220; // 220ms mechanical release
-
-    let dragStartX = 0;
-    let dragStartY = 0;
-    let currentState: "default" | "button" | "card" | "link" | "drag" = "default";
     let isVisible = false;
+
+    // Fast Responsive Hover States (100-150ms)
+    let currentState: "default" | "button" | "card" | "link" | "drag" = "default";
+    let currentScale = 1;
+    let currentAngle = 0;
+
+    // Physical Mechanical Tightening Torque (Pointer Down)
+    let isTightened = false;
+    let isDragging = false;
+    let tightenProgress = 0;
+    let releaseStartTime = 0;
+    const RELEASE_DURATION = 220; // Fast springy mechanical recoil back to 0 deg
 
     let animationFrameId: number;
 
@@ -53,115 +53,80 @@ export default function WrenchCursor() {
       pointerX = e.clientX;
       pointerY = e.clientY;
 
-      if (!isVisible) {
+      if (!isVisible && containerRef.current) {
         isVisible = true;
-        if (containerRef.current) {
-          containerRef.current.dataset.visible = "true";
-        }
+        containerRef.current.setAttribute("data-visible", "true");
       }
 
-      // Detect drag threshold (movement > 4px while pointer down)
-      if (isPointerDown && !isDragging) {
-        if (Math.hypot(e.clientX - dragStartX, e.clientY - dragStartY) > 4) {
-          isDragging = true;
-          isTightened = true; // Dragging is always firmly tightened grip
-        }
-      }
-
-      // Check interactive elements under cursor
+      // Fast element hover inspection
       const target = e.target as HTMLElement | null;
-      if (target) {
-        const isButton = !!target.closest(
-          'button, [role="button"], input[type="submit"], input[type="button"], select, .btn, [class*="registerBtn"], [class*="filterBtn"], [data-cursor="button"]'
-        );
+      if (!target) return;
 
-        const isLink =
-          !isButton &&
-          (!!target.closest('a, [class*="navItem"], [class*="mobileLink"], [data-cursor="link"]') ||
-            window.getComputedStyle(target).cursor === "pointer");
+      const interactive = target.closest(
+        "button, a, input, select, textarea, [role='button'], [data-interactive='true'], [draggable='true']"
+      );
 
-        const isCard =
-          !isButton &&
-          !isLink &&
-          !!target.closest(
-            '[data-cursor="card"], [class*="card"], [class*="Card"], article, .glass-card, [class*="orbitCard"], [class*="teamMember"], [class*="portrait"]'
-          );
+      let nextState: "default" | "button" | "card" | "link" | "drag" = "default";
 
-        const isDragEl =
-          isPointerDown &&
-          (isDragging ||
-            !!target.closest('[data-cursor="drag"], [class*="orbit"], [class*="draggable"]') ||
-            window.getComputedStyle(target).cursor === "grab" ||
-            window.getComputedStyle(target).cursor === "grabbing");
+      if (interactive) {
+        const tagName = interactive.tagName.toLowerCase();
+        const role = interactive.getAttribute("role");
+        const isDrag = interactive.getAttribute("draggable") === "true";
 
-        const newState = isDragEl
-          ? "drag"
-          : isButton
-          ? "button"
-          : isCard
-          ? "card"
-          : isLink
-          ? "link"
-          : "default";
+        if (isDrag) {
+          nextState = "drag";
+        } else if (tagName === "button" || role === "button") {
+          nextState = "button";
+        } else if (tagName === "a") {
+          nextState = "link";
+        } else {
+          nextState = "button";
+        }
+      } else {
+        const card = target.closest("[data-card='true'], .card, [class*='Card']");
+        if (card) {
+          nextState = "card";
+        }
+      }
 
-        if (newState !== currentState) {
-          currentState = newState;
-          if (containerRef.current) {
-            containerRef.current.dataset.state = currentState;
-          }
+      if (nextState !== currentState) {
+        currentState = nextState;
+        if (containerRef.current) {
+          containerRef.current.setAttribute("data-state", nextState);
         }
       }
     };
 
     const onPointerDown = (e: PointerEvent) => {
-      isPointerDown = true;
-      dragStartX = e.clientX;
-      dragStartY = e.clientY;
-      releaseStartTime = 0; // Cancel any ongoing release recoil
-
-      // Check if click target is interactive
-      const target = e.target as HTMLElement | null;
-      const isInteractive =
-        target &&
-        (!!target.closest(
-          'button, a, [role="button"], input, select, textarea, [class*="btn"], [class*="Btn"], [class*="card"], [class*="Card"], [class*="orbit"], [class*="team"], [class*="portrait"], [class*="navItem"], [class*="filterBtn"], [data-cursor], label'
-        ) ||
-          window.getComputedStyle(target).cursor === "pointer" ||
-          window.getComputedStyle(target).cursor === "grab");
-
-      if (isInteractive) {
-        // Enters continuous physical fastener tightening/grip state
-        isTightened = true;
+      if (e.button !== 0) return; // Left click only
+      isTightened = true;
+      releaseStartTime = 0;
+      if (currentState === "drag") {
+        isDragging = true;
       }
     };
 
     const onPointerUp = () => {
       if (isTightened) {
-        // Trigger mechanical torque release recoil animation
+        isTightened = false;
+        isDragging = false;
         releaseStartTime = performance.now();
-      }
-      isPointerDown = false;
-      isDragging = false;
-      isTightened = false;
-      if (currentState === "drag") {
-        currentState = "default";
-        if (containerRef.current) {
-          containerRef.current.dataset.state = "default";
-        }
       }
     };
 
     const onPointerLeave = () => {
       isVisible = false;
+      isTightened = false;
+      isDragging = false;
       if (containerRef.current) {
-        containerRef.current.dataset.visible = "false";
+        containerRef.current.setAttribute("data-visible", "false");
       }
     };
 
     const onPointerEnter = () => {
       isVisible = true;
       if (containerRef.current) {
-        containerRef.current.dataset.visible = "true";
+        containerRef.current.setAttribute("data-visible", "true");
       }
     };
 
@@ -223,7 +188,7 @@ export default function WrenchCursor() {
           torqueAngle = ease * 26; // Rotates clockwise +26 deg
           torqueScale = 1 - ease * 0.06; // Compresses to 0.94x
 
-          // During drag, add subtle responsive drag flex (+-6 deg based on movement direction)
+          // During drag, add subtle responsive drag flex (±6 deg based on movement direction)
           if (isDragging) {
             const dragFlex = Math.max(-6, Math.min(6, vx * 0.35));
             torqueAngle += dragFlex;
@@ -283,6 +248,11 @@ export default function WrenchCursor() {
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
+
+  // Exclude custom cursor on admin routes
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   if (!isSupported) {
     return null;

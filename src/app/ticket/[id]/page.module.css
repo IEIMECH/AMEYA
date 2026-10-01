@@ -339,3 +339,56 @@
   outline: 2px solid var(--crimson-core, #E51D25);
   outline-offset: 2px;
 }
+
+.verificationCard {
+  margin: 1.25rem 0 0.5rem;
+  padding: 1.15rem 1.25rem;
+  background: rgba(229, 29, 37, 0.05);
+  border: 1px solid rgba(229, 29, 37, 0.2);
+  border-radius: 6px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.verificationBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.badgeIcon {
+  color: #10b981;
+}
+
+.badgeTitle {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #FFFFFF;
+  text-transform: uppercase;
+}
+
+.verificationText {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--text-primary, #F2EDE8);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.verificationText strong {
+  font-family: var(--font-mono);
+  color: #E51D25;
+}
+
+.coordinatorNote {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-secondary, #96908B);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -70,6 +70,11 @@ export default function Nav() {
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
+
+  // Do not display public floating navbar inside admin routes
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   const pageTab = navLinks.find(
     (link) => pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href))
