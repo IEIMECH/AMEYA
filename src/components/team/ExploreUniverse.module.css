@@ -1,4 +1,4 @@
-/* ExploreUniverse SITCON Board Style */
+/* ExploreUniverse Universe Board Style */
 .container {
   position: relative;
   width: 100%;
@@ -169,7 +169,7 @@
   text-transform: uppercase;
 }
 
-/* Circular Member Avatar Discs matching SITCON reference */
+/* Circular Member Avatar Discs interactive design */
 .memberAvatarDisc {
   position: absolute;
   width: 86px;

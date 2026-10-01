@@ -126,7 +126,7 @@ export default function CommitteeBar({
           aria-hidden="true"
         />
 
-        {/* Mode Toggle Button matching SITCON reference */}
+        {/* Mode Toggle Button interactive design */}
         <button
           ref={(el) => setBtnRef("explore", el)}
           type="button"
@@ -138,13 +138,13 @@ export default function CommitteeBar({
         >
           {viewMode === "explore" ? (
             <>
-              {/* List Mode Icon matching SITCON screenshot 2 */}
+              {/* List Mode Icon custom design */}
               <List size={14} className={styles.dotGridIcon} />
               <span className={styles.exploreLabel}>List Mode</span>
             </>
           ) : (
             <>
-              {/* 3x3 Dot Grid Matrix Icon matching SITCON screenshot 1 */}
+              {/* 3x3 Dot Grid Matrix Icon custom design */}
               <svg
                 className={styles.dotGridIcon}
                 width="14"

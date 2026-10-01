@@ -321,7 +321,7 @@ export default function ExploreUniverse({
           </div>
         ))}
 
-        {/* Circular Member Photo Tokens matching SITCON reference */}
+        {/* Circular Member Photo Tokens interactive design */}
         {teamMembers.map((m) => {
           return (
             <div
