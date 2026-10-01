@@ -509,3 +509,12 @@ header.heroHeader {
     color: #c7c2bc !important;
   }
 }
+/* Precision Mechanical Wrench Cursor: Strictly hide standard OS pointer across desktop elements when custom-cursor-active */
+@media (hover: hover) and (pointer: fine) {
+  html.custom-cursor-active,
+  html.custom-cursor-active *,
+  html.custom-cursor-active *::before,
+  html.custom-cursor-active *::after {
+    cursor: none !important;
+  }
+}

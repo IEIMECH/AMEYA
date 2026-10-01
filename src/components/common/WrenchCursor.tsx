@@ -6,13 +6,34 @@ import styles from "./WrenchCursor.module.css";
 
 export default function WrenchCursor() {
   const pathname = usePathname();
+  const isAdmin = pathname?.startsWith("/admin");
+
   const containerRef = useRef<HTMLDivElement>(null);
   const wrenchRef = useRef<HTMLDivElement>(null);
 
   // Only render on devices with a mouse/fine pointer and hover support
   const [isSupported, setIsSupported] = useState(false);
 
+  // Handle custom cursor html class (disabled on admin)
   useEffect(() => {
+    if (isAdmin) {
+      document.documentElement.classList.remove("custom-cursor-active");
+      return;
+    }
+
+    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+    if (finePointer.matches) {
+      document.documentElement.classList.add("custom-cursor-active");
+    }
+
+    return () => {
+      document.documentElement.classList.remove("custom-cursor-active");
+    };
+  }, [isAdmin]);
+
+  useEffect(() => {
+    if (isAdmin) return;
+
     // Check if desktop pointer with hover
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -33,19 +54,21 @@ export default function WrenchCursor() {
     let pointerX = -100;
     let pointerY = -100;
     let prevPointerX = -100;
-    let isVisible = false;
-
-    // Fast Responsive Hover States (100-150ms)
-    let currentState: "default" | "button" | "card" | "link" | "drag" = "default";
-    let currentScale = 1;
     let currentAngle = 0;
+    let currentScale = 1;
 
-    // Physical Mechanical Tightening Torque (Pointer Down)
-    let isTightened = false;
+    // Interaction & drag states
+    let isPointerDown = false;
     let isDragging = false;
-    let tightenProgress = 0;
+    let isTightened = false;
+    let tightenProgress = 0; // 0.0 to 1.0
     let releaseStartTime = 0;
-    const RELEASE_DURATION = 220; // Fast springy mechanical recoil back to 0 deg
+    const RELEASE_DURATION = 220; // 220ms mechanical release
+
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let currentState: "default" | "button" | "card" | "link" | "drag" = "default";
+    let isVisible = false;
 
     let animationFrameId: number;
 
@@ -53,61 +76,67 @@ export default function WrenchCursor() {
       pointerX = e.clientX;
       pointerY = e.clientY;
 
-      if (!isVisible && containerRef.current) {
+      if (!isVisible) {
         isVisible = true;
-        containerRef.current.setAttribute("data-visible", "true");
+        if (containerRef.current) {
+          containerRef.current.dataset.visible = "true";
+        }
       }
 
-      // Fast element hover inspection
+      // Detect interactive targets with fast element lookup
       const target = e.target as HTMLElement | null;
-      if (!target) return;
+      if (target) {
+        const isClickable = target.closest(
+          "button, a, input, select, textarea, [role='button'], [data-cursor='button'], .cursor-target-button"
+        );
+        const isCard = target.closest(
+          "[data-cursor='card'], .event-card, .pillar-card, article"
+        );
+        const isDraggable = target.closest(
+          "[data-cursor='drag'], canvas, .drag-handle"
+        );
 
-      const interactive = target.closest(
-        "button, a, input, select, textarea, [role='button'], [data-interactive='true'], [draggable='true']"
-      );
-
-      let nextState: "default" | "button" | "card" | "link" | "drag" = "default";
-
-      if (interactive) {
-        const tagName = interactive.tagName.toLowerCase();
-        const role = interactive.getAttribute("role");
-        const isDrag = interactive.getAttribute("draggable") === "true";
-
-        if (isDrag) {
+        let nextState: "default" | "button" | "card" | "link" | "drag" = "default";
+        if (isDraggable) {
           nextState = "drag";
-        } else if (tagName === "button" || role === "button") {
+        } else if (isClickable) {
           nextState = "button";
-        } else if (tagName === "a") {
-          nextState = "link";
-        } else {
-          nextState = "button";
-        }
-      } else {
-        const card = target.closest("[data-card='true'], .card, [class*='Card']");
-        if (card) {
+        } else if (isCard) {
           nextState = "card";
         }
+
+        if (nextState !== currentState) {
+          currentState = nextState;
+          if (containerRef.current) {
+            containerRef.current.dataset.state = currentState;
+          }
+        }
       }
 
-      if (nextState !== currentState) {
-        currentState = nextState;
-        if (containerRef.current) {
-          containerRef.current.setAttribute("data-state", nextState);
+      // Check drag distance threshold
+      if (isPointerDown && !isDragging) {
+        const dx = pointerX - dragStartX;
+        const dy = pointerY - dragStartY;
+        if (dx * dx + dy * dy > 16) {
+          isDragging = true;
         }
       }
     };
 
     const onPointerDown = (e: PointerEvent) => {
-      if (e.button !== 0) return; // Left click only
+      if (e.button !== 0) return; // Only primary button
+      isPointerDown = true;
       isTightened = true;
+      tightenProgress = 0;
       releaseStartTime = 0;
-      if (currentState === "drag") {
-        isDragging = true;
-      }
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      isDragging = false;
     };
 
     const onPointerUp = () => {
-      if (isTightened) {
+      if (isPointerDown) {
+        isPointerDown = false;
         isTightened = false;
         isDragging = false;
         releaseStartTime = performance.now();
@@ -116,17 +145,15 @@ export default function WrenchCursor() {
 
     const onPointerLeave = () => {
       isVisible = false;
-      isTightened = false;
-      isDragging = false;
       if (containerRef.current) {
-        containerRef.current.setAttribute("data-visible", "false");
+        containerRef.current.dataset.visible = "false";
       }
     };
 
     const onPointerEnter = () => {
       isVisible = true;
       if (containerRef.current) {
-        containerRef.current.setAttribute("data-visible", "true");
+        containerRef.current.dataset.visible = "true";
       }
     };
 
@@ -188,7 +215,7 @@ export default function WrenchCursor() {
           torqueAngle = ease * 26; // Rotates clockwise +26 deg
           torqueScale = 1 - ease * 0.06; // Compresses to 0.94x
 
-          // During drag, add subtle responsive drag flex (±6 deg based on movement direction)
+          // During drag, add subtle responsive drag flex (+-6 deg based on movement direction)
           if (isDragging) {
             const dragFlex = Math.max(-6, Math.min(6, vx * 0.35));
             torqueAngle += dragFlex;
@@ -247,14 +274,9 @@ export default function WrenchCursor() {
       reducedMotion.removeEventListener("change", onMotionChange);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [isAdmin]);
 
-  // Exclude custom cursor on admin routes
-  if (pathname?.startsWith("/admin")) {
-    return null;
-  }
-
-  if (!isSupported) {
+  if (isAdmin || !isSupported) {
     return null;
   }
 

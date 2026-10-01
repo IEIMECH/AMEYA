@@ -1,7 +1,7 @@
 .section {
   position: relative;
   z-index: 3;
-  padding: 10rem 1.5rem 6rem 1.5rem;
+  padding: 8rem 1.5rem 6rem 1.5rem;
   margin-top: 3rem;
   background: var(--machined-dark, #050505);
   border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -13,7 +13,8 @@
 }
 
 .header {
-  margin-bottom: 4rem;
+  text-align: center;
+  margin: 0 auto 3.5rem auto;
   max-width: 780px;
   min-height: 80px;
   opacity: 1;
@@ -29,21 +30,6 @@
   opacity: 1;
   transform: translateY(0);
   transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.metaRow {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.metaCategory {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.2em;
-  color: var(--text-secondary, #96908B);
-  text-transform: uppercase;
 }
 
 .title {
@@ -65,9 +51,10 @@
 }
 
 .exhibitionGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.75rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 .exhibitionPedestal {
@@ -76,12 +63,18 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 3rem 1.75rem 2.25rem;
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
+  max-width: 520px;
+  width: 100%;
+  padding: 3.5rem 2.5rem 2.75rem;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 18px;
   text-decoration: none;
   color: inherit;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
               background-color 0.25s ease,
               border-color 0.25s ease,
@@ -89,10 +82,10 @@
 }
 
 .exhibitionPedestal:hover {
-  background: rgba(255, 255, 255, 0.035);
-  border-color: rgba(229, 29, 37, 0.45);
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.65), 0 0 20px rgba(229, 29, 37, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(229, 29, 37, 0.5);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 35px rgba(229, 29, 37, 0.22);
 }
 
 .exhibitionPedestal:active {
@@ -101,9 +94,14 @@
 
 .categoryLabel {
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: 0.7rem;
+  font-weight: 700;
   letter-spacing: 0.16em;
-  color: var(--text-muted, #605B56);
+  color: var(--accent);
+  background: rgba(229, 29, 37, 0.1);
+  border: 1px solid rgba(229, 29, 37, 0.25);
+  padding: 5px 14px;
+  border-radius: 9999px;
   text-transform: uppercase;
   margin-bottom: 2.25rem;
 }
@@ -112,48 +110,48 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 70px;
+  min-height: 80px;
   margin-bottom: 2.25rem;
-  filter: grayscale(100%) brightness(0.85) contrast(1.1);
-  opacity: 0.88;
-  transition: filter 0.25s ease, opacity 0.25s ease;
+  opacity: 0.95;
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
 .exhibitionPedestal:hover .logoFrame {
-  filter: grayscale(0%) brightness(1.05) contrast(1);
   opacity: 1;
+  transform: scale(1.03);
 }
 
 .partnerLogo {
   max-width: 100%;
-  max-height: 54px;
+  max-height: 72px;
   user-select: none;
   -webkit-user-select: none;
   -webkit-user-drag: none;
   height: auto;
   object-fit: contain;
-  border-radius: 6px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
 }
 
 .descriptorGroup {
   margin-top: auto;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.35rem;
 }
 
 .partnerName {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
   font-weight: 700;
-  color: var(--steel-bright, #F2EDE8);
-  letter-spacing: 0.04em;
+  color: #FFFFFF;
+  letter-spacing: 0.02em;
 }
 
 .partnerDescriptor {
   font-family: var(--font-sans);
-  font-size: 0.72rem;
-  color: var(--text-muted, #605B56);
+  font-size: 0.88rem;
+  color: var(--text-secondary, #96908B);
   line-height: 1.4;
 }
 
@@ -174,19 +172,11 @@
   transform: scaleX(1);
 }
 
-@media (max-width: 1024px) {
-  .exhibitionGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
 @media (max-width: 640px) {
-  .exhibitionGrid {
-    grid-template-columns: 1fr;
-  }
   .section {
-    position: relative;
-    z-index: 3;
-    padding: 7.5rem 1.5rem 5rem 1.5rem;
+    padding: 6rem 1.25rem 4rem 1.25rem;
+  }
+  .exhibitionPedestal {
+    padding: 2.5rem 1.5rem 2rem;
   }
 }

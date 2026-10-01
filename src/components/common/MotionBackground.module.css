@@ -7,7 +7,7 @@
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
-  background-color: #060608;
+  background-color: #030305;
 }
 
 .videoElement {
@@ -21,48 +21,43 @@
   transform: translate(-50%, -50%);
   object-fit: cover;
   object-position: center 30%;
-  opacity: 0.28; /* Calibrated within 0.20-0.35 */
+  opacity: 0.65; /* High brightness for clear visibility */
   pointer-events: none;
-  filter: contrast(1.05) brightness(0.95);
-  will-change: opacity;
+  filter: contrast(1.15) brightness(1.25) saturate(1.15);
+  will-change: opacity, filter;
 }
 
-/* Layer 1: Dark Atmospheric Overlay (rgba(0, 0, 0, 0.55–0.70)) */
+/* Layer 1: Dark Atmospheric Overlay - Calibrated to allow video clarity */
 .videoOverlay {
   position: absolute;
   inset: 0;
   background: 
     radial-gradient(
       ellipse 85% 65% at 50% 30%,
-      rgba(6, 6, 8, 0.48) 0%,
-      rgba(6, 6, 8, 0.68) 55%,
-      rgba(4, 4, 6, 0.90) 100%
+      rgba(4, 4, 6, 0.15) 0%,
+      rgba(4, 4, 6, 0.35) 55%,
+      rgba(2, 2, 4, 0.65) 100%
     ),
     linear-gradient(
       to bottom,
-      rgba(6, 6, 8, 0.58) 0%,
-      rgba(6, 6, 8, 0.45) 30%,
-      rgba(6, 6, 8, 0.55) 70%,
-      rgba(4, 4, 6, 0.82) 100%
+      rgba(4, 4, 6, 0.30) 0%,
+      rgba(4, 4, 6, 0.12) 30%,
+      rgba(4, 4, 6, 0.22) 70%,
+      rgba(2, 2, 4, 0.60) 100%
     );
   pointer-events: none;
 }
 
-/* Layer 2: Subtle AMEYA Crimson Atmosphere (BLACK -> DARK RED -> VIDEO -> BLACK) */
+/* Layer 2: Subtle AMEYA Crimson Atmosphere */
 .crimsonOverlay {
   position: absolute;
   inset: 0;
   background: 
     radial-gradient(
       ellipse 70% 45% at 50% 30%,
-      rgba(230, 29, 29, 0.08) 0%,
-      rgba(181, 18, 18, 0.035) 45%,
+      rgba(230, 29, 29, 0.12) 0%,
+      rgba(181, 18, 18, 0.05) 45%,
       transparent 75%
-    ),
-    radial-gradient(
-      circle at 85% 20%,
-      rgba(230, 29, 29, 0.04) 0%,
-      transparent 50%
     );
   mix-blend-mode: screen;
   pointer-events: none;
@@ -72,16 +67,16 @@
 .gridOverlay {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.035) 1px, transparent 0);
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.04) 1px, transparent 0);
   background-size: 40px 40px;
   pointer-events: none;
-  opacity: 0.35;
+  opacity: 0.25;
 }
 
-/* Mobile Fallback: maintain visual elegance, reduced GPU overhead */
+/* Mobile Fallback: maintain visual elegance */
 @media (max-width: 768px) {
   .videoElement {
-    opacity: 0.22;
+    opacity: 0.45;
   }
   .gridOverlay {
     opacity: 0.2;

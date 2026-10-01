@@ -2,7 +2,7 @@
   min-height: 100vh;
   padding-top: var(--header-safe-space, clamp(8.5rem, 12vw, 11rem));
   padding-bottom: 6rem;
-  background: var(--bg);
+  background: transparent;
   position: relative;
   overflow: hidden;
 }
