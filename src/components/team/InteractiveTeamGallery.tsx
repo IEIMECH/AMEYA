@@ -57,7 +57,7 @@ export default function InteractiveTeamGallery() {
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
 
-  // Single authoritative source of truth for carousel position
+  // Authoritative carousel position
   const currentXRef = useRef<number>(0);
   const isDraggingRef = useRef<boolean>(false);
   const hasDraggedRef = useRef<boolean>(false);
@@ -66,8 +66,9 @@ export default function InteractiveTeamGallery() {
   const pointerHistoryRef = useRef<Array<{ x: number; time: number }>>([]);
   const cardSpacingRef = useRef<number>(314);
 
-  // Motion state machine: "DRIFT" | "SPRING" | "PAUSE"
-  const motionModeRef = useRef<"DRIFT" | "SPRING" | "PAUSE">("DRIFT");
+  // Motion state machine: "DRIFT" | "MOMENTUM" | "SPRING" | "PAUSE"
+  const motionModeRef = useRef<"DRIFT" | "MOMENTUM" | "SPRING" | "PAUSE">("DRIFT");
+  const momentumVelocityRef = useRef<number>(0);
   const springTargetRef = useRef<number>(0);
   const springVelocityRef = useRef<number>(0);
   const pauseUntilRef = useRef<number>(0);
@@ -128,7 +129,7 @@ export default function InteractiveTeamGallery() {
     return wrapped;
   }, []);
 
-  // Single authoritative continuous physics / animation loop
+  // Authoritative continuous physics / animation loop
   useEffect(() => {
     updateSpacing();
     const spacing = cardSpacingRef.current;
@@ -147,15 +148,34 @@ export default function InteractiveTeamGallery() {
 
       // 1. If currently being dragged, pointer handlers directly manipulate DOM
       if (!isDraggingRef.current) {
-        if (motionModeRef.current === "SPRING") {
+        if (motionModeRef.current === "MOMENTUM") {
+          let current = currentXRef.current;
+          let v = momentumVelocityRef.current;
+
+          // Smooth exponential friction decay (0.92 per 60fps frame)
+          const friction = Math.pow(0.92, dt * 60);
+          v = v * friction;
+
+          current += v * dt;
+          current = wrapPosition(current);
+          currentXRef.current = current;
+          applyTrackX(current);
+
+          // When momentum decays to near idle drift speed, seamlessly blend back to continuous DRIFT
+          if (Math.abs(v) <= IDLE_DRIFT_SPEED * 1.15 || (v < 0 && Math.abs(v - (-IDLE_DRIFT_SPEED)) < 8)) {
+            motionModeRef.current = "DRIFT";
+          } else {
+            momentumVelocityRef.current = v;
+          }
+        } else if (motionModeRef.current === "SPRING") {
           const target = springTargetRef.current;
           let current = currentXRef.current;
           let v = springVelocityRef.current;
 
-          // Critically damped spring physics: k = 180, c = 27
+          // Critically damped spring physics: k = 180, c = 26
           const displacement = current - target;
           const springForce = -180 * displacement;
-          const dampingForce = -27 * v;
+          const dampingForce = -26 * v;
           const acceleration = springForce + dampingForce;
 
           v += acceleration * dt;
@@ -165,13 +185,13 @@ export default function InteractiveTeamGallery() {
           currentXRef.current = current;
           applyTrackX(current);
 
-          // Settling check
-          if (Math.abs(displacement) < 0.4 && Math.abs(v) < 15) {
+          // Quick settling check:
+          if (Math.abs(displacement) < 0.6 && Math.abs(v) < 20) {
             current = wrapPosition(target);
             currentXRef.current = current;
             applyTrackX(current);
-            // Pause after user drag/click snap so user can read dossier
-            pauseUntilRef.current = now + 5000;
+            // Brief 1.2s pause to view centered card, then automatically resume DRIFT
+            pauseUntilRef.current = now + 1200;
             motionModeRef.current = "PAUSE";
           }
         } else if (motionModeRef.current === "PAUSE") {
@@ -179,7 +199,7 @@ export default function InteractiveTeamGallery() {
             motionModeRef.current = "DRIFT";
           }
         } else if (motionModeRef.current === "DRIFT") {
-          // Smooth continuous horizontal progression
+          // Smooth continuous horizontal progression (never stops!)
           let nextX = currentXRef.current - IDLE_DRIFT_SPEED * dt;
           nextX = wrapPosition(nextX);
           currentXRef.current = nextX;
@@ -187,7 +207,7 @@ export default function InteractiveTeamGallery() {
         }
       }
 
-      // Check center active index (only triggers React render when center card actually changes)
+      // Check center active index
       const nearestGlobal = Math.round(-currentXRef.current / currentSpacing);
       const normIdx = ((nearestGlobal % TOTAL_MEMBERS) + TOTAL_MEMBERS) % TOTAL_MEMBERS;
       if (normIdx !== currentActiveIdxRef.current) {
@@ -217,9 +237,9 @@ export default function InteractiveTeamGallery() {
 
   // Pointer Down (Immediate interruptible grab: reads actual presentation value)
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    // 1. Interrupt motion
+    // 1. Interrupt motion while user holds pointer
     motionModeRef.current = "PAUSE";
-    pauseUntilRef.current = Infinity;
+    pauseUntilRef.current = 0; // NEVER Infinity!
 
     // 2. Read current presentation position from the DOM (0 visual jump)
     let currentX = getPresentationX();
@@ -277,7 +297,7 @@ export default function InteractiveTeamGallery() {
     }
   };
 
-  // Pointer Up / Release (Momentum projection & spring snap)
+  // Pointer Up / Release: Momentum glide seamlessly blending back into continuous drift!
   const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isDraggingRef.current) return;
     isDraggingRef.current = false;
@@ -292,7 +312,8 @@ export default function InteractiveTeamGallery() {
     }
 
     if (!hasDraggedRef.current) {
-      // Was a tap/click, click handler handles it
+      // User tapped without dragging - resume drift immediately!
+      motionModeRef.current = "DRIFT";
       return;
     }
 
@@ -303,26 +324,23 @@ export default function InteractiveTeamGallery() {
       const oldest = history[0];
       const newest = history[history.length - 1];
       const dt = Math.max(newest.time - oldest.time, 1);
-      if (performance.now() - newest.time < 80) {
+      if (performance.now() - newest.time < 120) {
         velocityPxPerMs = (newest.x - oldest.x) / dt;
       }
     }
 
     // Clamp velocity to prevent wild teleports
-    velocityPxPerMs = Math.max(-3.5, Math.min(3.5, velocityPxPerMs));
+    velocityPxPerMs = Math.max(-2.8, Math.min(2.8, velocityPxPerMs));
+    const velocityPxPerSec = velocityPxPerMs * 1000; // px/sec
 
-    const spacing = cardSpacingRef.current;
-    const currentX = currentXRef.current;
-
-    // Momentum projection: project position based on velocity
-    const projectedX = currentX + velocityPxPerMs * 220;
-    const targetGlobal = Math.round(-projectedX / spacing);
-    const targetX = -targetGlobal * spacing;
-
-    // Switch to spring settling mode
-    springTargetRef.current = targetX;
-    springVelocityRef.current = velocityPxPerMs * 1000; // px/sec
-    motionModeRef.current = "SPRING";
+    // If there is significant fling/momentum, glide with friction then transition back to DRIFT
+    if (Math.abs(velocityPxPerSec) > IDLE_DRIFT_SPEED) {
+      momentumVelocityRef.current = velocityPxPerSec;
+      motionModeRef.current = "MOMENTUM";
+    } else {
+      // Released slowly: resume continuous drift immediately without any pause!
+      motionModeRef.current = "DRIFT";
+    }
   };
 
   const onPointerCancel = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -340,20 +358,17 @@ export default function InteractiveTeamGallery() {
     setActiveDataIndex(normIdx);
     currentActiveIdxRef.current = normIdx;
 
-    // 2. Smoothly spring the clicked card to the exact center
+    // 2. Smoothly spring the clicked card to center
     springTargetRef.current = targetX;
     springVelocityRef.current = 0;
     motionModeRef.current = "SPRING";
-
-    // 3. Pause auto-drift so user can comfortably inspect the card
-    pauseUntilRef.current = performance.now() + 6000;
   };
 
   const activeMember = teamMembers[activeDataIndex] || teamMembers[0];
 
   return (
     <div className={styles.teamPageWrapper}>
-      {/* 1. Header: Clean typography directly on background (No opaque boxes) */}
+      {/* 1. Header: Clean typography directly on background */}
       <header className={styles.heroHeader}>
         <h1 className={styles.heroTitle}>
           THE <span className={styles.heroAccent}>TEAM</span>
@@ -362,7 +377,7 @@ export default function InteractiveTeamGallery() {
         <p className={styles.heroDepartment}>Department of Mechanical Engineering</p>
       </header>
 
-      {/* 2. Isolated Carousel Viewport (Only the track moves horizontally) */}
+      {/* 2. Isolated Carousel Viewport (Continuous horizontal motion track) */}
       <div
         ref={viewportRef}
         className={`${styles.galleryViewport} ${isGrabbing ? styles.grabbing : ""}`}
@@ -370,7 +385,7 @@ export default function InteractiveTeamGallery() {
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerCancel}
-        aria-label="Interactive Team Carousel. Click any card to center and inspect."
+        aria-label="Interactive Team Carousel. Drag to browse officers, or watch continuous progression."
         role="region"
       >
         <div ref={trackRef} className={styles.track}>
@@ -407,10 +422,10 @@ export default function InteractiveTeamGallery() {
         </div>
       </div>
 
-      {/* 3. Detailed Profile Panel for Active Center Member (No Level-1 2 3 4) */}
+      {/* 3. Detailed Profile Panel for Active Center Member */}
       <section className={styles.activeDetailSection} aria-label="Selected Officer Dossier">
         <div className={styles.detailContainer}>
-          {/* Structural Header Row: ID on Left, Committee on Right (No Level Indicator) */}
+          {/* Structural Header Row: ID on Left, Committee on Right */}
           <div className={styles.detailMetaRow}>
             <div className={styles.detailIdBlock}>
               <span className={styles.detailIdLabel}>OFFICER ID //</span>

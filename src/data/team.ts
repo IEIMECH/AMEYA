@@ -117,7 +117,7 @@ export const teamMembers: TeamMember[] = [
     clearance: "COUNCIL HEAD",
     specialization: "Arena Operations & Schedule Design",
     bio: "Leading festival competitive challenges, ensuring clockwork execution across all 8 championship arenas.",
-    image: "https://res.cloudinary.com/xxwao0ml/image/upload/v1790503426/Tarra.Jayakumar_eventsHead.jpg",
+    image: "/img/members2026/t.jayakumar_events_head.png",
     exploreCoords: { x: 30, y: 40 },
     socials: {
       linkedin: "https://linkedin.com",
@@ -137,7 +137,7 @@ export const teamMembers: TeamMember[] = [
     clearance: "COUNCIL MEMBER",
     specialization: "Competition Logistics & Scorekeeping",
     bio: "Coordinates event hardware, rulebook compliance, and live arena tracking for solo engineering arenas.",
-    image: "https://res.cloudinary.com/xxwao0ml/image/upload/v1790503392/Boddu.Anand_eventsTeam.jpg",
+    image: "/img/members2026/boddu_anand_eventsmember.png",
     exploreCoords: { x: 35, y: 42 },
     socials: {
       linkedin: "https://linkedin.com",
@@ -157,7 +157,7 @@ export const teamMembers: TeamMember[] = [
     clearance: "COUNCIL MEMBER",
     specialization: "Track Marshaling & Hardware Prep",
     bio: "Supervises RC obstacle track calibration and machine shop tooling for teardown challenges.",
-    image: "https://res.cloudinary.com/xxwao0ml/image/upload/v1790503412/p.yaswanth_kumar_eventteam.jpg",
+    image: "/img/members2026/p.yaswanth_kumar_eventsmember.png",
     exploreCoords: { x: 40, y: 44 },
     socials: {
       linkedin: "https://linkedin.com",
@@ -179,7 +179,7 @@ export const teamMembers: TeamMember[] = [
     clearance: "COUNCIL HEAD",
     specialization: "Digital Strategy & Media Broadcast",
     bio: "Heads festival digital campaigns, press bulletins, and multi-channel technical coverage.",
-    image: "https://res.cloudinary.com/xxwao0ml/image/upload/v1790503397/Sk.ameerpasha_SMHead.jpg",
+    image: "/img/members2026/sk.ameer_pasha_social_media_head.png",
     exploreCoords: { x: 70, y: 40 },
     socials: {
       linkedin: "https://linkedin.com",
@@ -199,7 +199,7 @@ export const teamMembers: TeamMember[] = [
     clearance: "COUNCIL MEMBER",
     specialization: "Content Production & Storytelling",
     bio: "Manages event countdown content, video reels, and participant spotlights across digital networks.",
-    image: "https://res.cloudinary.com/xxwao0ml/image/upload/v1790503450/B.srikanth_SMteam.jpg",
+    image: "/img/members2026/b.srikanth_social_media_team.png",
     exploreCoords: { x: 75, y: 42 },
     socials: {
       linkedin: "https://linkedin.com",
@@ -219,7 +219,7 @@ export const teamMembers: TeamMember[] = [
     clearance: "COUNCIL MEMBER",
     specialization: "Live Coverage & Broadcast Telemetry",
     bio: "Produces real-time competition updates, leaderboard announcements, and festival highlights.",
-    image: "https://res.cloudinary.com/xxwao0ml/image/upload/v1790503400/K.HarshaVardhan_SM_member.jpg",
+    image: "/img/members2026/k._harshavardhan_social_mediamember.png",
     exploreCoords: { x: 80, y: 44 },
     socials: {
       linkedin: "https://linkedin.com",
@@ -241,7 +241,7 @@ export const teamMembers: TeamMember[] = [
     clearance: "COUNCIL HEAD",
     specialization: "Identity Architecture & Editorial Design",
     bio: "Curates the visual language, typography, motion styling, and physical stage design for AMEYA '26.",
-    image: "https://res.cloudinary.com/xxwao0ml/image/upload/v1790503456/Syed_sameer_bhasha_designhead.jpg",
+    image: "/img/members2026/s.sameer_basha_design_head.png",
     exploreCoords: { x: 50, y: 70 },
     socials: {
       linkedin: "https://linkedin.com",
@@ -261,7 +261,7 @@ export const teamMembers: TeamMember[] = [
     clearance: "COUNCIL MEMBER",
     specialization: "Graphic Synthesis & Digital Assets",
     bio: "Develops competition posters, certificate credentials, and digital banner assets.",
-    image: "https://res.cloudinary.com/xxwao0ml/image/upload/v1790503500/Ch.navaneethkumar_DesignTeam.png",
+    image: "/img/members2026/ch.navneeth_designmember.png",
     exploreCoords: { x: 55, y: 72 },
     socials: {
       linkedin: "https://linkedin.com",
@@ -281,7 +281,7 @@ export const teamMembers: TeamMember[] = [
     clearance: "COUNCIL MEMBER",
     specialization: "Signage & Spatial Environmental Graphics",
     bio: "Architects campus wayfinding, stage backdrops, and arena visual demarcation.",
-    image: "https://res.cloudinary.com/xxwao0ml/image/upload/v1790503460/A.pawan_ratna_kalyan_designteam.jpg",
+    image: "/img/members2026/a.pawan_ratna_kumar_designmember.png",
     exploreCoords: { x: 60, y: 74 },
     socials: {
       linkedin: "https://linkedin.com",
@@ -303,7 +303,7 @@ export const teamMembers: TeamMember[] = [
     clearance: "EXECUTIVE PRESIDENT",
     specialization: "Student Chapter Leadership & Fest Operations",
     bio: "President of IEI Mechanical Student Chapter, steering the strategic execution, institutional alignment, and overall festival governance of AMEYA '26.",
-    image: "https://res.cloudinary.com/xxwao0ml/image/upload/v1790503434/S.saikumar_president.jpg",
+    image: "/img/members2026/s.sai_kumar_president.png",
     exploreCoords: { x: 50, y: 20 },
     socials: {
       linkedin: "https://linkedin.com",
@@ -323,7 +323,7 @@ export const teamMembers: TeamMember[] = [
     clearance: "VICE PRESIDENT",
     specialization: "Operations Strategy & Cross-Council Sync",
     bio: "Coordinates council execution, institutional approvals, and multi-committee synchronization across both festival days.",
-    image: "https://res.cloudinary.com/xxwao0ml/image/upload/v1790503386/A.L.Harini_viceprisident.jpg",
+    image: "/img/members2026/a.l.harini_vicepresident.png",
     exploreCoords: { x: 55, y: 22 },
     socials: {
       linkedin: "https://linkedin.com",
@@ -343,7 +343,7 @@ export const teamMembers: TeamMember[] = [
     clearance: "SECRETARY",
     specialization: "Administration, Documentation & Archival",
     bio: "Oversees official documentation, student registrations, and council records for the IEI SAME chapter.",
-    image: "https://res.cloudinary.com/xxwao0ml/image/upload/v1790503462/S.D.sairam_secretary.jpg",
+    image: "/img/members2026/s.d.sairam_secretary.png",
     exploreCoords: { x: 60, y: 24 },
     socials: {
       linkedin: "https://linkedin.com",
@@ -365,7 +365,7 @@ export const teamMembers: TeamMember[] = [
     clearance: "COUNCIL HEAD",
     specialization: "Geometric Modeling & GD&T Standards",
     bio: "Heads the AutoCAD & Drafting championship, setting dimensional tolerance rules and CAD evaluation criteria.",
-    image: "https://res.cloudinary.com/xxwao0ml/image/upload/v1790503426/saisuryaganesh_DraftingHead.jpg",
+    image: "/img/members2026/k.s.s.ganesh_draftinghead.png",
     exploreCoords: { x: 20, y: 70 },
     socials: {
       linkedin: "https://linkedin.com",
@@ -385,7 +385,7 @@ export const teamMembers: TeamMember[] = [
     clearance: "COUNCIL MEMBER",
     specialization: "Parametric Modeling & Assembly Verification",
     bio: "Designs CAD benchmark models and conducts workstation validation in the department computer arenas.",
-    image: "https://res.cloudinary.com/xxwao0ml/image/upload/v1790507046/Sk.Basheer_draftingteam.png",
+    image: "/img/members2026/sk._basheer_draftingmember.png",
     exploreCoords: { x: 25, y: 72 },
     socials: {
       linkedin: "https://linkedin.com",
@@ -405,7 +405,7 @@ export const teamMembers: TeamMember[] = [
     clearance: "COUNCIL MEMBER",
     specialization: "Technical Blueprint Evaluation",
     bio: "Assists drafting event coordination, manual drawing sheet grading, and CAD software setup.",
-    image: "https://res.cloudinary.com/xxwao0ml/image/upload/v1790503389/Sk.mohmmadRafi_DraftingTeam.jpg",
+    image: "/img/members2026/sk.md.rafi_draftingmember.png",
     exploreCoords: { x: 30, y: 74 },
     socials: {
       linkedin: "https://linkedin.com",
@@ -427,7 +427,7 @@ export const teamMembers: TeamMember[] = [
     clearance: "COUNCIL HEAD",
     specialization: "Institutional Relations & Guest Reception",
     bio: "Oversees external college liaison, guest hospitality, and delegate reception for regional institutes.",
-    image: "https://res.cloudinary.com/xxwao0ml/image/upload/v1790503482/SK.IfrathFouziya_PRhead.png",
+    image: "/img/members2026/sk_fauziya_prhead.png",
     exploreCoords: { x: 80, y: 70 },
     socials: {
       linkedin: "https://linkedin.com",
@@ -447,7 +447,7 @@ export const teamMembers: TeamMember[] = [
     clearance: "COUNCIL MEMBER",
     specialization: "College Outreach & Registration Desk",
     bio: "Coordinates verification desks, delegate hospitality kits, and inter-collegiate help desks.",
-    image: "https://res.cloudinary.com/xxwao0ml/image/upload/v1790503395/B.Dileep_prteam.jpg",
+    image: "/img/members2026/b.dileep_prmember.png",
     exploreCoords: { x: 85, y: 72 },
     socials: {
       linkedin: "https://linkedin.com",
@@ -467,7 +467,7 @@ export const teamMembers: TeamMember[] = [
     clearance: "COUNCIL MEMBER",
     specialization: "Hospitality Services & Campus Logistics",
     bio: "Coordinates dining arrangements, auditorium seating protocols, and ceremonial logistics.",
-    image: "https://res.cloudinary.com/xxwao0ml/image/upload/v1790503407/D.V.S.Sagar_prteam.jpg",
+    image: "/img/members2026/d.v.s.sagar_prmember.png",
     exploreCoords: { x: 90, y: 74 },
     socials: {
       linkedin: "https://linkedin.com",
