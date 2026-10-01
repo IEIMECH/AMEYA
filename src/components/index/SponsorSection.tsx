@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
@@ -17,6 +17,16 @@ interface SponsorItem {
 }
 
 const exhibitionPartners: SponsorItem[] = [
+  {
+    id: "kc-overseas",
+    category: "GLOBAL EDUCATION PARTNER",
+    name: "KC Overseas Education",
+    descriptor: "Study Abroad Consultants • Guntur",
+    logo: "/img/sponsors/kc-overseas.jpg",
+    website: "https://www.studies-overseas.com/contact-us/study-abroad-consultants-in-guntur",
+    width: 160,
+    height: 59,
+  },
   {
     id: "tata",
     category: "INDUSTRY PARTNER",
