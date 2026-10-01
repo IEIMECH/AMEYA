@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -8,7 +8,6 @@ import Hero3DCanvas from "@/components/index/Hero3DCanvas";
 import HeroCountdownTicker from "@/components/index/HeroCountdownTicker";
 import FestivalStory from "@/components/index/FestivalStory";
 import PhotoWall from "@/components/index/PhotoWall";
-import SpeakerSection from "@/components/index/SpeakerSection";
 import FinalRegisterCta from "@/components/index/FinalRegisterCta";
 import SponsorSection from "@/components/index/SponsorSection";
 import ClosingManifesto from "@/components/index/ClosingManifesto";
@@ -62,7 +61,7 @@ export default function Home() {
         <div className={styles.heroGrid}>
           {/* Main Left Content Block - Unobstructed Headline Dominance */}
           <div className={styles.leftHeroBlock}>
-            {/* Sleek Integrated Countdown Ticker (Independent, no whole-page re-renders) */}
+            {/* Sleek Integrated Countdown Ticker */}
             <HeroCountdownTicker />
 
             {/* Monumental Headline */}
@@ -83,9 +82,6 @@ export default function Home() {
                 <span>EXPLORE EVENTS</span>
                 <ArrowRight size={16} />
               </Link>
-              <Link href="/venue" className={styles.secondaryHeroCta} id="hero-secondary-cta">
-                <span>EXPLORE CAMPUS</span>
-              </Link>
             </div>
           </div>
         </div>
@@ -95,7 +91,7 @@ export default function Home() {
       <SectionTransition variant="orbit-travel" />
 
       {/* ============================================================ */}
-      {/* 02. ABOUT AMEYA: Editorial Statement & Live Counters        */}
+      {/* 02. ABOUT AMEYA: Editorial Statement & Vision               */}
       {/* ============================================================ */}
       <FestivalStory />
 
@@ -111,15 +107,7 @@ export default function Home() {
       <SectionTransition variant="central-dossier" />
 
       {/* ============================================================ */}
-      {/* 04. GUESTS & SPEAKERS: Guest Profiles & Technical Keynotes   */}
-      {/* ============================================================ */}
-      <SpeakerSection />
-
-      {/* Clean 1px Laser Track */}
-      <SectionTransition variant="laser-expand" />
-
-      {/* ============================================================ */}
-      {/* 05. REGISTRATION: Call to Action Strip                      */}
+      {/* 04. REGISTRATION: Call to Action Strip                      */}
       {/* ============================================================ */}
       <FinalRegisterCta onRegisterClick={() => handleOpenRegister()} />
 
@@ -127,7 +115,7 @@ export default function Home() {
       <SectionTransition variant="spacious-axis" />
 
       {/* ============================================================ */}
-      {/* 06. SPONSORS: Industry Partners & Professional Chapters     */}
+      {/* 05. SPONSORS: Industry Partners & Professional Chapters     */}
       {/* ============================================================ */}
       <SponsorSection />
 
@@ -135,7 +123,7 @@ export default function Home() {
       <SectionTransition variant="terminal-horizon" />
 
       {/* ============================================================ */}
-      {/* 07. CLOSING: Manifesto & Department Credits                 */}
+      {/* 06. CLOSING: Manifesto & Department Credits                 */}
       {/* ============================================================ */}
       <ClosingManifesto />
 

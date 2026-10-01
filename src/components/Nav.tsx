@@ -37,8 +37,7 @@ export default function Nav() {
         const sections = [
           { id: "intro", tab: "ABOUT" },
           { id: "experience", tab: "EVENTS" },
-          { id: "speakers", tab: "EVENTS" },
-          { id: "arenas", tab: "EVENTS" },
+                    { id: "arenas", tab: "EVENTS" },
           { id: "register", tab: "INFO" },
           { id: "sponsors", tab: "ABOUT" },
           { id: "manifesto", tab: "ABOUT" },

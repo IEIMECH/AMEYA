@@ -1,11 +1,11 @@
-import type { Metadata, Viewport } from "next";
+﻿import type { Metadata, Viewport } from "next";
 import { Syne, Plus_Jakarta_Sans, Space_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import MobileStickyCTA from "@/components/common/MobileStickyCTA";
-import CookieConsent from "@/components/common/CookieConsent";
 import MotionBackground from "@/components/common/MotionBackground";
+import SectionTransitionOverlay from "@/components/common/SectionTransitionOverlay";
 
 const syne = Syne({
   subsets: ["latin"],
@@ -99,9 +99,9 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         <Nav />
         <MotionBackground />
-                <main>{children}</main>
+        <SectionTransitionOverlay />
+        <main>{children}</main>
         <MobileStickyCTA />
-        <CookieConsent />
         <Footer />
       </body>
     </html>

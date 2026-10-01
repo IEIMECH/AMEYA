@@ -1,10 +1,10 @@
-/* ==========================================================================
-   FESTIVAL STORY & EDITORIAL DATA MODULES (SYMMETRICAL SPACING)
+﻿/* ==========================================================================
+   FESTIVAL STORY & EDITORIAL STATEMENT (CLEAN EDITORIAL BALANCED LAYOUT)
    ========================================================================== */
 
 .section {
   position: relative;
-  padding: 5rem 1.5rem;
+  padding: 4.5rem 1.5rem 3.5rem;
   background: transparent;
   z-index: 2;
 }
@@ -113,134 +113,19 @@
   line-height: 1.6;
 }
 
-.datumDivider {
-  width: 100%;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.08);
-  margin: 3.5rem 0 2.5rem 0;
-}
-
-/* Editorial Data Modules */
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
-}
-
-.statCard {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 1.75rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              background 0.25s ease,
-              border-color 0.25s ease,
-              box-shadow 0.25s ease;
-  cursor: default;
-  opacity: 1;
-}
-
-.statCard:hover {
-  transform: translateY(-3px);
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(229, 29, 37, 0.3);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.8), 0 0 20px rgba(229, 29, 37, 0.08);
-}
-
-.numberWrapper {
-  display: flex;
-  align-items: baseline;
-  gap: 2px;
-  margin-bottom: 0.75rem;
-  line-height: 1;
-}
-
-.statPrefix {
-  font-family: var(--font-display);
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--accent);
-}
-
-.statNumber {
-  font-family: var(--font-display);
-  font-size: clamp(2.4rem, 3.5vw, 3.2rem);
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.02em;
-  transition: color 0.2s ease;
-}
-
-.statCard:hover .statNumber {
-  color: #FFFFFF;
-}
-
-.statSuffix {
-  font-family: var(--font-display);
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--accent);
-}
-
-.statLabel {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #FFFFFF;
-  margin-bottom: 0.25rem;
-}
-
-.statSub {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  line-height: 1.4;
-  margin: 0;
-  transition: color 0.2s ease;
-}
-
-.statCard:hover .statSub {
-  color: var(--text-secondary);
-}
-
 @media (max-width: 1024px) {
   .editorialGrid {
     grid-template-columns: 1fr;
     gap: 2.5rem;
   }
-  .statsGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 
 @media (max-width: 768px) {
   .section {
-    padding: 3.5rem 1.25rem;
+    padding: 3rem 1.25rem 2.5rem;
   }
   .editorialGrid {
     grid-template-columns: 1fr;
     gap: 2rem;
-  }
-  .statsGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
-  .statCard {
-    padding: 1.25rem 1rem;
-  }
-  .statNumber {
-    font-size: clamp(1.8rem, 6vw, 2.4rem);
-  }
-}
-
-@media (max-width: 360px) {
-  .statsGrid {
-    grid-template-columns: 1fr;
   }
 }

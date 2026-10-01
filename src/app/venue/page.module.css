@@ -1,4 +1,4 @@
-.page {
+﻿.page {
   min-height: 100vh;
   padding-top: clamp(8rem, 16vw, 10.5rem);
   padding-bottom: 6rem;
@@ -35,129 +35,69 @@
   margin: 0;
 }
 
-/* Event Locations & Arenas Grid */
-.sectionArea {
-  margin-bottom: 4rem;
-}
-
-.sectionTitle {
-  font-family: var(--font-display);
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: #FFFFFF;
-  margin-bottom: 1.75rem;
-}
-
-.hallsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
-}
-
-.hallCard {
-  background: rgba(255, 255, 255, 0.02);
+/* Venue Overview & Address Banner */
+.venueInfoCard {
+  margin-top: 3rem;
+  margin-bottom: 2.5rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
   border: 1px solid var(--border);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
-  padding: 1.5rem;
+  padding: 1.75rem 2rem;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: space-between;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  gap: 2rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
-.hallCard:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
-}
-
-.hallHeader {
+.venueInfoContent {
   display: flex;
-  justify-content: space-between;
   align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
+  gap: 1.25rem;
 }
 
-.hallName {
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: #FFFFFF;
-  line-height: 1.3;
-  margin: 0;
-}
-
-.hallZone {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 600;
+.venuePinIcon {
   color: var(--accent);
-  background: rgba(229, 29, 37, 0.1);
-  padding: 3px 8px;
-  border-radius: 6px;
-  white-space: nowrap;
+  margin-top: 0.25rem;
+  flex-shrink: 0;
 }
 
-.hallMetaSection {
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  padding-top: 1rem;
-}
-
-.hallMetaLabel {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
+.venueInfoText h3 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
   font-weight: 700;
-  color: var(--text-muted);
-  letter-spacing: 0.06em;
-  margin-bottom: 0.25rem;
-}
-
-.hallCapacity {
-  font-family: var(--font-mono);
-  font-size: 0.88rem;
   color: #FFFFFF;
-  font-weight: 600;
-  margin-bottom: 0.85rem;
+  margin: 0 0 0.4rem;
 }
 
-.hallEventsLabel {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  letter-spacing: 0.06em;
-  margin-bottom: 0.2rem;
-}
-
-.hallEvents {
-  font-size: 0.85rem;
+.venueInfoText p {
+  font-size: 0.9rem;
   color: var(--text-secondary);
-  line-height: 1.45;
+  line-height: 1.5;
   margin: 0;
 }
 
-/* Travel Guide */
-.travelCard {
+/* College Bus Transportation Card */
+.transportCard {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
   border: 1px solid var(--border);
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 2px solid var(--accent);
   border-radius: 18px;
   padding: 2.25rem;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
+  margin-bottom: 2.5rem;
 }
 
-.travelHead {
+.transportHead {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
 }
 
-.travelTitle {
+.transportTitle {
   font-family: var(--font-display);
   font-size: 1.5rem;
   font-weight: 700;
@@ -165,47 +105,12 @@
   margin: 0;
 }
 
-.travelDesc {
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-  margin-bottom: 2rem;
-  max-width: 720px;
-  line-height: 1.55;
-}
-
-.transitGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.5rem;
-}
-
-.transitItem {
-  padding: 1.25rem;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-}
-
-.transitItemHead {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.transitItemTitle {
-  font-family: var(--font-sans);
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #FFFFFF;
-  margin: 0;
-}
-
-.transitItemDesc {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  margin: 0;
+.transportDesc {
+  font-size: 1rem;
+  color: #E6E1DC;
+  margin: 0 0 2rem;
+  max-width: 760px;
+  line-height: 1.6;
 }
 
 /* Transport & Hospitality POC Banner */
@@ -218,7 +123,6 @@
   border: 1px solid rgba(229, 29, 37, 0.25);
   border-radius: 14px;
   padding: 1.25rem 1.5rem;
-  margin-top: 2rem;
 }
 
 .pocCalloutInfo {
@@ -282,13 +186,12 @@
   .header {
     margin-bottom: 1.75rem;
   }
-  .hallsGrid {
-    grid-template-columns: 1fr;
+  .venueInfoCard {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.25rem;
   }
-  .transitGrid {
-    grid-template-columns: 1fr;
-  }
-  .travelCard {
+  .transportCard {
     padding: 1.5rem;
   }
   .pocCallout {
