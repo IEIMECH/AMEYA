@@ -1,4 +1,4 @@
-﻿/* Prevent native browser ghost-image dragging across all images and interactive cards */
+/* Prevent native browser ghost-image dragging across all images and interactive cards */
 img,
 [data-next-image],
 .next-image {

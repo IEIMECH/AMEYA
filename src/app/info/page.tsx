@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { Calendar, Clock, MapPin, CheckCircle } from "lucide-react";
 import styles from "./page.module.css";
 

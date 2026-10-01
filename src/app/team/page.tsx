@@ -1,4 +1,4 @@
-﻿import { Metadata } from "next";
+import { Metadata } from "next";
 import InteractiveTeamGallery from "@/components/team/InteractiveTeamGallery";
 
 export const metadata: Metadata = {

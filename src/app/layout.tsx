@@ -1,4 +1,4 @@
-﻿import type { Metadata, Viewport } from "next";
+import type { Metadata, Viewport } from "next";
 import { Syne, Plus_Jakarta_Sans, Space_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/Nav";

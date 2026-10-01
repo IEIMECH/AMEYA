@@ -1,6 +1,6 @@
 .pageWrapper {
   min-height: 100vh;
-  padding-top: clamp(8rem, 16vw, 10.5rem);
+  padding-top: var(--header-safe-space, clamp(8.5rem, 12vw, 11rem));
   padding-bottom: 6rem;
   background: var(--bg);
   position: relative;
@@ -169,7 +169,7 @@
 
 @media (max-width: 768px) {
   .pageWrapper {
-    padding-top: clamp(7rem, 14vw, 8.5rem);
+    padding-top: clamp(6.5rem, 14vw, 8rem);
     padding-bottom: 4rem;
   }
   .headerArea {

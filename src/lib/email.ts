@@ -1,4 +1,4 @@
-﻿import nodemailer, { type SendMailOptions } from "nodemailer";
+import nodemailer, { type SendMailOptions } from "nodemailer";
 import { Resend } from "resend";
 
 interface TicketEmailParams {

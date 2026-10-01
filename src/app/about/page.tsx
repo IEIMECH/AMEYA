@@ -1,4 +1,4 @@
-﻿import { Lightbulb, Target, Users, Award } from "lucide-react";
+import { Lightbulb, Target, Users, Award } from "lucide-react";
 import styles from "./page.module.css";
 
 export const metadata = {

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useRef, useState, MouseEvent } from "react";
 import {

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * AMEYA '26 Transportation & Bus Schedule Configuration
  * 
  * To activate the embedded PDF viewer:

@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { Check, Calendar, ArrowRight, ShieldCheck, Terminal, Compass } from "lucide-react";
 import styles from "./page.module.css";
 

@@ -1,4 +1,4 @@
-﻿export type EventCategory = "Technical" | "Non-technical";
+export type EventCategory = "Technical" | "Non-technical";
 
 export interface Event {
   id: string;

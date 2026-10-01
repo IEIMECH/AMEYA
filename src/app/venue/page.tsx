@@ -1,4 +1,4 @@
-﻿import { Bus, Phone, MapPin } from "lucide-react";
+import { Bus, Phone, MapPin } from "lucide-react";
 import Venue3DViewer from "@/components/venue/Venue3DViewer";
 import BusScheduleViewer from "@/components/venue/BusScheduleViewer";
 import { BUS_SCHEDULE_CONFIG } from "@/data/transportation";

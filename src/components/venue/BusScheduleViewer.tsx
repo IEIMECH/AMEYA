@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useRef } from "react";
 import { FileText, Download, ExternalLink, Bus, Clock, Maximize2 } from "lucide-react";
