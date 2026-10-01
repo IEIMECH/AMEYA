@@ -1,10 +1,10 @@
 {
-  "name": "AMEYA '26 — National Technical Conclave",
-  "short_name": "AMEYA '26",
+  "name": "Ameya",
+  "short_name": "Ameya",
   "description": "National Mechanical Engineering Technical Conclave at VVIIT Nambur",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#080808",
+  "background_color": "#050505",
   "theme_color": "#E51D25",
   "icons": [
     {

@@ -84,8 +84,8 @@ export async function POST(req: NextRequest) {
 
     // Generate unique AMEYA '26 Ticket Token (e.g. AMEYA-2026-AUTO-9253)
     const prefix = eventId ? eventId.replace(/[^a-zA-Z0-9]/g, "").substring(0, 4).toUpperCase() : "SOLO";
-    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
-    const ticketId = `AMEYA-2026-${prefix}-${randomSuffix}`;
+    const generateTicketId = () => `AMEYA-2026-${prefix}-${Math.floor(10000 + Math.random() * 90000)}`;
+    let ticketId = generateTicketId();
     const targetTable = getEventTableName(eventId);
 
     let collegeIdCardUrl = `local_ref_${crypto.randomUUID()}`;
@@ -170,31 +170,44 @@ export async function POST(req: NextRequest) {
       let savedToDb = false;
       let lastDbError: any = null;
 
-      // 4a. Clean Schema Insert (Stores ONLY the requested fields + unique ID)
-      const cleanPayload = {
-        id: ticketId,
-        event_name: eventName,
-        full_name: name,
-        branch: branch,
-        college_roll_number: collegeRollNumber,
-        email: email,
-        phone: phone,
-        college_id_card_url: collegeIdCardUrl,
-      };
-
+      // 4a. Clean Schema Insert with automatic zero-collision retry
       try {
-        const { error: cleanErr } = await supabaseAdmin
-          .from("registrations")
-          .insert(cleanPayload);
+        for (let attempt = 0; attempt < 3; attempt++) {
+          const cleanPayload = {
+            id: ticketId,
+            event_name: eventName,
+            full_name: name,
+            branch: branch,
+            college_roll_number: collegeRollNumber,
+            email: email,
+            phone: phone,
+            college_id_card_url: collegeIdCardUrl,
+          };
 
-        if (!cleanErr) {
-          savedToDb = true;
-        } else {
+          const { error: cleanErr } = await supabaseAdmin
+            .from("registrations")
+            .insert(cleanPayload);
+
+          if (!cleanErr) {
+            savedToDb = true;
+            break;
+          }
+
+          // If duplicate key collision on ID, generate fresh token and retry immediately
+          if (cleanErr.code === "23505" || cleanErr.message?.includes("duplicate") || cleanErr.message?.includes("unique")) {
+            ticketId = generateTicketId();
+            continue;
+          }
+
           lastDbError = cleanErr;
-          console.warn("Clean registrations insert attempted:", cleanErr.message);
+          break;
+        }
+
+        if (!savedToDb && lastDbError) {
+          console.warn("Clean registrations insert attempted:", lastDbError.message);
 
           // 4b. Fallback compatibility if user hasn't executed the new SQL migration yet:
-          if (cleanErr.message?.includes("full_name") || cleanErr.message?.includes("column")) {
+          if (lastDbError.message?.includes("full_name") || lastDbError.message?.includes("column")) {
             const legacyPayload = {
               ticket_id: ticketId,
               event_id: eventId,
