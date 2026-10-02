@@ -39,13 +39,14 @@ The platform provides a modern, cyberpunk-industrial web experience combining re
    - Professional HTML ticket format including event day, reporting instructions, student POC contacts, and official sign-off from **Team - IEI SAME**.
    - Online responsive digital gate pass (`/ticket/[id]`) with live gate verification stamping.
 
-4. **4-Tier Operations Console (`/admin`)**
+4. **5-Tier Executive Operations Console (`/admin`)**
    - Protected by Next.js Edge Middleware route guards.
-   - 4 role-based administrator accounts backed by environment variables (zero passwords or credentials committed to Git):
-     1. **Lead Administrator** (`admin`): Full festival oversight and event controls.
-     2. **Operations Desk** (`operations`): Registration verification and attendee auditing.
-     3. **Events Secretariat** (`events`): Arena management and event attendance tracking.
-     4. **Gate & Hospitality** (`hospitality`): Gate scanning and campus transit logistics.
+   - 5 executive leadership accounts backed by environment variables (zero passwords or credentials committed to Git):
+     1. **President**: Full festival executive control, event management, and system oversight.
+     2. **Vice President**: Executive operations, cross-domain coordination, and attendee auditing.
+     3. **Secretary**: Secretariat records, communication inquiries, and attendee approvals.
+     4. **Events Head**: Championship arena management, live scoring, and event attendance tracking.
+     5. **Technicals**: Technical infrastructure oversight, gate scanning, and database audit logs.
    - Cryptographically signed HMAC-SHA256 session tokens stored in secure, `httpOnly` cookies.
    - In-memory brute-force rate limiting (max 5 attempts, 15-minute lockouts).
    - Real-time attendee dashboard with live search, event filtering, attendance toggles, and CSV exports.
@@ -127,10 +128,11 @@ Populate the required keys in `.env.local` (or configure them in your **Vercel P
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase public client anonymous key |
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase elevated service role key (Server-only) |
 | `ADMIN_SESSION_SECRET` | 64-character random secret for signing session tokens |
-| `ADMIN_USER_1` / `ADMIN_PASS_1` | Account 1: Lead Administrator (Super Admin) |
-| `ADMIN_USER_2` / `ADMIN_PASS_2` | Account 2: Operations & Registration Desk |
-| `ADMIN_USER_3` / `ADMIN_PASS_3` | Account 3: Events & Arena Secretariat |
-| `ADMIN_USER_4` / `ADMIN_PASS_4` | Account 4: Gate & Hospitality Coordination |
+| `ADMIN_USER_1` / `ADMIN_PASS_1` | Account 1: President |
+| `ADMIN_USER_2` / `ADMIN_PASS_2` | Account 2: Vice President |
+| `ADMIN_USER_3` / `ADMIN_PASS_3` | Account 3: Secretary |
+| `ADMIN_USER_4` / `ADMIN_PASS_4` | Account 4: Events Head |
+| `ADMIN_USER_5` / `ADMIN_PASS_5` | Account 5: Technicals Lead |
 | `SMTP_HOST` / `SMTP_PORT` | Primary SMTP host (`smtp.gmail.com` / `465`) |
 | `SMTP_USER` / `SMTP_PASS` | Primary SMTP authenticated account & App Password |
 | `SMTP_FROM` | Sender display name & address |
@@ -180,7 +182,7 @@ npm run start
 
 2. **Zero-Credentials-In-Git Policy**:
    - Administrator authentication does not store plaintext or hashed credentials in Git.
-   - 4 distinct role-based accounts are verified dynamically at runtime via secure environment variables (`ADMIN_USER_1..4`, `ADMIN_PASS_1..4`).
+   - 5 distinct executive accounts are verified dynamically at runtime via secure environment variables (`ADMIN_USER_1..5`, `ADMIN_PASS_1..5`).
    - Passwords are verified in constant time (`crypto.timingSafeEqual`) to mitigate timing side-channel exploits.
 
 ---

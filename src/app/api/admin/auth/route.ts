@@ -23,46 +23,62 @@ interface AdminAccount {
 }
 
 /**
- * AMEYA '26 Dynamic 4-Tier Operations Console Accounts
- * Backed by Environment Variables — Zero credentials committed to Git.
+ * AMEYA '26 — 5 Executive Leadership & Operations Console Accounts
+ * Configured via Environment Variables — Zero credentials committed to Git.
+ * 
+ * Roles:
+ * 1. President
+ * 2. Vice President
+ * 3. Secretary
+ * 4. Events Head
+ * 5. Technicals
  */
 function getAdminAccounts(): AdminAccount[] {
   return [
     {
       id: "admin-1",
-      username: (process.env.ADMIN_USER_1 || process.env.ADMIN_USERNAME || "admin").trim().toLowerCase(),
-      aliases: ["admin1", "lead"],
-      password: (process.env.ADMIN_PASS_1 || process.env.ADMIN_PASSWORD || "ameya@admin2026").trim(),
-      name: process.env.ADMIN_NAME_1 || "Lead Administrator",
-      role: "Super Admin // General Secretariat",
+      username: (process.env.ADMIN_USER_1 || "president").trim().toLowerCase(),
+      aliases: ["pres", "admin", "admin1"],
+      password: (process.env.ADMIN_PASS_1 || "ameya@president2026").trim(),
+      name: process.env.ADMIN_NAME_1 || "President",
+      role: "President // IEI SAME",
       avatarColor: "#E51D25",
     },
     {
       id: "admin-2",
-      username: (process.env.ADMIN_USER_2 || "operations").trim().toLowerCase(),
-      aliases: ["admin2", "ops"],
-      password: (process.env.ADMIN_PASS_2 || "ameya@ops2026").trim(),
-      name: process.env.ADMIN_NAME_2 || "Operations Desk",
-      role: "Operations Coordinator",
+      username: (process.env.ADMIN_USER_2 || "vicepresident").trim().toLowerCase(),
+      aliases: ["vp", "vice-president", "vice_president", "admin2"],
+      password: (process.env.ADMIN_PASS_2 || "ameya@vp2026").trim(),
+      name: process.env.ADMIN_NAME_2 || "Vice President",
+      role: "Vice President // IEI SAME",
       avatarColor: "#0284c7",
     },
     {
       id: "admin-3",
-      username: (process.env.ADMIN_USER_3 || "events").trim().toLowerCase(),
-      aliases: ["admin3", "event"],
-      password: (process.env.ADMIN_PASS_3 || "ameya@events2026").trim(),
-      name: process.env.ADMIN_NAME_3 || "Events Secretariat",
-      role: "Events Coordinator",
+      username: (process.env.ADMIN_USER_3 || "secretary").trim().toLowerCase(),
+      aliases: ["sec", "admin3"],
+      password: (process.env.ADMIN_PASS_3 || "ameya@sec2026").trim(),
+      name: process.env.ADMIN_NAME_3 || "Secretary",
+      role: "Secretary // IEI SAME",
       avatarColor: "#16a34a",
     },
     {
       id: "admin-4",
-      username: (process.env.ADMIN_USER_4 || "hospitality").trim().toLowerCase(),
-      aliases: ["admin4", "gate"],
-      password: (process.env.ADMIN_PASS_4 || "ameya@gate2026").trim(),
-      name: process.env.ADMIN_NAME_4 || "Gate & Hospitality",
-      role: "Transport & Gate Lead",
+      username: (process.env.ADMIN_USER_4 || "eventshead").trim().toLowerCase(),
+      aliases: ["events", "events-head", "events_head", "admin4"],
+      password: (process.env.ADMIN_PASS_4 || "ameya@events2026").trim(),
+      name: process.env.ADMIN_NAME_4 || "Events Head",
+      role: "Events Head // IEI SAME",
       avatarColor: "#d97706",
+    },
+    {
+      id: "admin-5",
+      username: (process.env.ADMIN_USER_5 || "technicals").trim().toLowerCase(),
+      aliases: ["tech", "technical", "technicals-lead", "admin5"],
+      password: (process.env.ADMIN_PASS_5 || "ameya@tech2026").trim(),
+      name: process.env.ADMIN_NAME_5 || "Technicals Lead",
+      role: "Technicals Lead // IEI SAME",
+      avatarColor: "#8b5cf6",
     },
   ];
 }
@@ -100,7 +116,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 2. Lookup Matched Coordinator Account
+    // 2. Lookup Matched Executive / Coordinator Account
     const accounts = getAdminAccounts();
     const matchedAccount = accounts.find(
       (acc) => acc.username === cleanUser || acc.aliases.includes(cleanUser)
