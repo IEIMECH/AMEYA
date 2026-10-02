@@ -114,16 +114,25 @@
 
 .navLink:hover {
   color: #FFFFFF;
-  background: rgba(255, 255, 255, 0.08);
 }
 
 .navLink:active {
   transform: scale(0.96) !important;
 }
 
+.hoverBackground {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  z-index: 0;
+}
+
 .activeNavLink {
   color: #FFFFFF !important;
-  background: rgba(255, 255, 255, 0.1);
 }
 
 /* Subtle active accent indicator line underneath text */

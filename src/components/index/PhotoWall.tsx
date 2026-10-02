@@ -13,11 +13,11 @@ interface PhotoItem {
 }
 
 const photoArchive: PhotoItem[] = [
-  { id: 1, src: "/img/Hero/photowall_1.jpeg", caption: "Precision CNC Machine Calibration" },
-  { id: 2, src: "/img/Hero/photowall_2.jpeg", caption: "Kinetic RC Car Obstacle Track" },
-  { id: 3, src: "/img/Hero/photowall_3.jpeg", caption: "AutoCAD 3D Modeling Arena" },
-  { id: 4, src: "/img/Hero/photowall_4.jpeg", caption: "High-Speed Mechanical Teardown" },
-  { id: 5, src: "/img/Hero/photowall_5.jpeg", caption: "Department Assembly & Awards" },
+  { id: 1, src: "/img/Hero/photowall_1.jpeg", caption: "registrations" },
+  { id: 2, src: "/img/Hero/photowall_2.jpeg", caption: "Seminar Hall Gathering" },
+  { id: 3, src: "/img/Hero/photowall_3.jpeg", caption: "Fun Event all along the Ameya" },
+  { id: 4, src: "/img/Hero/photowall_4.jpeg", caption: "Safe and interaction Environment" },
+  { id: 5, src: "/img/Hero/photowall_5.jpeg", caption: "Opening Ceremony" },
 ];
 
 export default function PhotoWall() {
@@ -162,11 +162,9 @@ export default function PhotoWall() {
                     priority={idx === 2}
                   />
                   <div className={styles.vignetteOverlay} />
-                  {isCenter && (
-                    <div className={styles.captionTag}>
-                      <span>{item.caption}</span>
-                    </div>
-                  )}
+                  <div className={`${styles.captionTag} ${isCenter ? styles.captionTagActive : ""}`}>
+                    <span>{item.caption}</span>
+                  </div>
                 </div>
               </motion.div>
             );
