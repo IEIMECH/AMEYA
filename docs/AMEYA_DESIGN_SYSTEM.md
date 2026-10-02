@@ -1,6 +1,6 @@
 # AMEYA // SYSTEM
 ## Unified Engineering Design System Specification for AMEYA '26
-*Department of Mechanical Engineering & The Institution of Engineers (India) Students' Chapter (IEI SAME), VVIIT Nambur*
+*Department of Mechanical Engineering & The Institution of Engineers (India) Students' Chapter (IEI SAME), VVIT Nambur*
 
 ---
 

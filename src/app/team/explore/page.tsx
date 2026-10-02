@@ -3,7 +3,7 @@ import ExploreUniverse from "@/components/team/ExploreUniverse";
 
 export const metadata: Metadata = {
   title: "Cadre Universe Explorer — AMEYA '26 | IEI SAME",
-  description: "Interactive 2.5D draggable universe exploring the engineering council and organizing cadre behind AMEYA '26 at VVIIT Nambur.",
+  description: "Interactive 2.5D draggable universe exploring the engineering council and organizing cadre behind AMEYA '26 at VVIT Nambur.",
 };
 
 export default function TeamExplorePage() {

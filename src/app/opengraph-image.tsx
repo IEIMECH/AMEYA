@@ -128,7 +128,7 @@ export default async function Image() {
           }}
         >
           <span>DEPARTMENT OF MECHANICAL ENGINEERING</span>
-          <span style={{ color: "#E51D25" }}>VVIIT // NAMBUR, GUNTUR</span>
+          <span style={{ color: "#E51D25" }}>VVIT // NAMBUR, GUNTUR</span>
         </div>
       </div>
     ),

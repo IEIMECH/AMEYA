@@ -47,19 +47,19 @@ export const metadata: Metadata = {
     template: "%s",
   },
   description:
-    "Explore AMEYA '26 at VVIIT Nambur — premier national mechanical engineering technical conclave featuring AutoCAD, Assemble & Disassemble, RC Car Challenge, Engineering Drawing, and engineering championships.",
+    "Explore AMEYA '26 at VVIT Nambur — premier national mechanical engineering technical conclave featuring AutoCAD, Assemble & Disassemble, RC Car Challenge, Engineering Drawing, and engineering championships.",
   keywords: [
     "AMEYA 2026",
     "IEI SAME",
-    "VVIIT Nambur",
+    "VVIT Nambur",
     "Mechanical Engineering Conclave",
     "RC Car Challenge",
     "AutoCAD",
     "Engineering Drawing",
     "Autonomous Robotics",
   ],
-  authors: [{ name: "IEI SAME Student Chapter, VVIIT" }],
-  creator: "Department of Mechanical Engineering, VVIIT Nambur",
+  authors: [{ name: "IEI SAME Student Chapter, VVIT" }],
+  creator: "Department of Mechanical Engineering, VVIT Nambur",
   manifest: "/site.webmanifest",
   icons: {
     icon: [
@@ -72,7 +72,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "AMEYA '26 — National Technical Conclave | IEI SAME",
-    description: "Where Engineers Dare to Dream. October 08–09, 2026 at VVIIT Nambur, Guntur.",
+    description: "Where Engineers Dare to Dream. October 08–09, 2026 at VVIT Nambur, Guntur.",
     url: process.env.NEXT_PUBLIC_BASE_URL || "https://ameyafest.vercel.app",
     siteName: "AMEYA '26",
     locale: "en_US",
@@ -81,7 +81,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "AMEYA '26 — National Technical Conclave | IEI SAME",
-    description: "Where Engineers Dare to Dream. Autonomous Robotics, 24H Prototyping & CAD at VVIIT Nambur.",
+    description: "Where Engineers Dare to Dream. Autonomous Robotics, 24H Prototyping & CAD at VVIT Nambur.",
   },
 };
 

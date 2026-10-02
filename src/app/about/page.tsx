@@ -3,7 +3,7 @@ import styles from "./page.module.css";
 
 export const metadata = {
   title: "About & Engineering Legacy - AMEYA '26 | IEI SAME",
-  description: "Discover the engineering heritage and vision of AMEYA - organized by the Department of Mechanical Engineering and IEI Students' Chapter at VVIIT Nambur.",
+  description: "Discover the engineering heritage and vision of AMEYA - organized by the Department of Mechanical Engineering and IEI Students' Chapter at VVIT Nambur.",
 };
 
 const pillars = [

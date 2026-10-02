@@ -29,7 +29,7 @@ export async function GET(
         ticket_id: id,
         event_name: "AMEYA '26 Accreditation",
         leader_name: "Ameya Delegate",
-        college: "VVIIT Nambur",
+        college: "VVIT Nambur",
         year: "2026",
         is_team: false,
         team_id: `ID-${id.slice(-5)}`,
