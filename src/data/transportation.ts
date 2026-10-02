@@ -1,17 +1,12 @@
 /**
  * AMEYA '26 Transportation & Bus Schedule Configuration
  * 
- * To activate the embedded PDF viewer:
- * 1. Place the official PDF in the public directory (e.g., public/documents/college_bus_schedule.pdf)
- * 2. Set `pdfUrl` below to the file path (e.g., "/documents/college_bus_schedule.pdf") or any public URL.
- * 
- * While `pdfUrl` is an empty string (""), the component automatically displays the polished
- * "Bus schedule will be available soon" placeholder.
+ * Official PDF located in /public/VVIT_Bus_Routes.pdf
  */
 export const BUS_SCHEDULE_CONFIG = {
-  pdfUrl: "", // <-- Place bus schedule PDF path/URL here when available
-  title: "College Bus Schedule",
-  description: "View the official bus schedule and plan your journey accordingly.",
+  pdfUrl: "/VVIT_Bus_Routes.pdf",
+  title: "VVIT College Bus Routes & Schedule",
+  description: "View the official college bus routes, boarding points, and schedule for AMEYA 2026.",
   emptyNotice: "Bus schedule will be available soon.",
   emptySubnotice: "Please check back later for the official transportation schedule.",
   poc: {

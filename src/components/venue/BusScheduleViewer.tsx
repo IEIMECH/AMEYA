@@ -67,7 +67,7 @@ export default function BusScheduleViewer({
           <div className={styles.toolbar}>
             <a
               href={pdfUrl}
-              download="Ameya26_College_Bus_Schedule.pdf"
+              download="VVIT_Bus_Routes.pdf"
               className={styles.toolbarBtn}
               title="Download Bus Schedule"
             >

@@ -1,7 +1,6 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import Image from "next/image";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
@@ -19,7 +18,6 @@ export interface CampusBuilding {
   position: [number, number, number];
   camPos: [number, number, number];
   lookAt: [number, number, number];
-  photoCoords?: { top: string; left: string };
 }
 
 export interface CameraPreset {
@@ -38,7 +36,6 @@ const campusBuildings: CampusBuilding[] = [
     position: [0, 8, 0],
     camPos: [0, 28, 38],
     lookAt: [0, 6, 0],
-    photoCoords: { top: "45%", left: "48%" },
   },
   {
     id: "Loyalty_1",
@@ -47,7 +44,6 @@ const campusBuildings: CampusBuilding[] = [
     position: [36, 8, -26],
     camPos: [48, 24, -10],
     lookAt: [36, 6, -26],
-    photoCoords: { top: "35%", left: "62%" },
   },
   {
     id: "Loyalty_2",
@@ -56,7 +52,6 @@ const campusBuildings: CampusBuilding[] = [
     position: [36, 8, 26],
     camPos: [48, 24, 42],
     lookAt: [36, 6, 26],
-    photoCoords: { top: "58%", left: "62%" },
   },
   {
     id: "Loyalty_3",
@@ -65,7 +60,6 @@ const campusBuildings: CampusBuilding[] = [
     position: [-36, 8, 26],
     camPos: [-48, 24, 42],
     lookAt: [-36, 6, 26],
-    photoCoords: { top: "58%", left: "36%" },
   },
   {
     id: "Loyalty_4",
@@ -74,7 +68,6 @@ const campusBuildings: CampusBuilding[] = [
     position: [-36, 8, -26],
     camPos: [-48, 24, -10],
     lookAt: [-36, 6, -26],
-    photoCoords: { top: "35%", left: "36%" },
   },
   {
     id: "H_Block",
@@ -83,7 +76,6 @@ const campusBuildings: CampusBuilding[] = [
     position: [0, 6, -66],
     camPos: [0, 24, -36],
     lookAt: [0, 6, -66],
-    photoCoords: { top: "24%", left: "48%" },
   },
   {
     id: "OAT",
@@ -92,7 +84,6 @@ const campusBuildings: CampusBuilding[] = [
     position: [0, 3, 38],
     camPos: [0, 24, 62],
     lookAt: [0, 3, 38],
-    photoCoords: { top: "66%", left: "48%" },
   },
 ];
 
@@ -122,7 +113,6 @@ export default function Venue3DViewer() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const [activeTab, setActiveTab] = useState<"3d" | "photo">("3d");
   const [selectedBuilding, setSelectedBuilding] = useState<CampusBuilding>(campusBuildings[0]);
   const [activePreset, setActivePreset] = useState<string>("isometric");
   const [autoRotate, setAutoRotate] = useState<boolean>(false);
@@ -143,7 +133,7 @@ export default function Venue3DViewer() {
     setSelectedBuilding(building);
     setActivePreset("");
 
-    if (cameraRef.current && controlsRef.current && activeTab === "3d") {
+    if (cameraRef.current && controlsRef.current) {
       targetControlsTarget.current.set(...building.lookAt);
       targetCamPos.current.set(...building.camPos);
       isTransitioning.current = true;
@@ -157,7 +147,7 @@ export default function Venue3DViewer() {
         highlightSpotlight.current.target.position.set(...building.position);
       }
     }
-  }, [activeTab]);
+  }, []);
 
   // Apply Camera Preset (Isometric 45°, Top View, Front View)
   const handleApplyPreset = (preset: CameraPreset) => {
@@ -176,7 +166,7 @@ export default function Venue3DViewer() {
 
   // Three.js Scene Setup & Model Loading
   useEffect(() => {
-    if (activeTab !== "3d" || !canvasRef.current || !containerRef.current) return;
+    if (!canvasRef.current || !containerRef.current) return;
 
     let isRunning = true;
     let animId: number | null = null;
@@ -386,153 +376,92 @@ export default function Venue3DViewer() {
       window.removeEventListener("resize", handleResize);
       renderer.dispose();
     };
-  }, [activeTab, autoRotate, handleFocusBuilding]);
+  }, [autoRotate, handleFocusBuilding]);
 
   return (
     <div ref={containerRef} className={styles.container}>
       {/* Top Floating Control Bar */}
       <div className={styles.topBar}>
-        {/* Left: Mode switcher (3D Campus vs Aerial Photo) + Minimal Active Indicator */}
+        {/* Left: Active Building Indicator Pill */}
         <div style={{ display: "flex", alignItems: "center", gap: "10px", pointerEvents: "auto" }}>
-          <div className={styles.modeSwitcher}>
-            <button
-              type="button"
-              onClick={() => setActiveTab("3d")}
-              className={`${styles.modeBtn} ${activeTab === "3d" ? styles.modeBtnActive : ""}`}
-            >
-              3D CAMPUS
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("photo")}
-              className={`${styles.modeBtn} ${activeTab === "photo" ? styles.modeBtnActive : ""}`}
-            >
-              AERIAL PHOTO
-            </button>
+          <div className={styles.activeBuildingPill}>
+            <span className={styles.activeBuildingDot} />
+            <span>{selectedBuilding.name}</span>
           </div>
-
-          {activeTab === "3d" && (
-            <div className={styles.activeBuildingPill}>
-              <span className={styles.activeBuildingDot} />
-              <span>{selectedBuilding.name}</span>
-            </div>
-          )}
         </div>
 
         {/* Right: Camera Action Controls */}
-        {activeTab === "3d" && (
-          <div className={styles.topActions}>
-            <button
-              type="button"
-              onClick={() => setAutoRotate(!autoRotate)}
-              title="Toggle Auto Orbit"
-              className={`${styles.actionBtn} ${autoRotate ? styles.actionBtnActive : ""}`}
-            >
-              <RotateCw size={12} />
-              <span>ORBIT</span>
-            </button>
+        <div className={styles.topActions}>
+          <button
+            type="button"
+            onClick={() => setAutoRotate(!autoRotate)}
+            title="Toggle Auto Orbit"
+            className={`${styles.actionBtn} ${autoRotate ? styles.actionBtnActive : ""}`}
+          >
+            <RotateCw size={12} />
+            <span>ORBIT</span>
+          </button>
 
-            <button
-              type="button"
-              onClick={handleResetCamera}
-              title="Reset to Isometric View"
-              className={styles.actionBtn}
-            >
-              <RotateCcw size={12} />
-              <span>RESET</span>
-            </button>
-          </div>
-        )}
+          <button
+            type="button"
+            onClick={handleResetCamera}
+            title="Reset to Isometric View"
+            className={styles.actionBtn}
+          >
+            <RotateCcw size={12} />
+            <span>RESET</span>
+          </button>
+        </div>
       </div>
 
       {/* Preset Camera Viewpoints Bar: Isometric 45°, Top View, Front View */}
-      {activeTab === "3d" && (
-        <div className={styles.presetsBar}>
-          <span style={{ fontSize: "0.65rem", fontFamily: "var(--font-mono)", color: "#71717a", padding: "4px 6px" }}>
-            VIEW:
-          </span>
-          {cameraPresets.map((preset) => (
-            <button
-              key={preset.id}
-              type="button"
-              onClick={() => handleApplyPreset(preset)}
-              className={`${styles.presetBtn} ${activePreset === preset.id ? styles.presetBtnActive : ""}`}
-            >
-              {preset.label}
-            </button>
-          ))}
-        </div>
-      )}
+      <div className={styles.presetsBar}>
+        <span style={{ fontSize: "0.65rem", fontFamily: "var(--font-mono)", color: "#71717a", padding: "4px 6px" }}>
+          VIEW:
+        </span>
+        {cameraPresets.map((preset) => (
+          <button
+            key={preset.id}
+            type="button"
+            onClick={() => handleApplyPreset(preset)}
+            className={`${styles.presetBtn} ${activePreset === preset.id ? styles.presetBtnActive : ""}`}
+          >
+            {preset.label}
+          </button>
+        ))}
+      </div>
 
       {/* Main View Area (Unobscured 3D Viewport) */}
       <div className={styles.viewportArea}>
-        {activeTab === "3d" ? (
-          <>
-            <canvas ref={canvasRef} className={styles.canvas} />
+        <canvas ref={canvasRef} className={styles.canvas} />
 
-            {/* Loading Indicator */}
-            {isLoading && (
-              <div className={styles.loadingOverlay}>
-                <div className={styles.loadingSpinner} />
-                <div className={styles.loadingTitle}>GENERATING VVIT CENTRAL COMPLEX 3D MODEL</div>
-                <div className={styles.loadingSub}>Loading Central Block, Loyalty 1–4, H-Block &amp; OAT...</div>
-              </div>
-            )}
+        {/* Loading Indicator */}
+        {isLoading && (
+          <div className={styles.loadingOverlay}>
+            <div className={styles.loadingSpinner} />
+            <div className={styles.loadingTitle}>GENERATING VVIT CENTRAL COMPLEX 3D MODEL</div>
+            <div className={styles.loadingSub}>Loading Central Block, Loyalty 1–4, H-Block &amp; OAT...</div>
+          </div>
+        )}
 
-            {/* Minimal Hover Tooltip HUD */}
-            {hoveredBuilding && (
-              <div
-                className={styles.hoverTooltip}
-                style={{
-                  left: `${mousePos.x}px`,
-                  top: `${mousePos.y}px`,
-                }}
-              >
-                <div className={styles.hoverTooltipName}>{hoveredBuilding.name}</div>
-                <span className={styles.hoverTooltipHint}>Click to focus camera</span>
-              </div>
-            )}
-          </>
-        ) : (
-          <div className={styles.photoContainer}>
-            <Image
-              src="/img/venue/vvit-campus-oblique.jpg"
-              alt="Vasireddy Venkatadri Institute of Technology Nambur Aerial View"
-              fill
-              style={{ objectFit: "cover" }}
-              priority
-            />
-            {/* Hotspots overlay on 2D Aerial photo (Central Complex Only) */}
-            {campusBuildings.map((building) => {
-              if (!building.photoCoords) return null;
-              const isSelected = selectedBuilding.id === building.id;
-              return (
-                <button
-                  key={building.id}
-                  onClick={() => setSelectedBuilding(building)}
-                  className={styles.photoHotspot}
-                  style={{
-                    top: building.photoCoords.top,
-                    left: building.photoCoords.left,
-                    background: isSelected ? "var(--accent)" : "rgba(14, 14, 16, 0.88)",
-                    border: `1px solid ${isSelected ? "#FFFFFF" : "rgba(255, 255, 255, 0.2)"}`,
-                    color: "#FFFFFF",
-                  }}
-                >
-                  <MapPin size={11} />
-                  <span>{building.shortName}</span>
-                </button>
-              );
-            })}
+        {/* Minimal Hover Tooltip HUD */}
+        {hoveredBuilding && (
+          <div
+            className={styles.hoverTooltip}
+            style={{
+              left: `${mousePos.x}px`,
+              top: `${mousePos.y}px`,
+            }}
+          >
+            <div className={styles.hoverTooltipName}>{hoveredBuilding.name}</div>
+            <span className={styles.hoverTooltipHint}>Click to focus camera</span>
           </div>
         )}
 
         {/* Minimal Gesture Telemetry Hint (Bottom-Right) */}
-        {activeTab === "3d" && (
-          <div className={styles.telemetryBadge}>
-            Left-click: Orbit &bull; Right-click: Pan &bull; Scroll: Zoom &bull; Click building to focus
-          </div>
-        )}
+        <div className={styles.telemetryBadge}>
+          Left-click: Orbit &bull; Right-click: Pan &bull; Scroll: Zoom &bull; Click building to focus
+        </div>
       </div>
 
       {/* Quick Navigation Location Pills Strip (Bottom: Central Block, Loyalty 1-4, H-Block, OAT) */}
