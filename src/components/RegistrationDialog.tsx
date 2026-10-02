@@ -428,7 +428,6 @@ export default function RegistrationDialog({
                         type="text"
                         value={form.name}
                         onChange={(e) => handleFieldChange("name", e.target.value)}
-                        placeholder="e.g. Rahul Sharma"
                         className={`${styles.input} ${errors.name ? styles.inputError : ""}`}
                         disabled={isSubmitting}
                       />
@@ -449,7 +448,6 @@ export default function RegistrationDialog({
                         type="text"
                         value={form.collegeRollNumber}
                         onChange={(e) => handleFieldChange("collegeRollNumber", e.target.value)}
-                        placeholder="e.g. 22BQ1A0301"
                         className={`${styles.input} ${errors.collegeRollNumber ? styles.inputError : ""}`}
                         disabled={isSubmitting}
                       />
@@ -472,7 +470,6 @@ export default function RegistrationDialog({
                         type="text"
                         value={form.branch}
                         onChange={(e) => handleFieldChange("branch", e.target.value)}
-                        placeholder="e.g. Mechanical Engineering / Robotics / CSE"
                         className={`${styles.input} ${errors.branch ? styles.inputError : ""}`}
                         disabled={isSubmitting}
                       />
@@ -493,7 +490,6 @@ export default function RegistrationDialog({
                         type="email"
                         value={form.email}
                         onChange={(e) => handleFieldChange("email", e.target.value)}
-                        placeholder="e.g. rahul@example.com"
                         className={`${styles.input} ${errors.email ? styles.inputError : ""}`}
                         disabled={isSubmitting}
                       />
@@ -514,7 +510,6 @@ export default function RegistrationDialog({
                         type="tel"
                         value={form.phone}
                         onChange={(e) => handleFieldChange("phone", e.target.value)}
-                        placeholder="e.g. 9876543210"
                         className={`${styles.input} ${errors.phone ? styles.inputError : ""}`}
                         disabled={isSubmitting}
                       />
