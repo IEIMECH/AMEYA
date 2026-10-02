@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -17,7 +17,7 @@ export default function AdminLoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!username.trim() || !password.trim()) {
-      setError("Please enter your coordinator username and passcode.");
+      setError("Please enter administrator username and security passcode.");
       return;
     }
 
@@ -59,7 +59,7 @@ export default function AdminLoginPage() {
             <ShieldCheck size={14} />
             <span>AMEYA '26 // OPERATIONS CONSOLE</span>
           </div>
-          <h1 className={styles.title}>Coordinator Login</h1>
+          <h1 className={styles.title}>Administrator Login</h1>
           <p className={styles.subtitle}>
             Dept. of Mechanical Engineering &bull; VVIT Nambur
           </p>
@@ -76,7 +76,7 @@ export default function AdminLoginPage() {
 
           <div className={styles.formGroup}>
             <label htmlFor="username" className={styles.label}>
-              Coordinator Username
+              Administrator Username
             </label>
             <div className={styles.inputWrapper}>
               <input
@@ -84,7 +84,7 @@ export default function AdminLoginPage() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter assigned coordinator ID"
+                placeholder="Enter administrator username"
                 required
                 className={styles.input}
                 autoComplete="username"
@@ -102,7 +102,7 @@ export default function AdminLoginPage() {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter authorized security passcode"
+                placeholder="Enter security passcode"
                 required
                 className={styles.input}
                 autoComplete="current-password"

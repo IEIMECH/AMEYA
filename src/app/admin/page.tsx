@@ -63,9 +63,9 @@ export default function AdminPortalPage() {
 
   // Authentication & Active Admin State
   const [currentAdmin, setCurrentAdmin] = useState({
-    name: "S. Sai Kumar",
+    name: "Operations Administrator",
     role: "Lead Administrator",
-    username: "sai.kumar",
+    username: "admin",
     avatarColor: "#e51d25",
   });
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);

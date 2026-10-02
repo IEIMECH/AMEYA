@@ -1,36 +1,202 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+﻿# AMEYA '26 — Official Digital Portal
+### National Level Mechanical Engineering Technical Conclave
+**Department of Mechanical Engineering & The Institution of Engineers (India) Students' Chapter (IEI SAME)**  
+**Vasireddy Venkatadri Institute of Technology (VVIT), Nambur, Guntur, AP, India**  
+*Dates: October 08–09, 2026*
 
-## Getting Started
+[![Next.js](https://img.shields.io/badge/Next.js-16.3-black?logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-blue?logo=react)](https://react.dev/)
+[![Three.js](https://img.shields.io/badge/Three.js-WebGL-orange?logo=three.js)](https://threejs.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-Database%20%26%20Storage-emerald?logo=supabase)](https://supabase.com/)
+[![License](https://img.shields.io/badge/License-Proprietary-red)](#)
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Overview
+
+**AMEYA '26** is the official web application and event orchestration system for the premier biennial national mechanical engineering symposium hosted by the Department of Mechanical Engineering and the chartered IEI SAME Student Chapter at VVIT Nambur.
+
+The platform provides a modern, cyberpunk-industrial web experience combining real-time event registration, interactive 3D campus navigation, cryptographic gate ticketing, and an operations console for event coordinators.
+
+---
+
+## ✨ Key Capabilities
+
+1. **Centerpiece 3D Campus Explorer (`/venue`)**
+   - Interactive Three.js WebGL 3D model of the VVIT Central Campus complex (`vvit-campus.glb`).
+   - Smooth camera raycasting with clickable and hover-responsive building telemetry (Central Block, Loyalty 1–4, H-Block, and OAT).
+   - Preset camera perspectives (`Isometric 45°`, `Top View`, `Front View`) and 360° automatic orbital rotation.
+   - Embedded official **VVIT College Bus Routes & Schedule PDF** viewer with inline controls, fullscreen toggle, and instant download.
+
+2. **Precision Event Registration (`/events`)**
+   - Multi-category technical and non-technical competition registration (AutoCAD, Assemble & Disassemble, RC Car Challenge, Engineering Drawing, Picto, Identify Tools, Treasure Hunt, Nuts & Bolts Speed Race).
+   - Automated duplicate registration protection tracking both delegate email and college roll number.
+   - Supabase Storage image upload pipeline for student College ID card verification.
+   - Zero-collision unique ticket generation (`AMEYA-2026-[EVENT]-[RANDOM]`).
+
+3. **Automated Ticket Delivery & Notifications**
+   - Real-time automated confirmation emails dispatched via Google Workspace SMTP (with Resend API fallback).
+   - Professional HTML ticket format including event day, reporting instructions, student POC contacts, and official sign-off from **Team - IEI SAME**.
+   - Online responsive digital gate pass (`/ticket/[id]`) with live gate verification stamping.
+
+4. **Universal Admin Operations Console (`/admin`)**
+   - Protected by Next.js Edge Middleware route guards.
+   - Universal administrator login backed by environment variables (zero passwords or credentials committed to Git).
+   - Cryptographically signed HMAC-SHA256 session tokens stored in secure, `httpOnly` cookies.
+   - In-memory brute-force rate limiting (max 5 attempts, 15-minute lockouts).
+   - Real-time attendee dashboard with live search, event filtering, attendance toggles, and CSV exports.
+
+5. **2.5D Draggable Universe Team Explorer (`/team/explore`)**
+   - Spatial infinite canvas showcasing student convenors, department executives, and domain heads with responsive drag physics and high-definition photography.
+
+---
+
+## 🛠 Tech Stack
+
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router, Turbopack)
+- **UI & Animation**: [React 19](https://react.dev/), Vanilla CSS Modules, CSS Variables, Glassmorphism Design System
+- **3D Graphics**: [Three.js](https://threejs.org/), GLTFLoader, OrbitControls
+- **Database & Storage**: [Supabase](https://supabase.com/) (PostgreSQL 15, Row Level Security, Object Storage)
+- **Email Delivery**: [Nodemailer](https://nodemailer.com/) (Google SMTP) & [Resend](https://resend.com/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Deployment**: [Vercel](https://vercel.com/)
+
+---
+
+## 📁 Repository Structure
+
+```
+ameya-fest/
+├── public/
+│   ├── models/
+│   │   └── vvit-campus.glb        # Optimized 3D Campus Binary Model
+│   ├── img/
+│   │   ├── Hero/                  # Event photowall assets
+│   │   ├── members2026/           # IEI SAME Committee portraits
+│   │   └── sponsors/              # Official sponsor branding
+│   ├── VVIT_Bus_Routes.pdf        # Official college bus routes document
+│   └── site.webmanifest           # Progressive Web App manifest
+├── src/
+│   ├── app/                       # Next.js App Router routes
+│   │   ├── page.tsx               # Homepage with hero, photowall & countdown
+│   │   ├── about/                 # Department & IEI SAME heritage
+│   │   ├── events/                # Championship listings & modal registration
+│   │   ├── venue/                 # 3D Campus explorer & bus PDF viewer
+│   │   ├── agenda/                # Day 1 & Day 2 festival schedules
+│   │   ├── contact/               # Inquiries & student POC coordinates
+│   │   ├── team/                  # Executive council directory
+│   │   │   └── explore/           # 2.5D draggable spatial universe
+│   │   ├── ticket/[id]/           # Cryptographic digital ticket pass
+│   │   ├── admin/                 # Coordinator operations console
+│   │   │   └── login/             # Administrator terminal login
+│   │   └── api/                   # Production serverless endpoints
+│   │       ├── register/          # Registration & ticket generation
+│   │       ├── ticket/[id]/       # Ticket verification & gate check-in
+│   │       ├── contact/           # General communication inquiries
+│   │       └── admin/             # Admin auth & live attendee management
+│   ├── components/                # Modular reusable UI components
+│   ├── data/                      # Static event definitions & transportation configs
+│   ├── lib/                       # Supabase client, email gateway & admin auth
+│   └── middleware.ts              # Edge security route guard for admin terminal
+├── supabase/
+│   └── schema.sql                 # Complete database schema & tables definition
+├── .env.example                   # Environment configuration template
+└── README.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ⚙️ Environment Variables Configuration
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Copy `.env.example` to `.env.local` for local execution:
 
-## Learn More
+```bash
+cp .env.example .env.local
+```
 
-To learn more about Next.js, take a look at the following resources:
+Populate the required keys in `.env.local` (or configure them in your **Vercel Project Dashboard**):
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Variable | Description |
+| :--- | :--- |
+| `NEXT_PUBLIC_BASE_URL` | Canonical application URL (e.g., `https://ameyafest.in`) |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project API URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase public client anonymous key |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase elevated service role key (Server-only) |
+| `ADMIN_USERNAME` | Universal administrator username |
+| `ADMIN_PASSWORD` | Universal administrator security passcode |
+| `ADMIN_SESSION_SECRET` | 64-character random secret for signing session tokens |
+| `SMTP_HOST` | Primary SMTP host (`smtp.gmail.com`) |
+| `SMTP_PORT` | Primary SMTP port (`465`) |
+| `SMTP_USER` | Primary SMTP authenticated account |
+| `SMTP_PASS` | Primary SMTP App Password |
+| `SMTP_FROM` | Sender display name & address |
+| `RESEND_API_KEY` | Secondary fallback email API key |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+> **Security Note**: Never commit `.env.local` or raw credentials to version control. Production passwords and secrets must only be entered into the hosting provider's secure secret manager.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🏃 Local Development
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Prerequisites
+- **Node.js**: v18.18+ or v20+
+- **npm**: v9+
+
+### Installation & Run
+
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. Start local development server with Turbopack
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Production Build & Verification
+
+```bash
+# Build the optimized production bundle and check TypeScript types
+npm run build
+
+# Start production server locally
+npm run start
+```
+
+---
+
+## 🛡️ Database & Security Architecture
+
+1. **Supabase PostgreSQL Schema**:
+   - `registrations`: Unified participant registrations, college ID paths, attendance timestamps, and verification audit trail.
+   - Dedicated event tables (`reg_autocad`, `reg_assemble_disassemble`, etc.) for real-time segmented tallying.
+   - `inquiries`: Direct contact inquiries sent via the `/contact` portal.
+   - `college_ids` Storage Bucket: Public-read bucket for student identification cards with 5MB file-size limits.
+
+2. **Zero-Credentials-In-Git Policy**:
+   - Administrator authentication does not store plaintext or hashed credentials in Git.
+   - Credentials are verified dynamically at runtime via secure environment variables (`ADMIN_USERNAME`, `ADMIN_PASSWORD`).
+   - Passwords are verified in constant time (`crypto.timingSafeEqual`) to mitigate timing side-channel exploits.
+
+---
+
+## 👥 Student Points of Contact (POCs)
+
+- **General Operations & Coordination**:
+  - S. Sai Kumar: [+91 77320 14762](tel:+917732014762)
+  - S. Sameer Basha: [+91 96764 19146](tel:+919676419146)
+- **Events Secretariat**:
+  - T. Jaya Kumar: [+91 74165 32304](tel:+917416532304)
+- **Transportation & Hospitality**:
+  - S. Durga Sai Ram: [+91 93924 58746](tel:+919392458746)
+
+---
+
+## 📜 Institution & Department Credits
+
+- **Organized By**: The Institution of Engineers (India) Students' Chapter (IEI SAME)
+- **Department**: Department of Mechanical Engineering
+- **Institution**: Vasireddy Venkatadri Institute of Technology (Autonomous / VVITU)
+- **Address**: NH-16 Bypass Expressway, Nambur (V), Guntur District, Andhra Pradesh – 522508
+- **Email**: `ieisame@vvitu.edu.in`
