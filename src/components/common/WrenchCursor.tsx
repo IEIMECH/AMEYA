@@ -11,7 +11,7 @@ export default function WrenchCursor() {
   const containerRef = useRef<HTMLDivElement>(null);
   const wrenchRef = useRef<HTMLDivElement>(null);
 
-  // Only render on devices with a mouse/fine pointer and hover support
+  // Only render on desktop devices with a fine mouse pointer and hover support
   const [isSupported, setIsSupported] = useState(false);
 
   // Handle custom cursor html class (disabled on admin)
@@ -34,43 +34,16 @@ export default function WrenchCursor() {
   useEffect(() => {
     if (isAdmin) return;
 
-    // Check if desktop pointer with hover
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-
     if (!finePointer.matches) {
       return;
     }
 
     setIsSupported(true);
 
-    let isReduced = reducedMotion.matches;
-    const onMotionChange = (e: MediaQueryListEvent) => {
-      isReduced = e.matches;
-    };
-    reducedMotion.addEventListener("change", onMotionChange);
-
-    // 1:1 Instant Coordinates (Zero positional lag)
-    let pointerX = -100;
-    let pointerY = -100;
-    let prevPointerX = -100;
-    let currentAngle = 0;
-    let currentScale = 1;
-
-    // Interaction & drag states
-    let isPointerDown = false;
-    let isDragging = false;
-    let isTightened = false;
-    let tightenProgress = 0; // 0.0 to 1.0
-    let releaseStartTime = 0;
-    const RELEASE_DURATION = 220; // 220ms mechanical release
-
-    let dragStartX = 0;
-    let dragStartY = 0;
-    let currentState: "default" | "button" | "card" | "link" | "drag" = "default";
     let isVisible = false;
-
-    let animationFrameId: number;
+    let currentState: "default" | "button" | "card" | "link" | "drag" = "default";
+    let isPointerDown = false;
 
     const isExemptElement = (target: HTMLElement | null): boolean => {
       if (!target) return false;
@@ -81,10 +54,37 @@ export default function WrenchCursor() {
       );
     };
 
+    // Instant Synchronous Position Update — 0ms Latency Hardware Tracking
+    const updatePosition = (x: number, y: number) => {
+      if (containerRef.current) {
+        // Offset by (4px, 2px) to align the wrench jaw tip directly under the click point
+        containerRef.current.style.transform = `translate3d(${x - 4}px, ${y - 2}px, 0)`;
+        if (!isVisible) {
+          isVisible = true;
+          containerRef.current.dataset.visible = "true";
+        }
+      }
+    };
+
+    const updateHoverTransform = (state: string, isDown: boolean) => {
+      if (!wrenchRef.current) return;
+      if (isDown) {
+        wrenchRef.current.style.transform = "rotate(20deg) scale(0.93)";
+      } else if (state === "button" || state === "link") {
+        wrenchRef.current.style.transform = "scale(1.08) rotate(-3deg)";
+      } else if (state === "card") {
+        wrenchRef.current.style.transform = "scale(1.05) rotate(-2deg)";
+      } else if (state === "drag") {
+        wrenchRef.current.style.transform = "scale(1.06)";
+      } else {
+        wrenchRef.current.style.transform = "none";
+      }
+    };
+
     const onPointerMove = (e: PointerEvent) => {
       const target = e.target as HTMLElement | null;
 
-      // When over embedded viewers or exempt elements, hide wrench and restore OS pointer
+      // When hovering embedded PDFs/iframes, hide custom cursor instantly and restore native OS pointer
       if (isExemptElement(target)) {
         if (isVisible) {
           isVisible = false;
@@ -98,17 +98,10 @@ export default function WrenchCursor() {
         document.documentElement.classList.remove("hide-custom-cursor");
       }
 
-      pointerX = e.clientX;
-      pointerY = e.clientY;
+      // 1:1 Instant Synchronous Transform on pointer event
+      updatePosition(e.clientX, e.clientY);
 
-      if (!isVisible) {
-        isVisible = true;
-        if (containerRef.current) {
-          containerRef.current.dataset.visible = "true";
-        }
-      }
-
-      // Detect interactive targets with fast element lookup
+      // Fast interactive target lookup
       if (target) {
         const isClickable = target.closest(
           "button, a, input, select, textarea, [role='button'], [data-cursor='button'], .cursor-target-button"
@@ -134,15 +127,7 @@ export default function WrenchCursor() {
           if (containerRef.current) {
             containerRef.current.dataset.state = currentState;
           }
-        }
-      }
-
-      // Check drag distance threshold
-      if (isPointerDown && !isDragging) {
-        const dx = pointerX - dragStartX;
-        const dy = pointerY - dragStartY;
-        if (dx * dx + dy * dy > 16) {
-          isDragging = true;
+          updateHoverTransform(currentState, isPointerDown);
         }
       }
     };
@@ -159,7 +144,6 @@ export default function WrenchCursor() {
     };
 
     const onWindowBlur = () => {
-      // Focus shifted into iframe or outside window
       isVisible = false;
       if (containerRef.current) {
         containerRef.current.dataset.visible = "false";
@@ -167,22 +151,15 @@ export default function WrenchCursor() {
     };
 
     const onPointerDown = (e: PointerEvent) => {
-      if (e.button !== 0) return; // Only primary button
+      if (e.button !== 0) return;
       isPointerDown = true;
-      isTightened = true;
-      tightenProgress = 0;
-      releaseStartTime = 0;
-      dragStartX = e.clientX;
-      dragStartY = e.clientY;
-      isDragging = false;
+      updateHoverTransform(currentState, true);
     };
 
     const onPointerUp = () => {
       if (isPointerDown) {
         isPointerDown = false;
-        isTightened = false;
-        isDragging = false;
-        releaseStartTime = performance.now();
+        updateHoverTransform(currentState, false);
       }
     };
 
@@ -193,11 +170,8 @@ export default function WrenchCursor() {
       }
     };
 
-    const onPointerEnter = () => {
-      isVisible = true;
-      if (containerRef.current) {
-        containerRef.current.dataset.visible = "true";
-      }
+    const onPointerEnter = (e: PointerEvent) => {
+      updatePosition(e.clientX, e.clientY);
     };
 
     window.addEventListener("pointermove", onPointerMove, { passive: true });
@@ -209,106 +183,6 @@ export default function WrenchCursor() {
     document.documentElement.addEventListener("pointerleave", onPointerLeave, { passive: true });
     document.documentElement.addEventListener("pointerenter", onPointerEnter, { passive: true });
 
-    // Real-time animation frame loop
-    const tick = (now: number) => {
-      // 1:1 Instant Position - Zero trailing, zero momentum lag
-      if (containerRef.current) {
-        containerRef.current.style.transform = `translate3d(${pointerX}px, ${pointerY}px, 0)`;
-      }
-
-      // Calculate subtle rotational velocity tilt
-      const vx = pointerX - prevPointerX;
-      prevPointerX = pointerX;
-
-      if (isReduced) {
-        currentAngle = 0;
-        currentScale = 1;
-      } else {
-        // Subtle tilt based on movement direction (clamped to ±9deg)
-        const targetTilt = Math.max(-9, Math.min(9, vx * 0.7));
-        currentAngle += (targetTilt - currentAngle) * 0.28;
-      }
-
-      // Fast hover scale target (snappy 100-150ms response)
-      let targetHoverScale = 1;
-      let hoverTilt = 0;
-
-      if (currentState === "button") {
-        targetHoverScale = 1.08;
-        hoverTilt = -4; // Subtle engagement tilt toward target fastener
-      } else if (currentState === "card") {
-        targetHoverScale = 1.06;
-        hoverTilt = -3;
-      } else if (currentState === "link") {
-        targetHoverScale = 1.04;
-        hoverTilt = -2;
-      } else if (currentState === "drag") {
-        targetHoverScale = 1.06;
-      }
-
-      currentScale += (targetHoverScale - currentScale) * 0.32;
-
-      // Physical tightening torque (only on pointer down)
-      let torqueAngle = 0;
-      let torqueScale = 1;
-
-      if (!isReduced) {
-        if (isTightened) {
-          // Attack: fast mechanical bite to +26 deg in ~50ms
-          tightenProgress = Math.min(1, tightenProgress + 0.28);
-          const ease = 1 - Math.pow(1 - tightenProgress, 3);
-          torqueAngle = ease * 26; // Rotates clockwise +26 deg
-          torqueScale = 1 - ease * 0.06; // Compresses to 0.94x
-
-          // During drag, add subtle responsive drag flex (+-6 deg based on movement direction)
-          if (isDragging) {
-            const dragFlex = Math.max(-6, Math.min(6, vx * 0.35));
-            torqueAngle += dragFlex;
-          }
-        } else if (releaseStartTime > 0) {
-          tightenProgress = 0;
-          const elapsed = now - releaseStartTime;
-
-          if (elapsed < 85) {
-            // Phase 1 (0-85ms): Torque released, recoils back past neutral to -10 deg
-            const p = elapsed / 85;
-            const ease = 1 - Math.pow(1 - p, 2);
-            torqueAngle = 26 - ease * 36; // 26 -> -10 deg
-            torqueScale = 0.94 + ease * 0.06; // 0.94 -> 1.0
-          } else if (elapsed < RELEASE_DURATION) {
-            // Phase 2 (85-220ms): Smooth mechanical settle from -10 deg back to 0 deg
-            const p = (elapsed - 85) / 135;
-            const ease = Math.sin((p * Math.PI) / 2);
-            torqueAngle = -10 * (1 - ease); // -10 -> 0 deg
-            torqueScale = 1.0;
-          } else {
-            releaseStartTime = 0;
-            torqueAngle = 0;
-            torqueScale = 1.0;
-          }
-        } else {
-          tightenProgress = 0;
-        }
-      }
-
-      // Total composed angle & scale for wrench tool
-      const totalAngle = isReduced
-        ? 0
-        : isTightened
-        ? torqueAngle
-        : currentAngle + torqueAngle + hoverTilt;
-
-      const totalScale = currentScale * torqueScale;
-
-      if (wrenchRef.current) {
-        wrenchRef.current.style.transform = `rotate(${totalAngle.toFixed(2)}deg) scale(${totalScale.toFixed(3)})`;
-      }
-
-      animationFrameId = requestAnimationFrame(tick);
-    };
-
-    animationFrameId = requestAnimationFrame(tick);
-
     return () => {
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerover", onPointerOver);
@@ -318,8 +192,6 @@ export default function WrenchCursor() {
       window.removeEventListener("blur", onWindowBlur);
       document.documentElement.removeEventListener("pointerleave", onPointerLeave);
       document.documentElement.removeEventListener("pointerenter", onPointerEnter);
-      reducedMotion.removeEventListener("change", onMotionChange);
-      cancelAnimationFrame(animationFrameId);
     };
   }, [isAdmin]);
 

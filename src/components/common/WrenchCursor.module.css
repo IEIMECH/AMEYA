@@ -1,14 +1,15 @@
-/* Precision Mechanical Wrench Cursor System - 1:1 Real-time Precision */
+﻿/* Precision Mechanical Wrench Cursor System - 1:1 Zero-Latency Hardware Tracking */
 .cursorContainer {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 99999;
+  z-index: 999999;
   pointer-events: none;
   contain: layout style size;
   opacity: 0;
-  transition: opacity 0.12s ease-out;
-  will-change: transform, opacity;
+  transition: opacity 0.08s ease-out;
+  transition-property: opacity !important;
+  will-change: transform;
 }
 
 .cursorContainer[data-visible="true"] {
@@ -22,21 +23,20 @@
   left: 0;
   width: 26px;
   height: 26px;
-  transform-origin: 4px 2px; /* Active jaw tip alignment */
+  transform-origin: 5px 3px; /* Active jaw tip alignment */
   will-change: transform;
   filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.85));
-  transition: filter 0.12s ease;
+  transition: transform 0.08s cubic-bezier(0.16, 1, 0.3, 1), filter 0.08s ease;
 }
 
 /* Red Precision Indicator Dot */
 .redIndicator {
   transform-origin: 7.4px 7.4px;
-  transition: filter 0.12s ease;
 }
 
-/* Subtle Physical Engagement on Interactive Hover (Fast 100-150ms response) */
+/* Fast subtle engagement on interactive targets */
 .cursorContainer[data-state="button"] .wrenchAssembly {
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.95)) brightness(1.12);
+  filter: drop-shadow(0 2px 7px rgba(0, 0, 0, 0.95)) brightness(1.15);
 }
 
 .cursorContainer[data-state="button"] .redIndicator {
