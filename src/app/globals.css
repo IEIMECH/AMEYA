@@ -1,4 +1,4 @@
-/* Prevent native browser ghost-image dragging across all images and interactive cards */
+﻿/* Prevent native browser ghost-image dragging across all images and interactive cards */
 img,
 [data-next-image],
 .next-image {
@@ -511,10 +511,29 @@ header.heroHeader {
 }
 /* Precision Mechanical Wrench Cursor: Strictly hide standard OS pointer across desktop elements when custom-cursor-active */
 @media (hover: hover) and (pointer: fine) {
-  html.custom-cursor-active,
-  html.custom-cursor-active *,
-  html.custom-cursor-active *::before,
-  html.custom-cursor-active *::after {
+  html.custom-cursor-active:not(.hide-custom-cursor),
+  html.custom-cursor-active:not(.hide-custom-cursor) *:not(#bus-schedule-viewer):not(#bus-schedule-viewer *):not([data-no-custom-cursor="true"]):not([data-no-custom-cursor="true"] *):not(iframe):not(object):not(embed) {
     cursor: none !important;
+  }
+
+  /* PDF Viewer & Embedded Elements: Restore native OS cursor and completely hide custom wrench */
+  html.hide-custom-cursor,
+  html.hide-custom-cursor *,
+  #bus-schedule-viewer,
+  #bus-schedule-viewer *,
+  [data-no-custom-cursor="true"],
+  [data-no-custom-cursor="true"] *,
+  iframe,
+  object,
+  embed {
+    cursor: auto !important;
+  }
+
+  html.hide-custom-cursor [class*="cursorContainer"],
+  [data-no-custom-cursor="true"] [class*="cursorContainer"] {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
   }
 }

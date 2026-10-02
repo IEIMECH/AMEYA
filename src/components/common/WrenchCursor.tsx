@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
@@ -72,7 +72,32 @@ export default function WrenchCursor() {
 
     let animationFrameId: number;
 
+    const isExemptElement = (target: HTMLElement | null): boolean => {
+      if (!target) return false;
+      return Boolean(
+        target.closest(
+          "#bus-schedule-viewer, [data-no-custom-cursor='true'], iframe, object, embed"
+        )
+      );
+    };
+
     const onPointerMove = (e: PointerEvent) => {
+      const target = e.target as HTMLElement | null;
+
+      // When over embedded viewers or exempt elements, hide wrench and restore OS pointer
+      if (isExemptElement(target)) {
+        if (isVisible) {
+          isVisible = false;
+          if (containerRef.current) {
+            containerRef.current.dataset.visible = "false";
+          }
+        }
+        document.documentElement.classList.add("hide-custom-cursor");
+        return;
+      } else {
+        document.documentElement.classList.remove("hide-custom-cursor");
+      }
+
       pointerX = e.clientX;
       pointerY = e.clientY;
 
@@ -84,7 +109,6 @@ export default function WrenchCursor() {
       }
 
       // Detect interactive targets with fast element lookup
-      const target = e.target as HTMLElement | null;
       if (target) {
         const isClickable = target.closest(
           "button, a, input, select, textarea, [role='button'], [data-cursor='button'], .cursor-target-button"
@@ -123,6 +147,25 @@ export default function WrenchCursor() {
       }
     };
 
+    const onPointerOver = (e: PointerEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (isExemptElement(target)) {
+        isVisible = false;
+        if (containerRef.current) {
+          containerRef.current.dataset.visible = "false";
+        }
+        document.documentElement.classList.add("hide-custom-cursor");
+      }
+    };
+
+    const onWindowBlur = () => {
+      // Focus shifted into iframe or outside window
+      isVisible = false;
+      if (containerRef.current) {
+        containerRef.current.dataset.visible = "false";
+      }
+    };
+
     const onPointerDown = (e: PointerEvent) => {
       if (e.button !== 0) return; // Only primary button
       isPointerDown = true;
@@ -158,9 +201,11 @@ export default function WrenchCursor() {
     };
 
     window.addEventListener("pointermove", onPointerMove, { passive: true });
+    window.addEventListener("pointerover", onPointerOver, { passive: true });
     window.addEventListener("pointerdown", onPointerDown, { passive: true });
     window.addEventListener("pointerup", onPointerUp, { passive: true });
     window.addEventListener("pointercancel", onPointerUp, { passive: true });
+    window.addEventListener("blur", onWindowBlur);
     document.documentElement.addEventListener("pointerleave", onPointerLeave, { passive: true });
     document.documentElement.addEventListener("pointerenter", onPointerEnter, { passive: true });
 
@@ -266,9 +311,11 @@ export default function WrenchCursor() {
 
     return () => {
       window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerover", onPointerOver);
       window.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("pointercancel", onPointerUp);
+      window.removeEventListener("blur", onWindowBlur);
       document.documentElement.removeEventListener("pointerleave", onPointerLeave);
       document.documentElement.removeEventListener("pointerenter", onPointerEnter);
       reducedMotion.removeEventListener("change", onMotionChange);
