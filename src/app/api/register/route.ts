@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { Resend } from "resend";
 import { supabaseAdmin, isDatabaseConfigured, getEventTableName } from "@/lib/supabase";
@@ -274,8 +274,9 @@ export async function POST(req: NextRequest) {
     const ticketUrl = `${BASE_URL}/ticket/${ticketId}?event=${encodeURIComponent(eventName)}&name=${encodeURIComponent(name)}&college=${encodeURIComponent(branch)}&year=2026`;
 
     // 6. Send confirmation email via Google SMTP (primary) or Resend (fallback)
+    let emailDelivery = { success: false, provider: "none", error: undefined as string | undefined };
     try {
-      await sendTicketEmail({
+      const emailResult = await sendTicketEmail({
         email,
         name,
         ticketId,
@@ -286,8 +287,15 @@ export async function POST(req: NextRequest) {
         collegeRollNumber,
         ticketUrl,
       });
-    } catch (mailDispatchErr) {
+      emailDelivery = {
+        success: emailResult.success,
+        provider: emailResult.provider,
+        error: emailResult.error,
+      };
+      console.log(`[Register Route] Email dispatch to ${email} (Provider: ${emailResult.provider}, Success: ${emailResult.success})`);
+    } catch (mailDispatchErr: any) {
       console.error("[Register Route] Email dispatch caught error:", mailDispatchErr);
+      emailDelivery.error = mailDispatchErr?.message;
     }
 
     return NextResponse.json({

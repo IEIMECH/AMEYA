@@ -1,4 +1,4 @@
-import nodemailer, { type SendMailOptions } from "nodemailer";
+﻿import nodemailer, { type SendMailOptions } from "nodemailer";
 import { Resend } from "resend";
 
 interface TicketEmailParams {
@@ -21,13 +21,27 @@ interface SendEmailResult {
 }
 
 function getSmtpTransporter() {
-  const host = process.env.SMTP_HOST || "smtp.gmail.com";
+  const host = (process.env.SMTP_HOST || "smtp.gmail.com").trim();
   const port = Number(process.env.SMTP_PORT) || 465;
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
+  const user = process.env.SMTP_USER?.trim();
+  const pass = process.env.SMTP_PASS?.trim();
 
   if (!user || !pass) {
     return null;
+  }
+
+  // Use service: "gmail" for optimal port negotiation and TLS handling in serverless environments (Vercel)
+  if (host.includes("gmail") || user.endsWith("@gmail.com")) {
+    return nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user,
+        pass,
+      },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
+    });
   }
 
   return nodemailer.createTransport({
@@ -38,6 +52,9 @@ function getSmtpTransporter() {
       user,
       pass,
     },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
   });
 }
 
@@ -295,11 +312,12 @@ export async function sendTicketEmail(params: TicketEmailParams): Promise<SendEm
   const transporter = getSmtpTransporter();
   if (transporter) {
     try {
-      const fromAddress = process.env.SMTP_FROM || `"AMEYA '26" <${process.env.SMTP_USER}>`;
+      const rawFrom = process.env.SMTP_FROM || `"AMEYA '26" <${process.env.SMTP_USER}>`;
+      const fromAddress = rawFrom.trim().replace(/^["']|["']$/g, "");
 
       const mailOptions: SendMailOptions = {
         from: fromAddress,
-        to: email,
+        to: email.trim().toLowerCase(),
         subject,
         text: textContent,
         html: htmlContent,
@@ -321,7 +339,7 @@ export async function sendTicketEmail(params: TicketEmailParams): Promise<SendEm
 
       const resendResult = await resend.emails.send({
         from: resendFrom,
-        to: [email],
+        to: [email.trim().toLowerCase()],
         subject,
         text: textContent,
         html: htmlContent,
