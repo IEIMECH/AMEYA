@@ -34,6 +34,22 @@ export default function EventsCatalogPage() {
     }
     loadActiveEvents();
 
+    // Check URL parameters for event selection (e.g. redirected from homepage)
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const targetEventName = params.get('event');
+      if (targetEventName) {
+        const found = defaultEvents.find(
+          (e) =>
+            e.name.toLowerCase().includes(targetEventName.toLowerCase()) ||
+            e.id.toLowerCase() === targetEventName.toLowerCase()
+        );
+        if (found) {
+          setSelectedEvent(found);
+        }
+      }
+    }
+
     // Re-check when window regains focus (e.g., returning from admin portal)
     window.addEventListener("focus", loadActiveEvents);
     // Periodically poll every 10 seconds to catch live created or archived events

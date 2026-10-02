@@ -79,7 +79,7 @@ export default function ClosingManifesto() {
             <div className={styles.metaRow}>
               <div className={styles.metaColLeft}>
                 <span className={styles.metaLabel}>ORGANIZED BY</span>
-                <span className={styles.metaValue}>AMEYA &apos;26 // DEPARTMENT OF MECHANICAL ENGINEERING</span>
+                <span className={styles.metaValue}>AMEYA &apos;26 // IEISAME</span>
               </div>
               <div className={styles.metaColRight}>
                 <span className={styles.metaLabel}>LOCATION</span>

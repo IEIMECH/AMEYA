@@ -402,7 +402,7 @@ export default function InteractiveTeamGallery() {
               >
                 <div className={styles.portraitImageWrapper}>
                   <Image
-                    src={m.image || "/img/Hero/photo-wall-1.webp"}
+                    src={m.image || "/img/Hero/photowall_1.jpeg"}
                     alt={m.name}
                     fill
                     sizes="(max-width: 768px) 230px, 290px"

@@ -92,7 +92,7 @@ export default function Footer() {
         {/* Copyright & Back to Top */}
         <div className={styles.metaRow}>
           <p className={styles.copyright}>
-            &copy; 2026 AMEYA &bull; Department of Mechanical Engineering, VVITU.
+            &copy; 2026 AMEYA &bull; IEISAME, VVITU.
           </p>
           <button
             type="button"

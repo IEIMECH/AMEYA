@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Link from "next/link";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import styles from "./FinalRegisterCta.module.css";
@@ -79,9 +80,8 @@ export default function FinalRegisterCta({ onRegisterClick }: FinalRegisterCtaPr
             viewport={{ once: true, amount: "some" }}
             transition={{ type: "spring", bounce: 0, duration: 0.45, delay: shouldReduceMotion ? 0 : 0.16 }}
           >
-            <button
-              type="button"
-              onClick={onRegisterClick}
+            <Link
+              href="/events"
               className={styles.registerButton}
               id="final-cta-register-btn"
               aria-label="Register for AMEYA 2026 Events"
@@ -90,7 +90,7 @@ export default function FinalRegisterCta({ onRegisterClick }: FinalRegisterCtaPr
               <span className={styles.btnArrowWrapper}>
                 <ArrowRight size={18} className={styles.arrowIcon} />
               </span>
-            </button>
+            </Link>
 
             <div className={styles.actionAnnotation}>
               <span>8 SOLO COMPETITIONS</span>

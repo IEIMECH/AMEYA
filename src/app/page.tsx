@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
@@ -12,23 +13,17 @@ import FinalRegisterCta from "@/components/index/FinalRegisterCta";
 import SponsorSection from "@/components/index/SponsorSection";
 import ClosingManifesto from "@/components/index/ClosingManifesto";
 import SectionTransition from "@/components/index/SectionTransition";
-import RegistrationDialog from "@/components/RegistrationDialog";
 import { events, Event } from "@/data/events";
 import styles from "./page.module.css";
 
 export default function Home() {
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const router = useRouter();
 
   const handleOpenRegister = (eventName?: string) => {
     if (eventName) {
-      const match = events.find(
-        (e) =>
-          e.name.toLowerCase().includes(eventName.toLowerCase()) ||
-          eventName.toLowerCase().includes(e.name.toLowerCase())
-      );
-      setSelectedEvent(match || events[0]);
+      router.push(`/events?event=${encodeURIComponent(eventName)}`);
     } else {
-      setSelectedEvent(events[0]);
+      router.push("/events");
     }
   };
 
@@ -127,13 +122,7 @@ export default function Home() {
       {/* ============================================================ */}
       <ClosingManifesto />
 
-      {/* Registration Dialog Modal */}
-      {selectedEvent && (
-        <RegistrationDialog
-          event={selectedEvent}
-          onClose={() => setSelectedEvent(null)}
-        />
-      )}
+
     </main>
   );
 }

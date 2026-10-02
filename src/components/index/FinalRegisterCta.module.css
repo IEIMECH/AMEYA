@@ -103,6 +103,7 @@
 
 /* Prominent Primary Conversion Button */
 .registerButton {
+  text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 1rem;

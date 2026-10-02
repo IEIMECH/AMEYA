@@ -13,11 +13,11 @@ interface PhotoItem {
 }
 
 const photoArchive: PhotoItem[] = [
-  { id: 1, src: "/img/Hero/photo-wall-1.webp", caption: "Precision CNC Machine Calibration" },
-  { id: 2, src: "/img/Hero/photo-wall-2.webp", caption: "Kinetic RC Car Obstacle Track" },
-  { id: 3, src: "/img/Hero/photo-wall-3.webp", caption: "AutoCAD 3D Modeling Arena" },
-  { id: 4, src: "/img/Hero/photo-wall-4.webp", caption: "High-Speed Mechanical Teardown" },
-  { id: 5, src: "/img/Hero/photo-wall-5.webp", caption: "Department Assembly & Awards" },
+  { id: 1, src: "/img/Hero/photowall_1.jpeg", caption: "Precision CNC Machine Calibration" },
+  { id: 2, src: "/img/Hero/photowall_2.jpeg", caption: "Kinetic RC Car Obstacle Track" },
+  { id: 3, src: "/img/Hero/photowall_3.jpeg", caption: "AutoCAD 3D Modeling Arena" },
+  { id: 4, src: "/img/Hero/photowall_4.jpeg", caption: "High-Speed Mechanical Teardown" },
+  { id: 5, src: "/img/Hero/photowall_5.jpeg", caption: "Department Assembly & Awards" },
 ];
 
 export default function PhotoWall() {

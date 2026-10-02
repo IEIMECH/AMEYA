@@ -2,7 +2,24 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { X, Upload, CheckCircle2, AlertCircle, Loader2, ArrowRight, RefreshCw, FileText, Image as ImageIcon, ShieldCheck } from "lucide-react";
+import {
+  X,
+  Upload,
+  CheckCircle2,
+  AlertCircle,
+  Loader2,
+  ArrowRight,
+  RefreshCw,
+  ShieldCheck,
+  User,
+  Hash,
+  GraduationCap,
+  Mail,
+  Phone,
+  ChevronDown,
+  Sparkles,
+  Check,
+} from "lucide-react";
 import { events, Event } from "@/data/events";
 import styles from "./RegistrationDialog.module.css";
 
@@ -40,8 +57,13 @@ interface SuccessPayload {
   email: string;
 }
 
-export default function RegistrationDialog({ event: initialEvent, availableEvents, onClose }: RegistrationDialogProps) {
-  const activeOptions = availableEvents && availableEvents.length > 0 ? availableEvents : events;
+export default function RegistrationDialog({
+  event: initialEvent,
+  availableEvents,
+  onClose,
+}: RegistrationDialogProps) {
+  const activeOptions =
+    availableEvents && availableEvents.length > 0 ? availableEvents : events;
   const [currentEvent, setCurrentEvent] = useState<Event>(initialEvent);
   const [form, setForm] = useState<RegistrationFormData>({
     name: "",
@@ -60,22 +82,28 @@ export default function RegistrationDialog({ event: initialEvent, availableEvent
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dialogCardRef = useRef<HTMLDivElement>(null);
-  const [isDraggingOver, setIsDraggingOver] = useState(false);
 
-  // Sync event if prop changes
+  // Sync state if initialEvent changes externally
   useEffect(() => {
     setCurrentEvent(initialEvent);
   }, [initialEvent]);
 
-  // Handle ESC key to dismiss
+  // Lock body scroll while modal is active & handle ESC key
   useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         onClose();
       }
     };
+
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [onClose]);
 
   // Clean up object URLs on unmount
@@ -97,27 +125,23 @@ export default function RegistrationDialog({ event: initialEvent, availableEvent
   const handleFileSelection = (file: File | null) => {
     if (!file) return;
 
-    // Validate mime type
     const validTypes = ["image/jpeg", "image/png", "image/jpg"];
-    if (!validTypes.includes(file.type)) {
+    if (!validTypes.includes(file.type.toLowerCase())) {
       setErrors((prev) => ({
         ...prev,
-        collegeIdCard: "Invalid file format. Only JPG, JPEG, and PNG images are supported.",
+        collegeIdCard: "Please upload a valid JPG or PNG image.",
       }));
       return;
     }
 
-    // Validate size (5MB max)
-    const maxSize = 5 * 1024 * 1024;
-    if (file.size > maxSize) {
+    if (file.size > 5 * 1024 * 1024) {
       setErrors((prev) => ({
         ...prev,
-        collegeIdCard: "File size exceeds 5MB limit. Please compress or choose a smaller image.",
+        collegeIdCard: "Image size must be less than 5MB.",
       }));
       return;
     }
 
-    // Clean up previous preview URL
     if (form.collegeIdCardPreview) {
       URL.revokeObjectURL(form.collegeIdCardPreview);
     }
@@ -128,7 +152,6 @@ export default function RegistrationDialog({ event: initialEvent, availableEvent
       collegeIdCardFile: file,
       collegeIdCardPreview: previewUrl,
     }));
-
     setErrors((prev) => ({ ...prev, collegeIdCard: undefined }));
   };
 
@@ -240,12 +263,21 @@ export default function RegistrationDialog({ event: initialEvent, availableEvent
           className={styles.dialogInner}
           onClick={(e) => e.stopPropagation()}
         >
+          {/* Top Laser Accent */}
+          <div className={styles.topLaserAccent} />
+
           {/* Header */}
           <div className={styles.dialogHead}>
             <div className={styles.eventBadge}>
-              <span className={styles.statusDot} />
+              <div className={styles.statusIndicator}>
+                <div className={styles.statusDot} />
+                <div className={styles.statusPulse} />
+              </div>
               <div className={styles.headMeta}>
-                <span className={styles.kicker}>OFFICIAL EVENT REGISTRATION // SOLO</span>
+                <span className={styles.kicker}>
+                  <Sparkles size={11} />
+                  OFFICIAL REGISTRATION // AMEYA &apos;26
+                </span>
                 <h3 className={styles.eventName}>{currentEvent.name}</h3>
               </div>
             </div>
@@ -262,29 +294,38 @@ export default function RegistrationDialog({ event: initialEvent, availableEvent
           {/* Subheader / Event Selector Banner */}
           {!successData && !submissionError && (
             <div className={styles.eventSelectorBanner}>
-              <div className={styles.bannerInfo}>
-                <span className={styles.bannerLabel}>SELECTED ARENA</span>
-                <span className={styles.bannerMeta}>
-                  {currentEvent.category.toUpperCase()} // DAY 0{currentEvent.day}
+              <div className={styles.bannerPills}>
+                <span className={styles.categoryPill}>
+                  ⚡ {currentEvent.category.toUpperCase()} SOLO
+                </span>
+                <span className={styles.dayPill}>
+                  DAY 0{currentEvent.day} // OCT 0{currentEvent.day === 1 ? "8" : "9"}
                 </span>
               </div>
               <div className={styles.eventSwitcherWrapper}>
-                <label htmlFor="event-switch-select" className={styles.switchLabel}>SWITCH ARENA:</label>
-                <select
-                  id="event-switch-select"
-                  className={styles.switchSelect}
-                  value={currentEvent.id}
-                  onChange={(e) => {
-                    const found = (activeOptions as Event[]).find((ev: Event) => ev.id === e.target.value);
-                    if (found) setCurrentEvent(found);
-                  }}
-                >
-                  {(activeOptions as Event[]).map((ev: Event) => (
-                    <option key={ev.id} value={ev.id}>
-                      {ev.name} ({ev.category} - Day {ev.day})
-                    </option>
-                  ))}
-                </select>
+                <label htmlFor="event-switch-select" className={styles.switchLabel}>
+                  SWITCH ARENA:
+                </label>
+                <div className={styles.selectDropdownWrapper}>
+                  <select
+                    id="event-switch-select"
+                    className={styles.switchSelect}
+                    value={currentEvent.id}
+                    onChange={(e) => {
+                      const found = (activeOptions as Event[]).find(
+                        (ev: Event) => ev.id === e.target.value
+                      );
+                      if (found) setCurrentEvent(found);
+                    }}
+                  >
+                    {(activeOptions as Event[]).map((ev: Event) => (
+                      <option key={ev.id} value={ev.id}>
+                        {ev.name} ({ev.category})
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown size={13} className={styles.selectChevron} />
+                </div>
               </div>
             </div>
           )}
@@ -295,12 +336,12 @@ export default function RegistrationDialog({ event: initialEvent, availableEvent
             {successData ? (
               <div className={styles.successState}>
                 <div className={styles.successIconBox}>
-                  <CheckCircle2 size={44} className={styles.successIcon} />
+                  <CheckCircle2 size={42} className={styles.successIcon} />
                 </div>
                 <div className={styles.successKicker}>REGISTRATION CONFIRMED</div>
                 <h2 className={styles.successTitle}>{successData.eventName}</h2>
                 <div className={styles.successSubtitle}>
-                  DAY 0{successData.day} // {successData.category.toUpperCase()} (SOLO)
+                  DAY 0{successData.day} // {successData.category.toUpperCase()} SOLO
                 </div>
 
                 <div className={styles.successDocketCard}>
@@ -309,7 +350,7 @@ export default function RegistrationDialog({ event: initialEvent, availableEvent
                     <strong className={styles.docketVal}>{successData.participantName}</strong>
                   </div>
                   <div className={styles.docketRow}>
-                    <span className={styles.docketKey}>REGISTRATION ID</span>
+                    <span className={styles.docketKey}>TICKET CODE</span>
                     <strong className={styles.docketValRed}>{successData.ticketId}</strong>
                   </div>
                   <div className={styles.docketRow}>
@@ -318,27 +359,23 @@ export default function RegistrationDialog({ event: initialEvent, availableEvent
                   </div>
 
                   <div className={styles.confirmationBadgeBox}>
-                    <ShieldCheck size={28} className={styles.confirmationBadgeIcon} />
+                    <CheckCircle2 size={18} className={styles.confirmationBadgeIcon} />
                     <span className={styles.confirmationBadgeText}>
-                      ENTRY CONFIRMED // NO QR SCAN NEEDED
+                      ENTRY CLEARANCE ISSUED
                     </span>
-                    <span className={styles.confirmationBadgeSubtext}>
-                      Present your Registration ID or College ID card at the venue desk. Event coordinators will mark your attendance directly in the portal.
-                    </span>
+                    <p className={styles.confirmationBadgeSubtext}>
+                      Confirmation email with digital pass sent. Present your Ticket ID or College ID card at the desk upon arrival.
+                    </p>
                   </div>
                 </div>
 
-                <p className={styles.successNotice}>
-                  Your registration has been securely committed to the event registry.
-                </p>
-
                 <div className={styles.successActions}>
                   <button type="button" onClick={onClose} className={styles.primaryActionBtn}>
-                    <span>BACK TO EVENTS</span>
-                    <ArrowRight size={14} />
+                    <span>DONE &bull; BACK TO EVENTS</span>
                   </button>
                   <Link href={`/ticket/${successData.ticketId}`} className={styles.secondaryLinkBtn}>
-                    <span>VIEW CREDENTIAL DOCKET</span>
+                    <span>VIEW PASS ONLINE</span>
+                    <ArrowRight size={14} />
                   </Link>
                 </div>
               </div>
@@ -346,10 +383,10 @@ export default function RegistrationDialog({ event: initialEvent, availableEvent
               /* ERROR STATE */
               <div className={styles.errorState}>
                 <div className={styles.errorIconBox}>
-                  <AlertCircle size={44} className={styles.errorIcon} />
+                  <AlertCircle size={42} className={styles.errorIcon} />
                 </div>
-                <div className={styles.errorKicker}>REGISTRATION FAILED</div>
-                <h3 className={styles.errorTitle}>We Couldn&apos;t Complete Your Registration</h3>
+                <div className={styles.errorKicker}>REGISTRATION NOTICE</div>
+                <h3 className={styles.errorTitle}>Could Not Finalize Entry</h3>
                 <p className={styles.errorMessageText}>{submissionError}</p>
 
                 <div className={styles.errorActions}>
@@ -362,113 +399,139 @@ export default function RegistrationDialog({ event: initialEvent, availableEvent
                     <span>TRY AGAIN</span>
                   </button>
                   <button type="button" onClick={onClose} className={styles.secondaryLinkBtn}>
-                    <span>CANCEL</span>
+                    <span>DISMISS</span>
                   </button>
                 </div>
               </div>
             ) : (
               /* ACTIVE FORM */
               <form onSubmit={handleSubmit} className={styles.form} noValidate>
-                <div className={styles.formSectionHeader}>
-                  <span className={styles.sectionKicker}>PARTICIPANT DETAILS</span>
-                  <p className={styles.sectionDesc}>
-                    All fields are required. All AMEYA &apos;26 competitions are solo entries.
-                  </p>
+                {/* Section 01: Candidate Telemetry */}
+                <div className={styles.sectionHeaderPill}>
+                  <User size={14} className={styles.sectionHeaderIcon} />
+                  <span className={styles.sectionHeaderTitle}>
+                    01 // CANDIDATE TELEMETRY
+                  </span>
                 </div>
 
-                {/* 1. Name */}
-                <div className={styles.formGroup}>
-                  <label htmlFor="reg-name" className={styles.label}>
-                    Full Name <span className={styles.req}>*</span>
-                  </label>
-                  <input
-                    id="reg-name"
-                    type="text"
-                    value={form.name}
-                    onChange={(e) => handleFieldChange("name", e.target.value)}
-                    placeholder="e.g. Rahul Sharma"
-                    className={`${styles.input} ${errors.name ? styles.inputError : ""}`}
-                    disabled={isSubmitting}
-                  />
-                  {errors.name && <span className={styles.fieldError}>{errors.name}</span>}
+                <div className={styles.formGrid}>
+                  {/* 1. Full Name */}
+                  <div className={styles.formGroup}>
+                    <label htmlFor="reg-name" className={styles.label}>
+                      <User size={12} className={styles.labelIcon} />
+                      Full Name <span className={styles.req}>*</span>
+                    </label>
+                    <div className={styles.inputWrapper}>
+                      <User size={15} className={styles.inputIcon} />
+                      <input
+                        id="reg-name"
+                        type="text"
+                        value={form.name}
+                        onChange={(e) => handleFieldChange("name", e.target.value)}
+                        placeholder="e.g. Rahul Sharma"
+                        className={`${styles.input} ${errors.name ? styles.inputError : ""}`}
+                        disabled={isSubmitting}
+                      />
+                    </div>
+                    {errors.name && <span className={styles.fieldError}>{errors.name}</span>}
+                  </div>
+
+                  {/* 2. College Roll Number */}
+                  <div className={styles.formGroup}>
+                    <label htmlFor="reg-roll" className={styles.label}>
+                      <Hash size={12} className={styles.labelIcon} />
+                      Roll Number <span className={styles.req}>*</span>
+                    </label>
+                    <div className={styles.inputWrapper}>
+                      <Hash size={15} className={styles.inputIcon} />
+                      <input
+                        id="reg-roll"
+                        type="text"
+                        value={form.collegeRollNumber}
+                        onChange={(e) => handleFieldChange("collegeRollNumber", e.target.value)}
+                        placeholder="e.g. 22BQ1A0301"
+                        className={`${styles.input} ${errors.collegeRollNumber ? styles.inputError : ""}`}
+                        disabled={isSubmitting}
+                      />
+                    </div>
+                    {errors.collegeRollNumber && (
+                      <span className={styles.fieldError}>{errors.collegeRollNumber}</span>
+                    )}
+                  </div>
+
+                  {/* 3. Engineering Branch / Dept (Full Width) */}
+                  <div className={`${styles.formGroup} ${styles.formGridFull}`}>
+                    <label htmlFor="reg-branch" className={styles.label}>
+                      <GraduationCap size={13} className={styles.labelIcon} />
+                      Engineering Branch / Department <span className={styles.req}>*</span>
+                    </label>
+                    <div className={styles.inputWrapper}>
+                      <GraduationCap size={15} className={styles.inputIcon} />
+                      <input
+                        id="reg-branch"
+                        type="text"
+                        value={form.branch}
+                        onChange={(e) => handleFieldChange("branch", e.target.value)}
+                        placeholder="e.g. Mechanical Engineering / Robotics / CSE"
+                        className={`${styles.input} ${errors.branch ? styles.inputError : ""}`}
+                        disabled={isSubmitting}
+                      />
+                    </div>
+                    {errors.branch && <span className={styles.fieldError}>{errors.branch}</span>}
+                  </div>
+
+                  {/* 4. Email ID */}
+                  <div className={styles.formGroup}>
+                    <label htmlFor="reg-email" className={styles.label}>
+                      <Mail size={12} className={styles.labelIcon} />
+                      Email ID (For Pass) <span className={styles.req}>*</span>
+                    </label>
+                    <div className={styles.inputWrapper}>
+                      <Mail size={15} className={styles.inputIcon} />
+                      <input
+                        id="reg-email"
+                        type="email"
+                        value={form.email}
+                        onChange={(e) => handleFieldChange("email", e.target.value)}
+                        placeholder="e.g. rahul@example.com"
+                        className={`${styles.input} ${errors.email ? styles.inputError : ""}`}
+                        disabled={isSubmitting}
+                      />
+                    </div>
+                    {errors.email && <span className={styles.fieldError}>{errors.email}</span>}
+                  </div>
+
+                  {/* 5. Phone Number */}
+                  <div className={styles.formGroup}>
+                    <label htmlFor="reg-phone" className={styles.label}>
+                      <Phone size={12} className={styles.labelIcon} />
+                      WhatsApp Phone <span className={styles.req}>*</span>
+                    </label>
+                    <div className={styles.inputWrapper}>
+                      <Phone size={15} className={styles.inputIcon} />
+                      <input
+                        id="reg-phone"
+                        type="tel"
+                        value={form.phone}
+                        onChange={(e) => handleFieldChange("phone", e.target.value)}
+                        placeholder="e.g. 9876543210"
+                        className={`${styles.input} ${errors.phone ? styles.inputError : ""}`}
+                        disabled={isSubmitting}
+                      />
+                    </div>
+                    {errors.phone && <span className={styles.fieldError}>{errors.phone}</span>}
+                  </div>
                 </div>
 
-                {/* 2. Branch */}
-                <div className={styles.formGroup}>
-                  <label htmlFor="reg-branch" className={styles.label}>
-                    Branch / Department <span className={styles.req}>*</span>
-                  </label>
-                  <input
-                    id="reg-branch"
-                    type="text"
-                    value={form.branch}
-                    onChange={(e) => handleFieldChange("branch", e.target.value)}
-                    placeholder="e.g. Mechanical Engineering, Robotics, CSE"
-                    className={`${styles.input} ${errors.branch ? styles.inputError : ""}`}
-                    disabled={isSubmitting}
-                  />
-                  {errors.branch && <span className={styles.fieldError}>{errors.branch}</span>}
+                {/* Section 02: College Credential Verification */}
+                <div className={styles.sectionHeaderPill}>
+                  <ShieldCheck size={14} className={styles.sectionHeaderIcon} />
+                  <span className={styles.sectionHeaderTitle}>
+                    02 // COLLEGE CREDENTIAL VERIFICATION
+                  </span>
                 </div>
 
-                {/* 3. College Roll Number */}
                 <div className={styles.formGroup}>
-                  <label htmlFor="reg-roll" className={styles.label}>
-                    College Roll Number <span className={styles.req}>*</span>
-                  </label>
-                  <input
-                    id="reg-roll"
-                    type="text"
-                    value={form.collegeRollNumber}
-                    onChange={(e) => handleFieldChange("collegeRollNumber", e.target.value)}
-                    placeholder="e.g. 22BQ1A0301"
-                    className={`${styles.input} ${errors.collegeRollNumber ? styles.inputError : ""}`}
-                    disabled={isSubmitting}
-                  />
-                  {errors.collegeRollNumber && (
-                    <span className={styles.fieldError}>{errors.collegeRollNumber}</span>
-                  )}
-                </div>
-
-                {/* 4. Email ID */}
-                <div className={styles.formGroup}>
-                  <label htmlFor="reg-email" className={styles.label}>
-                    Email ID <span className={styles.req}>*</span>
-                  </label>
-                  <input
-                    id="reg-email"
-                    type="email"
-                    value={form.email}
-                    onChange={(e) => handleFieldChange("email", e.target.value)}
-                    placeholder="e.g. rahul.sharma@gmail.com"
-                    className={`${styles.input} ${errors.email ? styles.inputError : ""}`}
-                    disabled={isSubmitting}
-                  />
-                  {errors.email && <span className={styles.fieldError}>{errors.email}</span>}
-                </div>
-
-                {/* 5. Phone Number */}
-                <div className={styles.formGroup}>
-                  <label htmlFor="reg-phone" className={styles.label}>
-                    Phone Number <span className={styles.req}>*</span>
-                  </label>
-                  <input
-                    id="reg-phone"
-                    type="tel"
-                    value={form.phone}
-                    onChange={(e) => handleFieldChange("phone", e.target.value)}
-                    placeholder="e.g. 9876543210"
-                    className={`${styles.input} ${errors.phone ? styles.inputError : ""}`}
-                    disabled={isSubmitting}
-                  />
-                  {errors.phone && <span className={styles.fieldError}>{errors.phone}</span>}
-                </div>
-
-                {/* 6. College ID Card Upload */}
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>
-                    College ID Card Image <span className={styles.req}>*</span>
-                  </label>
-
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -483,14 +546,15 @@ export default function RegistrationDialog({ event: initialEvent, availableEvent
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={form.collegeIdCardPreview}
-                        alt="Uploaded College ID card thumbnail"
+                        alt="Uploaded College ID card preview"
                         className={styles.previewThumbnail}
                         draggable={false}
                       />
                       <div className={styles.previewInfo}>
                         <span className={styles.previewFilename}>{form.collegeIdCardFile.name}</span>
                         <span className={styles.previewFilesize}>
-                          {(form.collegeIdCardFile.size / 1024).toFixed(1)} KB &bull; Verified Image
+                          <Check size={12} />
+                          {(form.collegeIdCardFile.size / 1024).toFixed(1)} KB &bull; Verified ID Attached
                         </span>
                       </div>
                       <div className={styles.previewActions}>
@@ -500,7 +564,7 @@ export default function RegistrationDialog({ event: initialEvent, availableEvent
                           className={styles.replaceBtn}
                           disabled={isSubmitting}
                         >
-                          Replace
+                          Change
                         </button>
                         <button
                           type="button"
@@ -514,68 +578,65 @@ export default function RegistrationDialog({ event: initialEvent, availableEvent
                     </div>
                   ) : (
                     <div
-                      className={`${styles.dropZone} ${isDraggingOver ? styles.dropZoneActive : ""} ${
-                        errors.collegeIdCard ? styles.dropZoneError : ""
-                      }`}
-                      onDragOver={(e) => {
-                        e.preventDefault();
-                        setIsDraggingOver(true);
-                      }}
-                      onDragLeave={() => setIsDraggingOver(false)}
-                      onDrop={(e) => {
-                        e.preventDefault();
-                        setIsDraggingOver(false);
-                        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-                          handleFileSelection(e.dataTransfer.files[0]);
-                        }
-                      }}
+                      className={`${styles.uploadDropzone} ${errors.collegeIdCard ? styles.uploadDropzoneError : ""}`}
                       onClick={() => fileInputRef.current?.click()}
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => {
                         if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
                           fileInputRef.current?.click();
                         }
                       }}
                     >
-                      <Upload size={22} className={styles.uploadIcon} />
-                      <div className={styles.dropPrompt}>
-                        <span className={styles.dropPromptPrimary}>Click to upload or drag &amp; drop</span>
-                        <span className={styles.dropPromptFormats}>Supported image formats: JPG / JPEG / PNG (Max 5MB)</span>
+                      <div className={styles.uploadIconCircle}>
+                        <Upload size={18} />
                       </div>
+                      <p className={styles.uploadMainText}>
+                        Upload Student / College ID Card
+                      </p>
+                      <p className={styles.uploadSubText}>
+                        Click or drag image here &bull; JPG or PNG format (Max 5MB)
+                      </p>
                     </div>
                   )}
-
                   {errors.collegeIdCard && (
                     <span className={styles.fieldError}>{errors.collegeIdCard}</span>
                   )}
                 </div>
 
-                {/* Privacy & Security Baseline Notice */}
-                <div className={styles.securityNotice}>
-                  <ShieldCheck size={13} className={styles.securityIcon} />
-                  <span>
-                    Your College ID card image is stored securely and used solely for student affiliation verification. It is never exposed publicly.
-                  </span>
+                {/* Trust Highlights */}
+                <div className={styles.trustBar}>
+                  <div className={styles.trustItem}>
+                    <Check size={13} className={styles.trustIcon} />
+                    <span>Free Registration</span>
+                  </div>
+                  <div className={styles.trustItem}>
+                    <Check size={13} className={styles.trustIcon} />
+                    <span>Instant Ticket Dispatch</span>
+                  </div>
+                  <div className={styles.trustItem}>
+                    <Check size={13} className={styles.trustIcon} />
+                    <span>Verified by IEISAME</span>
+                  </div>
                 </div>
 
-                {/* Submit CTA */}
+                {/* Submit Row */}
                 <div className={styles.submitRow}>
                   <button
                     type="submit"
                     className={styles.submitBtn}
                     disabled={isSubmitting}
+                    id="submit-registration-btn"
                   >
                     {isSubmitting ? (
                       <>
-                        <Loader2 size={15} className={styles.spinningIcon} />
-                        <span>RECORDING REGISTRATION...</span>
+                        <Loader2 size={16} className={styles.spinningIcon} />
+                        <span>PROCESSING TRANSMISSION...</span>
                       </>
                     ) : (
                       <>
-                        <span>SUBMIT REGISTRATION</span>
-                        <ArrowRight size={14} />
+                        <span>CONFIRM &amp; GENERATE PASS</span>
+                        <ArrowRight size={16} />
                       </>
                     )}
                   </button>
