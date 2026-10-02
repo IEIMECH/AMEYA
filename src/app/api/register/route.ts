@@ -1,11 +1,9 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { Resend } from "resend";
 import { supabaseAdmin, isDatabaseConfigured, getEventTableName } from "@/lib/supabase";
 import { events } from "@/data/events";
 import { sendTicketEmail } from "@/lib/email";
 
-const resend = new Resend(process.env.RESEND_API_KEY || "re_dummy");
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://ameyafest.vercel.app";
 
 export async function POST(req: NextRequest) {
@@ -273,7 +271,7 @@ export async function POST(req: NextRequest) {
     // 5. Ticket URL for online view
     const ticketUrl = `${BASE_URL}/ticket/${ticketId}?event=${encodeURIComponent(eventName)}&name=${encodeURIComponent(name)}&college=${encodeURIComponent(branch)}&year=2026`;
 
-    // 6. Send confirmation email via Google SMTP (primary) or Resend (fallback)
+    // 6. Send confirmation email via Google SMTP (Dual-strategy failover)
     let emailDelivery = { success: false, provider: "none", error: undefined as string | undefined };
     try {
       const emailResult = await sendTicketEmail({

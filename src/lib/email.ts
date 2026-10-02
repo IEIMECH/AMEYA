@@ -1,5 +1,4 @@
 ﻿import nodemailer, { type SendMailOptions } from "nodemailer";
-import { Resend } from "resend";
 
 interface TicketEmailParams {
   email: string;
@@ -15,47 +14,55 @@ interface TicketEmailParams {
 
 interface SendEmailResult {
   success: boolean;
-  provider: "smtp" | "resend" | "none";
+  provider: "smtp" | "none";
   messageId?: string;
   error?: string;
 }
 
-function getSmtpTransporter() {
+/**
+ * Creates primary (Gmail Service, IPv4) and fallback (Port 587 STARTTLS, IPv4)
+ * SMTP transporters with aggressive connection timeouts and IPv4 forcing.
+ * This guarantees seamless execution within Vercel / AWS Lambda serverless functions.
+ */
+function getSmtpTransporters() {
   const host = (process.env.SMTP_HOST || "smtp.gmail.com").trim();
-  const port = Number(process.env.SMTP_PORT) || 465;
+  const configuredPort = Number(process.env.SMTP_PORT) || 465;
   const user = process.env.SMTP_USER?.trim();
-  const pass = process.env.SMTP_PASS?.trim();
+  // Strip any accidental quotes or spaces in case App Password was pasted formatted with spaces
+  const pass = process.env.SMTP_PASS?.trim().replace(/^["']|["']$/g, "").replace(/\s+/g, "");
 
   if (!user || !pass) {
+    console.error("[Email:SMTP] Missing credentials: SMTP_USER or SMTP_PASS not set");
     return null;
   }
 
-  // Use service: "gmail" for optimal port negotiation and TLS handling in serverless environments (Vercel)
-  if (host.includes("gmail") || user.endsWith("@gmail.com")) {
-    return nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user,
-        pass,
-      },
-      connectionTimeout: 10000,
-      greetingTimeout: 10000,
-      socketTimeout: 15000,
-    });
-  }
+  // Primary: Google Service Engine with IPv4 enforcement
+  const primary = nodemailer.createTransport({
+    service: host.includes("gmail") || user.endsWith("@gmail.com") ? "gmail" : undefined,
+    host: host.includes("gmail") ? undefined : host,
+    port: host.includes("gmail") ? undefined : configuredPort,
+    secure: configuredPort === 465,
+    family: 4, // Forces IPv4 to bypass cloud Lambda IPv6 routing latency
+    auth: { user, pass },
+    connectionTimeout: 8000,
+    greetingTimeout: 8000,
+    socketTimeout: 12000,
+  } as any);
 
-  return nodemailer.createTransport({
-    host,
-    port,
-    secure: port === 465,
-    auth: {
-      user,
-      pass,
-    },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 15000,
-  });
+  // Secondary Fallback: Port 587 STARTTLS with explicit IPv4
+  const fallback = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    requireTLS: true,
+    family: 4,
+    auth: { user, pass },
+    connectionTimeout: 8000,
+    greetingTimeout: 8000,
+    socketTimeout: 12000,
+  } as any);
+
+  return { primary, fallback, user };
 }
 
 function buildEmailHtml(params: {
@@ -309,54 +316,49 @@ export async function sendTicketEmail(params: TicketEmailParams): Promise<SendEm
 
   const subject = `AMEYA '26 Registration Confirmed - ${eventName} [${ticketId}]`;
 
-  const transporter = getSmtpTransporter();
-  if (transporter) {
-    try {
-      const rawFrom = process.env.SMTP_FROM || `"AMEYA '26" <${process.env.SMTP_USER}>`;
-      const fromAddress = rawFrom.trim().replace(/^["']|["']$/g, "");
+  const setup = getSmtpTransporters();
+  if (!setup) {
+    return {
+      success: false,
+      provider: "none",
+      error: "SMTP credentials not configured (SMTP_USER / SMTP_PASS missing).",
+    };
+  }
 
-      const mailOptions: SendMailOptions = {
-        from: fromAddress,
-        to: email.trim().toLowerCase(),
-        subject,
-        text: textContent,
-        html: htmlContent,
+  const { primary, fallback, user } = setup;
+
+  // Format clean RFC 5322 "From" header without outer quotes
+  const rawFrom = process.env.SMTP_FROM || `"AMEYA '26" <${user}>`;
+  const cleanFrom = rawFrom.trim().replace(/^["']|["']$/g, "");
+
+  const mailOptions: SendMailOptions = {
+    from: cleanFrom,
+    to: email.trim().toLowerCase(),
+    subject,
+    text: textContent,
+    html: htmlContent,
+  };
+
+  // Attempt 1: Primary Transporter (Gmail Service, IPv4)
+  try {
+    const info = await primary.sendMail(mailOptions);
+    console.log(`[Email:SMTP] Successfully sent confirmation email to ${email} (MessageId: ${info.messageId})`);
+    return { success: true, provider: "smtp", messageId: info.messageId };
+  } catch (primaryErr: any) {
+    console.warn(`[Email:SMTP] Primary transport failed (${primaryErr.message}). Attempting fallback on Port 587 STARTTLS...`);
+
+    // Attempt 2: Fallback Transporter (Port 587 STARTTLS, IPv4)
+    try {
+      const fallbackInfo = await fallback.sendMail(mailOptions);
+      console.log(`[Email:SMTP:Fallback] Successfully sent confirmation email to ${email} via Port 587 (MessageId: ${fallbackInfo.messageId})`);
+      return { success: true, provider: "smtp", messageId: fallbackInfo.messageId };
+    } catch (fallbackErr: any) {
+      console.error(`[Email:SMTP:FATAL] Both SMTP transports failed for ${email}:`, fallbackErr);
+      return {
+        success: false,
+        provider: "none",
+        error: fallbackErr?.message || primaryErr?.message || "Failed to deliver email via SMTP",
       };
-
-      const info = await transporter.sendMail(mailOptions);
-      console.log(`[Email:SMTP] Successfully sent confirmation email to ${email} (MessageId: ${info.messageId})`);
-      return { success: true, provider: "smtp", messageId: info.messageId };
-    } catch (smtpErr: any) {
-      console.error("[Email:SMTP] Failed to send via SMTP:", smtpErr);
     }
   }
-
-  const resendApiKey = process.env.RESEND_API_KEY;
-  if (resendApiKey && !resendApiKey.includes("dummy") && !resendApiKey.includes("your_")) {
-    try {
-      const resend = new Resend(resendApiKey);
-      const resendFrom = process.env.RESEND_FROM_EMAIL || "AMEYA '26 <onboarding@resend.dev>";
-
-      const resendResult = await resend.emails.send({
-        from: resendFrom,
-        to: [email.trim().toLowerCase()],
-        subject,
-        text: textContent,
-        html: htmlContent,
-      });
-
-      if (resendResult.error) {
-        console.error("[Email:Resend] Dispatch failed:", resendResult.error);
-        return { success: false, provider: "resend", error: resendResult.error.message };
-      }
-
-      console.log(`[Email:Resend] Sent confirmation email to ${email}`);
-      return { success: true, provider: "resend", messageId: resendResult.data?.id };
-    } catch (resendErr: any) {
-      console.error("[Email:Resend] Caught error:", resendErr);
-      return { success: false, provider: "resend", error: resendErr.message };
-    }
-  }
-
-  return { success: false, provider: "none", error: "No email provider configured" };
 }
