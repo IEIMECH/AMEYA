@@ -39,9 +39,13 @@ The platform provides a modern, cyberpunk-industrial web experience combining re
    - Professional HTML ticket format including event day, reporting instructions, student POC contacts, and official sign-off from **Team - IEI SAME**.
    - Online responsive digital gate pass (`/ticket/[id]`) with live gate verification stamping.
 
-4. **Universal Admin Operations Console (`/admin`)**
+4. **4-Tier Operations Console (`/admin`)**
    - Protected by Next.js Edge Middleware route guards.
-   - Universal administrator login backed by environment variables (zero passwords or credentials committed to Git).
+   - 4 role-based administrator accounts backed by environment variables (zero passwords or credentials committed to Git):
+     1. **Lead Administrator** (`admin`): Full festival oversight and event controls.
+     2. **Operations Desk** (`operations`): Registration verification and attendee auditing.
+     3. **Events Secretariat** (`events`): Arena management and event attendance tracking.
+     4. **Gate & Hospitality** (`hospitality`): Gate scanning and campus transit logistics.
    - Cryptographically signed HMAC-SHA256 session tokens stored in secure, `httpOnly` cookies.
    - In-memory brute-force rate limiting (max 5 attempts, 15-minute lockouts).
    - Real-time attendee dashboard with live search, event filtering, attendance toggles, and CSV exports.
@@ -122,13 +126,13 @@ Populate the required keys in `.env.local` (or configure them in your **Vercel P
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project API URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase public client anonymous key |
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase elevated service role key (Server-only) |
-| `ADMIN_USERNAME` | Universal administrator username |
-| `ADMIN_PASSWORD` | Universal administrator security passcode |
 | `ADMIN_SESSION_SECRET` | 64-character random secret for signing session tokens |
-| `SMTP_HOST` | Primary SMTP host (`smtp.gmail.com`) |
-| `SMTP_PORT` | Primary SMTP port (`465`) |
-| `SMTP_USER` | Primary SMTP authenticated account |
-| `SMTP_PASS` | Primary SMTP App Password |
+| `ADMIN_USER_1` / `ADMIN_PASS_1` | Account 1: Lead Administrator (Super Admin) |
+| `ADMIN_USER_2` / `ADMIN_PASS_2` | Account 2: Operations & Registration Desk |
+| `ADMIN_USER_3` / `ADMIN_PASS_3` | Account 3: Events & Arena Secretariat |
+| `ADMIN_USER_4` / `ADMIN_PASS_4` | Account 4: Gate & Hospitality Coordination |
+| `SMTP_HOST` / `SMTP_PORT` | Primary SMTP host (`smtp.gmail.com` / `465`) |
+| `SMTP_USER` / `SMTP_PASS` | Primary SMTP authenticated account & App Password |
 | `SMTP_FROM` | Sender display name & address |
 | `RESEND_API_KEY` | Secondary fallback email API key |
 
@@ -176,7 +180,7 @@ npm run start
 
 2. **Zero-Credentials-In-Git Policy**:
    - Administrator authentication does not store plaintext or hashed credentials in Git.
-   - Credentials are verified dynamically at runtime via secure environment variables (`ADMIN_USERNAME`, `ADMIN_PASSWORD`).
+   - 4 distinct role-based accounts are verified dynamically at runtime via secure environment variables (`ADMIN_USER_1..4`, `ADMIN_PASS_1..4`).
    - Passwords are verified in constant time (`crypto.timingSafeEqual`) to mitigate timing side-channel exploits.
 
 ---
