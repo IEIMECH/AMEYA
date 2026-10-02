@@ -19,24 +19,11 @@ export default function BusScheduleViewer({
   const containerRef = useRef<HTMLDivElement>(null);
   const hasPdf = Boolean(pdfUrl && pdfUrl.trim().length > 0);
 
-  const handlePointerEnter = () => {
-    document.documentElement.classList.add("hide-custom-cursor");
-  };
-
-  const handlePointerLeave = () => {
-    document.documentElement.classList.remove("hide-custom-cursor");
-  };
-
   return (
     <div
       className={styles.container}
       id="bus-schedule-viewer"
-      data-no-custom-cursor="true"
       ref={containerRef}
-      onPointerEnter={handlePointerEnter}
-      onPointerLeave={handlePointerLeave}
-      onMouseEnter={handlePointerEnter}
-      onMouseLeave={handlePointerLeave}
     >
       <div className={styles.header}>
         <div className={styles.titleRow}>

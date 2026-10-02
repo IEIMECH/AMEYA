@@ -6,7 +6,6 @@ import Footer from "@/components/Footer";
 import MobileStickyCTA from "@/components/common/MobileStickyCTA";
 import MotionBackground from "@/components/common/MotionBackground";
 import SectionTransitionOverlay from "@/components/common/SectionTransitionOverlay";
-import WrenchCursor from "@/components/common/WrenchCursor";
 
 const syne = Syne({
   subsets: ["latin"],
@@ -98,7 +97,6 @@ export default function RootLayout({
       className={`${syne.variable} ${plusJakarta.variable} ${spaceMono.variable} ${playfair.variable}`}
     >
       <body suppressHydrationWarning>
-        <WrenchCursor />
         <Nav />
         <MotionBackground />
         <SectionTransitionOverlay />
