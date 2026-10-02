@@ -33,13 +33,23 @@ interface AdminAccount {
  * 4. Events Head
  * 5. Technicals
  */
+function getAdminPassword(envPass?: string): string {
+  if (envPass?.trim()) {
+    return envPass.trim().replace(/^["']|["']$/g, "").replace(/\s+/g, "");
+  }
+  if (process.env.NODE_ENV !== "production") {
+    return "ameya_local_dev_password";
+  }
+  return "";
+}
+
 function getAdminAccounts(): AdminAccount[] {
   return [
     {
       id: "admin-1",
       username: (process.env.ADMIN_USER_1 || "president").trim().toLowerCase(),
       aliases: ["pres", "admin", "admin1"],
-      password: (process.env.ADMIN_PASS_1 || "ameya@president2026").trim(),
+      password: getAdminPassword(process.env.ADMIN_PASS_1),
       name: process.env.ADMIN_NAME_1 || "President",
       role: "President // IEI SAME",
       avatarColor: "#E51D25",
@@ -48,7 +58,7 @@ function getAdminAccounts(): AdminAccount[] {
       id: "admin-2",
       username: (process.env.ADMIN_USER_2 || "vicepresident").trim().toLowerCase(),
       aliases: ["vp", "vice-president", "vice_president", "admin2"],
-      password: (process.env.ADMIN_PASS_2 || "ameya@vp2026").trim(),
+      password: getAdminPassword(process.env.ADMIN_PASS_2),
       name: process.env.ADMIN_NAME_2 || "Vice President",
       role: "Vice President // IEI SAME",
       avatarColor: "#0284c7",
@@ -57,7 +67,7 @@ function getAdminAccounts(): AdminAccount[] {
       id: "admin-3",
       username: (process.env.ADMIN_USER_3 || "secretary").trim().toLowerCase(),
       aliases: ["sec", "admin3"],
-      password: (process.env.ADMIN_PASS_3 || "ameya@sec2026").trim(),
+      password: getAdminPassword(process.env.ADMIN_PASS_3),
       name: process.env.ADMIN_NAME_3 || "Secretary",
       role: "Secretary // IEI SAME",
       avatarColor: "#16a34a",
@@ -66,7 +76,7 @@ function getAdminAccounts(): AdminAccount[] {
       id: "admin-4",
       username: (process.env.ADMIN_USER_4 || "eventshead").trim().toLowerCase(),
       aliases: ["events", "events-head", "events_head", "admin4"],
-      password: (process.env.ADMIN_PASS_4 || "ameya@events2026").trim(),
+      password: getAdminPassword(process.env.ADMIN_PASS_4),
       name: process.env.ADMIN_NAME_4 || "Events Head",
       role: "Events Head // IEI SAME",
       avatarColor: "#d97706",
@@ -75,7 +85,7 @@ function getAdminAccounts(): AdminAccount[] {
       id: "admin-5",
       username: (process.env.ADMIN_USER_5 || "technicals").trim().toLowerCase(),
       aliases: ["tech", "technical", "technicals-lead", "admin5"],
-      password: (process.env.ADMIN_PASS_5 || "ameya@tech2026").trim(),
+      password: getAdminPassword(process.env.ADMIN_PASS_5),
       name: process.env.ADMIN_NAME_5 || "Technicals Lead",
       role: "Technicals Lead // IEI SAME",
       avatarColor: "#8b5cf6",
@@ -97,7 +107,7 @@ export async function POST(req: NextRequest) {
     }
 
     const cleanUser = String(username).trim().toLowerCase();
-    const cleanPass = String(password).trim();
+    const cleanPass = String(password).trim().replace(/\s+/g, "");
     const rateLimitKey = `${ip}:${cleanUser}`;
 
     // 1. Rate Limiting Check (Max 5 attempts, 15m lockout)
@@ -122,7 +132,7 @@ export async function POST(req: NextRequest) {
       (acc) => acc.username === cleanUser || acc.aliases.includes(cleanUser)
     );
 
-    if (!matchedAccount) {
+    if (!matchedAccount || !matchedAccount.password) {
       recordFailedAttempt(rateLimitKey);
       return NextResponse.json(
         { error: "Invalid administrator credentials. Access denied." },

@@ -1,15 +1,23 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 
-const SESSION_SECRET =
-  process.env.ADMIN_SESSION_SECRET ||
-  "ameya_fest_2026_super_secure_vault_secret_key_998877665544";
+function getSessionSecret(): string {
+  const secret = process.env.ADMIN_SESSION_SECRET?.trim();
+  if (secret) return secret;
+  if (process.env.NODE_ENV === "production") {
+    console.error("[SECURITY ALERT] ADMIN_SESSION_SECRET is missing in production environment!");
+    return "";
+  }
+  return "ameya_fest_dev_only_secret_key_non_production_environment";
+}
 
 /**
  * Universal WebCrypto Token Verifier (Edge and Node compatible)
  */
 async function verifyEdgeToken(token: string): Promise<boolean> {
   try {
-    if (!token || typeof token !== "string") return false;
+    const secret = getSessionSecret();
+    if (!secret || !token || typeof token !== "string") return false;
+
     const parts = token.split(".");
     if (parts.length !== 3) return false;
 
@@ -19,7 +27,7 @@ async function verifyEdgeToken(token: string): Promise<boolean> {
     const enc = new TextEncoder();
     const key = await crypto.subtle.importKey(
       "raw",
-      enc.encode(SESSION_SECRET),
+      enc.encode(secret),
       { name: "HMAC", hash: "SHA-256" },
       false,
       ["verify"]

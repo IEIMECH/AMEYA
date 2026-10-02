@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin, isDatabaseConfigured } from "@/lib/supabase";
+import { getAuthenticatedAdmin } from "@/lib/adminAuth";
 
 const EVENT_TABLES = [
   "all_registrations",
@@ -11,8 +12,25 @@ const EVENT_TABLES = [
   "reg_identify_tools",
   "reg_treasure_hunt",
   "reg_nuts_bolts_speed_race",
-  "registrations"
+  "registrations",
 ];
+
+function maskEmail(str?: string | null): string | undefined {
+  if (!str) return undefined;
+  const parts = str.split("@");
+  if (parts.length !== 2) return "***";
+  const user = parts[0];
+  const domain = parts[1];
+  const visible = user.slice(0, 2);
+  return `${visible}***@${domain}`;
+}
+
+function maskPhone(str?: string | null): string | undefined {
+  if (!str) return undefined;
+  const clean = str.replace(/\s+/g, "");
+  if (clean.length < 6) return "***";
+  return `${clean.slice(0, 3)}*****${clean.slice(-3)}`;
+}
 
 export async function GET(
   req: NextRequest,
@@ -23,6 +41,10 @@ export async function GET(
     if (!id) {
       return NextResponse.json({ error: "Missing ticket ID" }, { status: 400 });
     }
+
+    // Verify if caller is an authorized admin/coordinator (for full unmasked PII view)
+    const admin = await getAuthenticatedAdmin(req);
+    const isAuthorized = Boolean(admin);
 
     if (!isDatabaseConfigured() || !supabaseAdmin) {
       return NextResponse.json({
@@ -37,7 +59,7 @@ export async function GET(
       });
     }
 
-        // 1. Try unified registrations table first (checks both id and ticket_id)
+    // 1. Try unified registrations table first (checks both id and ticket_id)
     const { data: regData, error: regError } = await supabaseAdmin
       .from("registrations")
       .select("*")
@@ -45,6 +67,9 @@ export async function GET(
       .maybeSingle();
 
     if (regData && !regError) {
+      const rawEmail = regData.email || regData.leader_email;
+      const rawPhone = regData.phone || regData.leader_phone;
+
       return NextResponse.json({
         ticket_id: regData.id || regData.ticket_id,
         event_name: regData.event_name,
@@ -54,8 +79,8 @@ export async function GET(
         is_team: false,
         team_id: `SOLO-${(regData.id || regData.ticket_id).slice(-6)}`,
         verified_at: regData.verified_at,
-        email: regData.email || regData.leader_email,
-        phone: regData.phone || regData.leader_phone,
+        email: isAuthorized ? rawEmail : maskEmail(rawEmail),
+        phone: isAuthorized ? rawPhone : maskPhone(rawPhone),
         college_roll_number: regData.college_roll_number,
         branch: regData.branch,
       });
@@ -71,11 +96,15 @@ export async function GET(
         .maybeSingle();
 
       if (data && !error) {
+        const rawEmail = data.leader_email || data.email;
+        const rawPhone = data.leader_phone || data.phone;
+
         return NextResponse.json({
           ...data,
           table_source: table,
           leader_name: data.leader_name || data.full_name,
-          leader_email: data.leader_email || data.email,
+          email: isAuthorized ? rawEmail : maskEmail(rawEmail),
+          phone: isAuthorized ? rawPhone : maskPhone(rawPhone),
         });
       }
     }
@@ -93,14 +122,27 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
+    if (!id) {
+      return NextResponse.json({ error: "Missing ticket ID" }, { status: 400 });
+    }
+
+    // Strict Security Guard: Only authenticated executive/coordinator credentials can stamp gate admission
+    const admin = await getAuthenticatedAdmin(req);
+    if (!admin) {
+      return NextResponse.json(
+        { error: "Unauthorized: Coordinator authentication required to verify gate admission." },
+        { status: 401 }
+      );
+    }
+
     if (!isDatabaseConfigured() || !supabaseAdmin) {
       return NextResponse.json({ verified: true, verified_at: new Date().toISOString() });
     }
 
     const now = new Date().toISOString();
-    const verifier = "GATE-01 // AMEYA SECURITY CADRE";
+    const verifier = `${admin.role} // ${admin.name}`;
 
-        // 1. Check registrations table first
+    // 1. Check registrations table first
     const { data: updatedReg } = await supabaseAdmin
       .from("registrations")
       .update({ verified_at: now, verified_by: verifier })
@@ -112,6 +154,7 @@ export async function PATCH(
       return NextResponse.json({
         verified: true,
         verified_at: now,
+        verified_by: verifier,
         table_source: "registrations",
         data: updatedReg,
       });

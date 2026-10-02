@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+﻿import { NextRequest } from "next/server";
 import crypto from "crypto";
 
 export interface SafeAdminUser {
@@ -84,6 +84,7 @@ export async function verifySessionToken(token: string): Promise<SafeAdminUser |
     const dataToVerify = `${header}.${payload}`;
 
     const key = await getCryptoKey();
+    if (!key) return null;
     const enc = new TextEncoder();
 
     // Decode signature

@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
 
     // Generate unique AMEYA '26 Ticket Token (e.g. AMEYA-2026-AUTO-9253)
     const prefix = eventId ? eventId.replace(/[^a-zA-Z0-9]/g, "").substring(0, 4).toUpperCase() : "SOLO";
-    const generateTicketId = () => `AMEYA-2026-${prefix}-${Math.floor(10000 + Math.random() * 90000)}`;
+    const generateTicketId = () => `AMEYA-2026-${prefix}-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
     let ticketId = generateTicketId();
     const targetTable = getEventTableName(eventId);
 
@@ -92,6 +92,21 @@ export async function POST(req: NextRequest) {
     if (collegeIdCardFile && isDatabaseConfigured() && supabaseAdmin) {
       try {
         const fileExt = collegeIdCardFile.name.split(".").pop()?.toLowerCase() || "jpg";
+        const allowedExtensions = ["jpg", "jpeg", "png", "webp"];
+        if (!allowedExtensions.includes(fileExt)) {
+          return NextResponse.json(
+            { error: "Invalid file format. Only JPEG, PNG, and WebP images are permitted for College ID Cards." },
+            { status: 400 }
+          );
+        }
+
+        if (collegeIdCardFile.size > 5 * 1024 * 1024) {
+          return NextResponse.json(
+            { error: "File exceeds 5MB size limit. Please upload an image under 5MB." },
+            { status: 400 }
+          );
+        }
+
         const secureStoragePath = `ids/${eventId || "general"}/id_${crypto.randomUUID()}.${fileExt}`;
         const arrayBuffer = await collegeIdCardFile.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
