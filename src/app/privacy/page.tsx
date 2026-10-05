@@ -73,10 +73,15 @@ export default function PrivacyPage() {
           <section className={styles.sectionBlock}>
             <div className={styles.sectionNumber}>5.0</div>
             <div className={styles.sectionContent}>
-              <h2>Data Retention &amp; Erasure</h2>
+              <h2>Technical Body Custody &amp; 1-Year Destruction Policy</h2>
               <p>
-                Accreditation data is retained for 90 days post-event for verification of merit certificates and cash prize disbursement.
-                Delegates may request complete erasure of contact records by transmitting a request to <code>ieisame@vvitu.edu.in</code>.
+                All participant information and registration data are held strictly in confidence within the Department of Mechanical Engineering
+                and the IEI SAME technical body. Data is never leaked, distributed, or misused for external commercial purposes.
+              </p>
+              <p>
+                All registration records, uploaded college credentials, and accreditation telemetry are retained solely for certificate verification
+                and conclave audit, and will be <strong>completely cleared and permanently destroyed after a one-year lifespan (365 days from registration)</strong>.
+                Delegates may also request immediate erasure at any time post-event by emailing <code>ieisame@vvitu.edu.in</code>.
               </p>
             </div>
           </section>
