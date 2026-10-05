@@ -428,8 +428,8 @@ export default function InteractiveTeamGallery() {
           {/* Structural Header Row: ID on Left, Committee on Right */}
           <div className={styles.detailMetaRow}>
             <div className={styles.detailIdBlock}>
-              <span className={styles.detailIdLabel}>OFFICER ID //</span>
-              <span className={styles.detailCallsign}>{activeMember.callsign}</span>
+              <span className={styles.detailIdLabel}>COUNCIL //</span>
+              <span className={styles.detailCallsign}>{activeMember.year}</span>
             </div>
             <span className={styles.detailDivisionBadge}>{activeMember.division}</span>
           </div>

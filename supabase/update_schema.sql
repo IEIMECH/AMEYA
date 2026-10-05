@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS public.registrations CASCADE;
 
 CREATE TABLE public.registrations (
     id VARCHAR(64) PRIMARY KEY,                  -- Uniquely Generated ID (e.g. AMEYA-2026-AUTO-9253)
-    event_name VARCHAR(128) NOT NULL,             -- Event Name (e.g. AutoCAD, RC Car Challenge)
+    event_name VARCHAR(128) NOT NULL,             -- Event Name (e.g. Arc of Genius, Dimension X, StarC Circuit)
     full_name VARCHAR(255) NOT NULL,              -- Full Name
     branch VARCHAR(128) NOT NULL,                 -- Branch / Department
     college_roll_number VARCHAR(64) NOT NULL,     -- College Roll Number

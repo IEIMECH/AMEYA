@@ -38,7 +38,7 @@ const rules = [
   "Valid institutional college identity card is mandatory for security clearance at the main gate.",
   "Present your registration ID or student ID card at the Mechanical Department registration desk upon entry.",
   "Registration and verification counters open at 8:00 AM. Opening inaugural ceremony commences promptly at 9:00 AM in the Main Auditorium.",
-  "Participants in AutoCAD, RC Car Challenge, and Assemble & Disassemble must report 20 minutes prior for technical inspection.",
+  "Participants in Arc of Genius, Mechanica: Reassembled, StarC Circuit, and Dimension X must report 20 minutes prior for technical inspection.",
   "High-speed campus Wi-Fi access credentials will be provided upon credential verification at check-in.",
   "Decisions of the faculty adjudicators and technical evaluation judges are definitive and irrevocable.",
 ];

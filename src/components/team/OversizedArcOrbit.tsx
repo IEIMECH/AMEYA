@@ -577,7 +577,7 @@ export default function OversizedArcOrbit() {
                         <div className={styles.heroInfoBlock}>
                           <h3 className={styles.heroName}>{m.name}</h3>
                           <p className={styles.heroRole}>{m.role}</p>
-                          <span className={styles.heroCallsign}>{m.callsign} &bull; {m.year}</span>
+                          <span className={styles.heroCallsign}>{m.year}</span>
                         </div>
                       </div>
                     )}

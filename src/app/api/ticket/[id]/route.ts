@@ -3,7 +3,16 @@ import { supabaseAdmin, isDatabaseConfigured } from "@/lib/supabase";
 import { getAuthenticatedAdmin } from "@/lib/adminAuth";
 
 const EVENT_TABLES = [
+  "registrations",
   "all_registrations",
+  "reg_arc_of_genius",
+  "reg_mechanica_reassembled",
+  "reg_starc_circuit",
+  "reg_infinity_quest",
+  "reg_dimension_x",
+  "reg_the_armory",
+  "reg_mind_snap",
+  "reg_bolt_rush",
   "reg_autocad",
   "reg_assemble_disassemble",
   "reg_rc_car_challenge",
@@ -12,7 +21,6 @@ const EVENT_TABLES = [
   "reg_identify_tools",
   "reg_treasure_hunt",
   "reg_nuts_bolts_speed_race",
-  "registrations",
 ];
 
 function maskEmail(str?: string | null): string | undefined {

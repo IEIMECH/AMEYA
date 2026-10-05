@@ -402,7 +402,6 @@ export default function CircularOrbit() {
 
                   {/* Top HUD Callsign Pill */}
                   <div className={styles.cardTopPill}>
-                    <span className={styles.rollBadge}>{m.callsign}</span>
                     <span className={styles.yearBadge}>{m.year}</span>
                   </div>
                 </div>

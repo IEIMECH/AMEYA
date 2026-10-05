@@ -365,7 +365,7 @@ export default function ExploreUniverse({
               <div className={styles.avatarTooltip} aria-hidden="true">
                 <span className={styles.tooltipName}>{m.name}</span>
                 <span className={styles.tooltipRole}>{m.role}</span>
-                <span className={styles.tooltipId}>{m.callsign} &bull; 4th Year</span>
+                <span className={styles.tooltipId}>{m.year}</span>
               </div>
             </div>
           );

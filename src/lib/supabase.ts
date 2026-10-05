@@ -36,22 +36,31 @@ export interface InquiryRecord {
 // Maps each official AMEYA '26 event ID to its dedicated Supabase database table
 export function getEventTableName(eventId: string): string {
   switch (eventId) {
-    case "autocad":
-      return "reg_autocad";
-    case "assemble-disassemble":
-      return "reg_assemble_disassemble";
-    case "rc-car-challenge":
-      return "reg_rc_car_challenge";
-    case "picto":
-      return "reg_picto";
+    case "arc-of-genius":
     case "engineering-drawing":
-      return "reg_engineering_drawing";
-    case "identify-tools":
-      return "reg_identify_tools";
+      return "reg_arc_of_genius";
+    case "mechanica-reassembled":
+    case "assemble-disassemble":
+      return "reg_mechanica_reassembled";
+    case "starc-circuit":
+    case "rc-car-challenge":
+      return "reg_starc_circuit";
+    case "the-infinity-quest":
+    case "infinity-quest":
     case "treasure-hunt":
-      return "reg_treasure_hunt";
+      return "reg_infinity_quest";
+    case "dimension-x":
+    case "autocad":
+      return "reg_dimension_x";
+    case "the-armory":
+    case "identify-tools":
+      return "reg_the_armory";
+    case "mind-snap":
+    case "picto":
+      return "reg_mind_snap";
+    case "bolt-rush":
     case "nuts-and-bolts-speed-race":
-      return "reg_nuts_bolts_speed_race";
+      return "reg_bolt_rush";
     default:
       return "registrations";
   }

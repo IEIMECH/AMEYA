@@ -67,7 +67,7 @@ const ticketTiers: TicketTier[] = [
     isFeatured: false,
     features: [
       "Registration access across all 8 Official Arenas",
-      "AutoCAD and Drafting Studio Workspace access",
+      "Dimension X & Drafting Studio Workspace access",
       "Speakers & Jury Networking Banquet",
       "Printed Hardcover Engineering Journal",
       "Priority Pit Lane & Workshop Calibrations",

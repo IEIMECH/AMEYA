@@ -20,36 +20,36 @@ interface SecondaryArena {
 
 const secondaryArenas: SecondaryArena[] = [
   {
-    id: "assemble-disassemble",
+    id: "mechanica-reassembled",
     number: "02",
-    name: "Assemble & Disassemble",
+    name: "Mechanica: Reassembled",
     category: "TECHNICAL // DAY 1",
     day: "Day 1",
-    desc: "Hands-on mechanical challenge testing component identification and rapid kinematic assembly sequencing.",
+    desc: "Hands-on mechanical challenge testing component identification, mechanical dexterity, and rapid kinematic assembly sequencing against the clock.",
   },
   {
-    id: "rc-car-challenge",
+    id: "starc-circuit",
     number: "03",
-    name: "RC Car Challenge",
+    name: "StarC Circuit",
     category: "NON-TECHNICAL // DAY 1",
     day: "Day 1",
-    desc: "High-octane radio-controlled obstacle track navigation testing steering precision, acceleration, and reflex.",
+    desc: "High-octane radio-controlled obstacle track navigation testing maneuvering skill, acceleration, and precision steering.",
   },
   {
-    id: "engineering-drawing",
+    id: "the-infinity-quest",
     number: "04",
-    name: "Engineering Drawing",
+    name: "The Infinity Quest",
+    category: "NON-TECHNICAL // DAY 1",
+    day: "Day 1",
+    desc: "Campus-wide scavenger pursuit deciphering cryptic mechanical clues, logical riddles, and physical landmarks across VVITU.",
+  },
+  {
+    id: "dimension-x",
+    number: "05",
+    name: "Dimension X",
     category: "TECHNICAL // DAY 2",
     day: "Day 2",
-    desc: "Fundamental engineering graphics and drafting challenge emphasizing orthographic projection and dimensional tolerances.",
-  },
-  {
-    id: "treasure-hunt",
-    number: "05",
-    name: "Treasure Hunt",
-    category: "NON-TECHNICAL // DAY 2",
-    day: "Day 2",
-    desc: "Campus-wide scavenger pursuit deciphering cryptic mechanical clues, logical riddles, and campus landmarks.",
+    desc: "Technical CAD modeling and parametric drawing competition testing speed, dimensional accuracy, and software mastery.",
   },
 ];
 
@@ -98,11 +98,10 @@ export default function EventsPreview({ onRegisterClick }: EventsPreviewProps) {
           <div className={styles.heroGrid}>
             {/* Left Content */}
             <div className={styles.heroContentLeft}>
-              <h3 className={styles.heroTitle}>AUTOCAD</h3>
-              <p className={styles.heroSlogan}>&ldquo;PRECISION GEOMETRY UNDER TIME CONSTRAINTS.&rdquo;</p>
+              <h3 className={styles.heroTitle}>ARC OF GENIUS</h3>
+              <p className={styles.heroSlogan}>&ldquo;ENGINEERING DRAWINGS &amp; GRAPHICS PRECISION.&rdquo;</p>
               <p className={styles.heroDesc}>
-                A timed computer-aided design showdown testing parametric modeling, drafting standard accuracy,
-                and technical drawing precision. Individual participants model complex geometric assemblies against the clock.
+                A rigorous engineering graphics and drafting showdown testing orthographic projection, isometric views, drafting standards, and dimensional tolerances under strict time constraints.
               </p>
 
               <div className={styles.specGrid}>
@@ -123,10 +122,10 @@ export default function EventsPreview({ onRegisterClick }: EventsPreviewProps) {
               <div className={styles.heroActions}>
                 <button
                   type="button"
-                  onClick={() => onRegisterClick("AutoCAD")}
+                  onClick={() => onRegisterClick("Arc of Genius")}
                   className={styles.primaryRegisterBtn}
                 >
-                  <span>REGISTER FOR AUTOCAD</span>
+                  <span>REGISTER FOR ARC OF GENIUS</span>
                   <ArrowRight size={14} />
                 </button>
                 <Link href="/events" className={styles.ghostLink}>
@@ -145,13 +144,13 @@ export default function EventsPreview({ onRegisterClick }: EventsPreviewProps) {
                 </div>
 
                 <div className={styles.schematicText}>
-                  <span>ARENA_PROTOCOL // AUTOCAD_2026</span>
+                  <span>ARENA_PROTOCOL // ARC_OF_GENIUS_2026</span>
                   <span>FORMAT: SOLO_OPERATIVE</span>
-                  <span>CATEGORY: TECHNICAL_DESIGN</span>
+                  <span>CATEGORY: TECHNICAL_DRAFTING</span>
                   <span>STATUS: REGISTRATION_ARMED</span>
                 </div>
 
-                <div className={styles.watermark}>CAD // D1</div>
+                <div className={styles.watermark}>DRAFT // D1</div>
                 <div className={styles.activeLaserRay} />
               </div>
             </div>

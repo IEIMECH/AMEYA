@@ -135,8 +135,7 @@ export default function MemberInfoDrawer({ member, onClose }: MemberInfoDrawerPr
                 ) : (
                   <div className={styles.initialsPlate}>
                     <span className={styles.initialsText}>{member.avatar}</span>
-                    <span className={styles.callsignSub}>{member.callsign}</span>
-                  </div>
+                    </div>
                 )}
               </div>
             </div>
@@ -184,8 +183,8 @@ export default function MemberInfoDrawer({ member, onClose }: MemberInfoDrawerPr
                 <span className={styles.specValue}>AMEYA-ENG-{String(member.id).padStart(3, "0")}</span>
               </div>
               <div className={styles.specItem}>
-                <span className={styles.specLabel}>CALLSIGN</span>
-                <span className={styles.specValue}>{member.callsign}</span>
+                <span className={styles.specLabel}>ACADEMIC YEAR</span>
+                <span className={styles.specValue}>{member.year}</span>
               </div>
               <div className={styles.specItem}>
                 <span className={styles.specLabel}>SECURITY CLEARANCE</span>
