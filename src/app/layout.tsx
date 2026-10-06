@@ -40,7 +40,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://ameyafest.vercel.app"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://ieisame.vvitu.ac.in"),
   title: {
     default: "Home — AMEYA '26 | IEI SAME",
     template: "%s",
@@ -77,7 +77,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "AMEYA '26 — National Technical Conclave | IEI SAME",
     description: "Where Engineers Dare to Dream. October 08–09, 2026 at VVIT Nambur, Guntur.",
-    url: process.env.NEXT_PUBLIC_BASE_URL || "https://ameyafest.vercel.app",
+    url: process.env.NEXT_PUBLIC_BASE_URL || "https://ieisame.vvitu.ac.in",
     siteName: "AMEYA '26",
     locale: "en_US",
     type: "website",

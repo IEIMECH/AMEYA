@@ -4,7 +4,7 @@ import { supabaseAdmin, isDatabaseConfigured, getEventTableName } from "@/lib/su
 import { events } from "@/data/events";
 import { sendTicketEmail } from "@/lib/email";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://ameyafest.vercel.app";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://ieisame.vvitu.ac.in";
 
 export async function POST(req: NextRequest) {
   try {
