@@ -109,7 +109,7 @@
 
 /* Major Typographic Moment: Deliberate Editorial Stagger */
 .editorialTitle {
-  font-family: var(--font-serif, "Playfair Display", Georgia, serif);
+  font-family: var(--font-display);
   font-weight: 800;
   text-transform: uppercase;
   user-select: none;

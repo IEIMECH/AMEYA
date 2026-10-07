@@ -47,7 +47,7 @@ img,
   --crimson-faint: var(--accent-soft);
 
   /* 2. TYPOGRAPHY SYSTEM (Item 3: Optical Sizing & Hierarchy) */
-  --font-display: var(--font-serif), "Playfair Display", Georgia, serif;
+  --font-display: var(--font-display), "Syne", -apple-system, sans-serif;
   --font-sans: var(--font-sans), "Plus Jakarta Sans", -apple-system, sans-serif;
   --font-mono: var(--font-mono), "Space Mono", monospace;
   --font-serif: var(--font-serif), "Playfair Display", Georgia, serif;

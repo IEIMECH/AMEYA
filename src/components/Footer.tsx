@@ -23,13 +23,27 @@ export default function Footer() {
         {/* Student Points of Contact (POCs) Section */}
         <section className={styles.pocsSection} aria-labelledby="pocs-title">
           <div className={styles.pocsHeading}>
-            <span className={styles.pocsBadge}>STUDENT COORDINATION</span>
+            <span className={styles.pocsBadge}>COORDINATION &amp; SUPPORT</span>
             <h3 id="pocs-title" className={styles.pocsTitle}>
               Points of Contact (POCs)
             </h3>
           </div>
 
           <div className={styles.pocsGrid}>
+            {/* 0. Faculty Coordinator */}
+            <div className={styles.pocCard}>
+              <span className={styles.pocCategory}>FACULTY COORDINATOR</span>
+              <div className={styles.pocMembers}>
+                <div className={styles.pocMember}>
+                  <span className={styles.pocName}>Dr. Kiran Kumar Vernapu</span>
+                  <a href="tel:+919440777139" className={styles.pocPhone}>
+                    <Phone size={12} className={styles.pocPhoneIcon} />
+                    <span>+91 94407 77139</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
             {/* 1. General Queries */}
             <div className={styles.pocCard}>
               <span className={styles.pocCategory}>FOR ANY QUERIES</span>

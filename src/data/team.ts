@@ -351,6 +351,27 @@ export const teamMembers: TeamMember[] = [
     },
   },
 
+    {
+    id: "exec-4",
+    name: "Jagan",
+    role: "Technicals Lead, IEI Mechanical Executive Team",
+    division: "IEI Mechanical Executive Team",
+    divisionIndex: 3,
+    department: "Department of Mechanical Engineering",
+    year: "4th Year B.Tech",
+    avatar: "JG",
+    callsign: "",
+    clearance: "TECHNICALS LEAD",
+    specialization: "Technical Systems, Portal Infrastructure & Arena Hardware",
+    bio: "Directs technical systems engineering, server infrastructure, and hardware scoring platforms for AMEYA '26.",
+    image: "/img/members2026/jagan_technicals.png",
+    exploreCoords: { x: 65, y: 26 },
+    socials: {
+      linkedin: "https://linkedin.com",
+      github: "https://github.com",
+    },
+  },
+
   // 5. Drafting Council
   {
     id: "drafting-1",

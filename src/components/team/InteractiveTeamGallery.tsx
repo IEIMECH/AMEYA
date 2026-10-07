@@ -133,7 +133,7 @@ export default function InteractiveTeamGallery() {
   useEffect(() => {
     updateSpacing();
     const spacing = cardSpacingRef.current;
-    const startX = -18 * spacing; // Start on member 0 of middle set
+    const startX = -TOTAL_MEMBERS * spacing; // Start on member 0 of middle set
     currentXRef.current = startX;
     applyTrackX(startX);
 
@@ -223,7 +223,7 @@ export default function InteractiveTeamGallery() {
     const onResize = () => {
       updateSpacing();
       const newSpacing = cardSpacingRef.current;
-      const target = -(18 + currentActiveIdxRef.current) * newSpacing;
+      const target = -(TOTAL_MEMBERS + currentActiveIdxRef.current) * newSpacing;
       currentXRef.current = target;
       applyTrackX(target);
     };
@@ -373,7 +373,7 @@ export default function InteractiveTeamGallery() {
         <h1 className={styles.heroTitle}>
           THE <span className={styles.heroAccent}>TEAM</span>
         </h1>
-        <p className={styles.heroSubtitle}>18 Council Officers</p>
+        <p className={styles.heroSubtitle}>{TOTAL_MEMBERS} Council Officers</p>
         <p className={styles.heroDepartment}>Department of Mechanical Engineering</p>
       </header>
 

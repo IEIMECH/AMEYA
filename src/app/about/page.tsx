@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Lightbulb, Target, Users, Award } from "lucide-react";
 import styles from "./page.module.css";
 

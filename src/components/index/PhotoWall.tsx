@@ -13,10 +13,10 @@ interface PhotoItem {
 }
 
 const photoArchive: PhotoItem[] = [
-  { id: 1, src: "/img/Hero/photowall_1.jpeg", caption: "registrations" },
+  { id: 1, src: "/img/Hero/photowall_1.jpeg", caption: "Registrations" },
   { id: 2, src: "/img/Hero/photowall_2.jpeg", caption: "Seminar Hall Gathering" },
-  { id: 3, src: "/img/Hero/photowall_3.jpeg", caption: "Fun Event all along the Ameya" },
-  { id: 4, src: "/img/Hero/photowall_4.jpeg", caption: "Safe and interaction Environment" },
+  { id: 3, src: "/img/Hero/photowall_3.jpeg", caption: "Fun Events Across AMEYA" },
+  { id: 4, src: "/img/Hero/photowall_4.jpeg", caption: "Safe & Interactive Environment" },
   { id: 5, src: "/img/Hero/photowall_5.jpeg", caption: "Opening Ceremony" },
 ];
 
