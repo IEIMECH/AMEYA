@@ -158,7 +158,7 @@ export default function MemberInfoDrawer({ member, onClose }: MemberInfoDrawerPr
 
             <div className={styles.roleLine}>
               <span className={styles.roleTitle}>{member.role}</span>
-              <span className={styles.deptSub}>{member.department} &bull; {member.year}</span>
+              <span className={styles.deptSub}>{member.department}</span>
             </div>
           </div>
 
@@ -182,10 +182,7 @@ export default function MemberInfoDrawer({ member, onClose }: MemberInfoDrawerPr
                 <span className={styles.specLabel}>CHASSIS ID</span>
                 <span className={styles.specValue}>AMEYA-ENG-{String(member.id).padStart(3, "0")}</span>
               </div>
-              <div className={styles.specItem}>
-                <span className={styles.specLabel}>ACADEMIC YEAR</span>
-                <span className={styles.specValue}>{member.year}</span>
-              </div>
+              
               <div className={styles.specItem}>
                 <span className={styles.specLabel}>SECURITY CLEARANCE</span>
                 <span className={styles.specValue}>{member.clearance}</span>
@@ -209,31 +206,9 @@ export default function MemberInfoDrawer({ member, onClose }: MemberInfoDrawerPr
             </div>
 
             <div className={styles.socialButtons}>
-              {member.socials.linkedin && (
-                <a
-                  href={member.socials.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.commBtn}
-                >
-                  <LinkedinIcon size={15} />
-                  <span>LinkedIn Profile</span>
-                  <ExternalLink size={12} className={styles.btnArrow} />
-                </a>
-              )}
+              
 
-              {member.socials.github && (
-                <a
-                  href={member.socials.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.commBtn}
-                >
-                  <GithubIcon size={15} />
-                  <span>GitHub Repositories</span>
-                  <ExternalLink size={12} className={styles.btnArrow} />
-                </a>
-              )}
+              
 
               {member.socials.email && (
                 <a
@@ -259,7 +234,7 @@ export default function MemberInfoDrawer({ member, onClose }: MemberInfoDrawerPr
                 </a>
               )}
 
-              {!member.socials.linkedin && !member.socials.github && !member.socials.email && !member.socials.portfolio && (
+              {!member.socials.email && !member.socials.portfolio && (
                 <div className={styles.commNotice}>
                   [Comm channel routed through IEI Central Council Secretariat]
                 </div>
