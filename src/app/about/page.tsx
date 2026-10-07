@@ -99,6 +99,67 @@ export default function AboutPage() {
 
         <div className={styles.editorialDivider} aria-hidden="true" />
 
+        {/* Section: Academic Leadership & Patronage */}
+        <section className={styles.editorialSection} aria-labelledby="leadership-heading">
+          <div className={styles.leadershipHeader}>
+            <span className={styles.leadershipBadge}>FACULTY PATRONAGE</span>
+            <h2 id="leadership-heading" className={styles.leadershipTitle}>
+              Academic <span className={styles.titleAccent}>Leadership</span>
+            </h2>
+            <p className={styles.leadershipSubtitle}>
+              Guiding the vision, engineering rigor, and student excellence of AMEYA &apos;26
+            </p>
+          </div>
+
+          <div className={styles.leadershipGrid}>
+            {/* Card 1: Dr. Kiran Kumar Vernapu - Convener */}
+            <article className={styles.leadershipCard}>
+              <div className={styles.leadershipImageContainer}>
+                <Image
+                  src="/img/about/dr_kiran_kumar_vernapu.jpeg"
+                  alt="Dr. Kiran Kumar Vernapu - Convener of IEI SAME"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 420px"
+                  className={styles.leadershipImage}
+                  priority
+                />
+              </div>
+              <div className={styles.leadershipInfo}>
+                <span className={styles.leadershipTag}>CONVENER // IEI SAME</span>
+                <h3 className={styles.leadershipName}>Dr. Kiran Kumar Vernapu</h3>
+                <p className={styles.leadershipRole}>
+                  Convener, IEI SAME &amp; Faculty Coordinator
+                </p>
+                <p className={styles.leadershipBio}>
+                  Guiding and stewarding the IEI SAME Student Chapter at VVITU Nambur. Mentors the student councils across technical challenges, symposium protocols, and industry alignments to ensure academic rigor and operational excellence.
+                </p>
+              </div>
+            </article>
+
+            {/* Card 2: Head of the Department - Mechanical Engineering */}
+            <article className={styles.leadershipCard}>
+              <div className={styles.leadershipImageContainer}>
+                <div className={styles.leadershipPlaceholder}>
+                  <div className={styles.placeholderCrest}>HOD</div>
+                  <span className={styles.placeholderLabel}>Department of Mechanical Engineering</span>
+                </div>
+              </div>
+              <div className={styles.leadershipInfo}>
+                <span className={styles.leadershipTag}>DEPARTMENT PATRON</span>
+                <h3 className={styles.leadershipName}>Head of the Department</h3>
+                <p className={styles.leadershipRole}>
+                  Head of the Department of Mechanical Engineering
+                </p>
+                <p className={styles.leadershipBio}>
+                  Providing departmental governance, institutional leadership, and strategic direction for the AMEYA conclave, fostering an atmosphere where mechanical engineering students innovate and excel.
+                </p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <div className={styles.editorialDivider} aria-hidden="true" />
+
         {/* Section 3: Interactive Pillars */}
         <section aria-labelledby="pillars-heading" style={{ marginBottom: "2rem" }}>
           <div className={styles.pillarsHeader}>
